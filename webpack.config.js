@@ -2,13 +2,13 @@ var webpack = require("webpack");
 var CopyWebpackPlugin = require("copy-webpack-plugin");
 
 module.exports = {
-    entry: "./src/com/mendix/widget/google-maps/GoogleMaps.ts",
+    entry: "./src/com/mendix/widget/GoogleMaps/GoogleMaps.ts",
     output: {
         path: __dirname + "/dist/tmp",
-        filename: "src/com/mendix/widget/google-maps/GoogleMaps.js",
+        filename: "src/com/mendix/widget/GoogleMaps/GoogleMaps.js",
         libraryTarget:  "umd",
         umdNamedDefine: true,
-        library: "com.mendix.widget.google-maps.GoogleMaps"
+        library: "com.mendix.widget.GoogleMaps.GoogleMaps"
     },
     resolve: {
         extensions: [ "", ".ts", ".tsx", ".js", ".json" ]
