@@ -1,19 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <widget id="com.mendix.widget.GoogleMaps.GoogleMaps" needsEntityContext="true" xmlns="http://www.mendix.com/widget/1.0/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mendix.com/widget/1.0/ ../../../../xsd/widget.xsd">
-    <name>GoogleMaps</name>
+    <name>Google Maps</name>
     <description>Show locations on google maps</description>  
     <icon/>
     <properties>
+    
         <property key="apiKey" type="string" required="true">
             <caption>Api key</caption>
             <category>Data source</category>
             <description>The Google Maps JavaScript API v3 does not require an API key to function correctly. However, Google strongly encourages you to load the Maps API using an APIs Console key which allows you to monitor your application's Maps API usage</description>
         </property>
+
         <property key="latAttr" type="string" required="true">
             <caption>Latitude attribute</caption>
             <category>Data source</category>
             <description>The latitude attribute</description>
         </property>
+
         <property key="lngAttr" type="string" required="true">
             <caption>Longtitude attribute</caption>
             <category>Data source</category>
