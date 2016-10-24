@@ -1,30 +1,69 @@
-import * as dojoDeclare from "dojo/_base/declare";
+import * as DojoDeclare from "dojo/_base/declare";
 import * as WidgetBase from "mxui/widget/_WidgetBase";
+import { createElement } from "react";
+import { render, unmountComponentAtNode } from "react-dom";
 
-import { unmountComponentAtNode } from "react-dom";
+import { MapDiv } from "./components/Map";
 
-class GoogleMapsDojo extends WidgetBase {
+class GoogleMaps extends WidgetBase {
     // Properties from Mendix modeler
+    private apiKey: string;
     private latAttr: string;
     private lngAttr: string;
 
+    // Internal properties
+    private map: google.maps.Map;
+    private marker: google.maps.Marker;
+
+    postCreate() {
+        this.updateRendering = this.updateRendering.bind(this);
+        this.loadMap = this.loadMap.bind(this);
+    }
+
     update(object: mendix.lib.MxObject, callback: Function) {
-        console.log("This is the lat " + this.latAttr + " and long " + this.lngAttr);
-        // this.loadGoogleScript();
+        this.loadGoogleScript(this.updateRendering);
         callback();
     }
 
     uninitialize(): boolean {
         unmountComponentAtNode(this.domNode);
-
         return true;
+    }
+
+    private updateRendering(callback?: Function) {
+        render(createElement(MapDiv), this.domNode);
+        this.loadMap();
+    }
+
+    private getGoogleMapsApiUrl() {
+        return "https://maps.googleapis.com/maps/api/js?key=" +
+            this.apiKey + "&libraries=" +
+            [ "geometry", "places", "visualization", "places" ].join();
+    }
+
+    private loadGoogleScript(callback?: Function) {
+        const script = document.createElement("script");
+        script.src = this.getGoogleMapsApiUrl();
+        script.onload = () => callback();
+        document.body.appendChild(script);
+    }
+
+    private loadMap() {
+        const mapConfig: google.maps.MapOptions = {
+            center: new google.maps.LatLng(Number(this.latAttr), Number(this.lngAttr)),
+            zoom: 7
+        };
+        this.map = new google.maps.Map(document.getElementById("mapNode"), mapConfig);
+        const markerConfig = {
+            map: this.map,
+            position: new google.maps.LatLng(Number(this.latAttr), Number(this.lngAttr))
+        };
+        this.marker = new google.maps.Marker(markerConfig);
     }
 }
 
-// Declare widget prototype the Dojo way
-// Thanks to https://github.com/DefinitelyTyped/DefinitelyTyped/blob/master/dojo/README.md
 // tslint:disable : only-arrow-functions
-dojoDeclare("com.mendix.widget.GoogleMaps.GoogleMaps", [ WidgetBase ], (function (Source: any) {
+DojoDeclare("com.mendix.widget.GoogleMaps.GoogleMaps", [ WidgetBase ], (function (Source: any) {
     let result: any = {};
     for (let i in Source.prototype) {
         if (i !== "constructor" && Source.prototype.hasOwnProperty(i)) {
@@ -32,4 +71,4 @@ dojoDeclare("com.mendix.widget.GoogleMaps.GoogleMaps", [ WidgetBase ], (function
         }
     }
     return result;
-} (GoogleMapsDojo)));
+} (GoogleMaps)));
