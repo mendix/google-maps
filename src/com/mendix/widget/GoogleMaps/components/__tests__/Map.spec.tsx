@@ -1,19 +1,15 @@
 import { shallow } from "enzyme";
 import * as React from "react";
 
-import { Map, MapProps } from "../Map";
+import { MapDiv } from "../Map";
 
 describe("Map component", () => {
-    const lat = "0.32";
-    const long = "35";
-    const render = (props: MapProps) => shallow(<Map {...props} />);
+    const render = () => shallow(<MapDiv />);
 
     it("should render default location", () => {
-        const output = render({ lat, long });
+        const output = render();
         expect(output).toMatchStructure(
-            <div className="google-map-container">
-                <div className="google-map" />
-            </div>
+            <div className="google-map" />
         );
     });
 });
