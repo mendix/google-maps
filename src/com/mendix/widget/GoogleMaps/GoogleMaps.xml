@@ -5,22 +5,25 @@
     <icon/>
     <properties>
     
-        <property key="apiKey" type="string" required="true">
+        <property key="apiKey" type="string" required="false">
             <caption>Api key</caption>
             <category>Data source</category>
-            <description>The Google Maps JavaScript API v3 does not require an API key to function correctly. However, Google strongly encourages you to load the Maps API using an APIs Console key which allows you to monitor your application's Maps API usage</description>
+            <description>The google maps Javascript API v3 does not require an API key to function correctly. However, google strongly encourages you to load the maps API using an APIs key</description>
         </property>
 
-        <property key="latAttr" type="string" required="true">
-            <caption>Latitude attribute</caption>
+        <property key="address" type="attribute" required="true">
+            <caption>Address</caption>
             <category>Data source</category>
-            <description>The latitude attribute</description>
+            <description>Use address of known places such as cities, street</description>
+            <attributeTypes>
+                <attributeType name="String"/>
+            </attributeTypes>
         </property>
 
-        <property key="lngAttr" type="string" required="true">
-            <caption>Longtitude attribute</caption>
+        <property key="defaultAddress" type="string" defaultValue="Marie Hotel, Martin Road, Kampala" required="false">
+            <caption>Default address</caption>
             <category>Data source</category>
-            <description>The longtitude attribute</description>
+            <description></description>
         </property>
 
     </properties>
