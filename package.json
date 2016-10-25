@@ -25,6 +25,7 @@
         "@types/karma": "^0.13.33",
         "@types/react": "^0.14.37",
         "@types/react-dom": "^0.14.17",
+        "@types/googlemaps": "^3.25.35",
         "copy-webpack-plugin": "^3.0.1",
         "enzyme": "^2.5.1",
         "grunt": "1.0.1",
@@ -42,7 +43,6 @@
         "karma-sourcemap-loader": "^0.3.7",
         "karma-webpack": "^1.8.0",
         "mendix-client": "git+https://github.com/FlockOfBirds/Mendix-client-typing.git",
-        "react-addons-test-utils": "^15.3.2",
         "source-map-loader": "^0.1.5",
         "ts-loader": "^0.9.4",
         "tslint-eslint-rules": "^2.1.0",
@@ -51,7 +51,6 @@
         "webpack-dev-server": "^1.16.2"
     },
     "dependencies": {
-        "@types/googlemaps": "^3.25.35",
         "react": "^15.3.2",
         "react-dom": "^15.3.2"
     }
