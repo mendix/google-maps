@@ -1,5 +1,5 @@
 {
-    "rulesDirectory": ["node_modules/tslint-eslint-rules/dist/rules"],
+    "rulesDirectory": [ "node_modules/tslint-eslint-rules/dist/rules" ],
     "extends": "tslint:latest",
     "rules": {
         "class-name": true,
@@ -10,7 +10,7 @@
         "no-arg": true,
         "no-bitwise": true,
         "no-conditional-assignment": true,
-        "no-console": [true],
+        "no-console": [ true ],
         "no-debugger": true,
         "no-duplicate-key": true,
         "no-duplicate-variable": true,
@@ -53,10 +53,8 @@
             "check-separator",
             "check-type"
         ],
-        // Rules for Widget development
         "interface-name": [ false, "always-prefix" ],
-        // https://www.npmjs.com/package/tslint-eslint-rules
-        "no-multi-spaces": [true],
+        "no-multi-spaces": [ true ],
         "no-extra-semi": true,
         "no-irregular-whitespace": true,
         "no-duplicate-case": true,
@@ -78,7 +76,7 @@
             }
         ],
         "object-curly-spacing": [ true, "always" ],
-        "trailing-comma": [true, {"multiline": "never", "singleline": "never"}],
+        "trailing-comma": [ true, {"multiline": "never", "singleline": "never"} ],
         "member-access": false
     }
 }

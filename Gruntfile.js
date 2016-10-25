@@ -6,6 +6,7 @@ module.exports = function (grunt) {
     grunt.initConfig({
         pkgName: pkg.name,
         name: pkg.name,
+
         watch: {
             updateWidgetFiles: {
                 "files": [ "./dist/tmp/src/**/*" ],
@@ -52,7 +53,7 @@ module.exports = function (grunt) {
                 files: [
                     { dest: "./dist/tmp/src", cwd: "./src/", src: ["**/*", "!**/*.ts", "!**/*.tsx"], expand: true }
                 ]
-            }         
+            }
         },
         
         webpack: {
@@ -65,7 +66,7 @@ module.exports = function (grunt) {
                 "./MxTestProject/deployment/web/widgets/" + pkg.name + "/*",
                 "./MxTestProject/widgets/" + pkg.name + ".mpk"
             ], 
-            dist : "./dist/**/*"               
+            dist : "./dist/**/*"
         }
     });
     
