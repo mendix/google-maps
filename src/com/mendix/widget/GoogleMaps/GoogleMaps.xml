@@ -11,7 +11,7 @@
             <description>The google maps Javascript API v3 does not require an API key to function correctly. However, google strongly encourages you to load the maps API using an APIs key</description>
         </property>
 
-        <property key="address" type="attribute" required="true">
+        <property key="addressAttribute" type="attribute" required="true">
             <caption>Address</caption>
             <category>Data source</category>
             <description>Use address of known places such as cities, street</description>
@@ -19,12 +19,6 @@
                 <attributeType name="String"/>
             </attributeTypes>
         </property>
-
-        <property key="defaultAddress" type="string" defaultValue="Marie Hotel, Martin Road, Kampala" required="false">
-            <caption>Default address</caption>
-            <category>Data source</category>
-            <description></description>
-        </property>
-
+        
     </properties>
 </widget>
