@@ -3,8 +3,9 @@ import { Component, DOM, Props } from "react";
 import { Marker } from "./Marker";
 
 export interface MapProps extends Props<Map> {
-    apiKey: string;
+    apiKey?: string;
     address: string;
+    defaultCenter?: string;
 }
 
 interface MapState {
@@ -14,14 +15,11 @@ interface MapState {
 export class Map extends Component<MapProps, MapState> {
     private map: google.maps.Map;
     private mapDiv: HTMLElement;
-    private geocoder: google.maps.Geocoder;
 
     constructor(props: MapProps) {
-
         super(props);
-        this.loadGoogleScript = this.loadGoogleScript.bind(this);
-        this.loadMap = this.loadMap.bind(this);
 
+        this.createMarker = this.createMarker.bind(this);
         this.state = { isLoaded: typeof google !== "undefined" ? true : false };
         if (!this.state.isLoaded) {
             this.loadGoogleScript();
@@ -53,7 +51,7 @@ export class Map extends Component<MapProps, MapState> {
             this.setState({ isLoaded: true });
         };
         script.onerror = () => {
-            mx.ui.error("Could not load google maps script. Please check your internet connection");
+            mx.ui.error("Could not load Google Maps script. Please check your internet connection");
         };
         document.body.appendChild(script);
     }
@@ -63,14 +61,29 @@ export class Map extends Component<MapProps, MapState> {
             zoom: 7
         };
         this.map = new google.maps.Map(this.mapDiv, mapConfig);
-        this.geocoder = new google.maps.Geocoder();
-        this.geocoder.geocode({ address: this.props.address }, (results, status) => {
+        this.getLocation(this.props.address, this.createMarker);
+    }
+
+    private getLocation(address: string, callback: (location: google.maps.LatLng) => void) {
+        const geocoder = new google.maps.Geocoder();
+        geocoder.geocode({ address }, (results, status) => {
             if (status === google.maps.GeocoderStatus.OK) {
-                Marker({ location: results[0].geometry.location, map: this.map });
-                this.map.setCenter(results[0].geometry.location);
+                callback(results[0].geometry.location);
             } else {
-                mx.ui.error("Could not find the specified address");
+                callback(null);
             }
         });
+    }
+
+    private createMarker(location: google.maps.LatLng) {
+        if (location) {
+            Marker({ location, map: this.map });
+            this.map.setCenter(location);
+        } else {
+            this.getLocation(this.props.defaultCenter, defaultLocation => {
+                this.map.setCenter(defaultLocation);
+                logger.warn("Could not find address, map is set to default location");
+            });
+        }
     }
 }
