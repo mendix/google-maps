@@ -34,6 +34,7 @@ describe("Map component", () => {
     xit("should fail to geocode address", () => {
         // TODO: Implement test.
     });
+
     xit("should center map to user address", () => {
         // TODO: Implement test.
     });
