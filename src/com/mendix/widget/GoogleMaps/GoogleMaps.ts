@@ -9,8 +9,7 @@ import { Map, MapProps } from "./components/Map";
 class GoogleMaps extends WidgetBase {
     // Properties from Mendix modeler
     private apiKey: string;
-    private address: string;
-    private defaultAddress: string;
+    private addressAttribute: string;
 
     // internal variables
     private contextObject: mendix.lib.MxObject;
@@ -23,11 +22,13 @@ class GoogleMaps extends WidgetBase {
         this.contextObject = object;
         this.resetSubscriptions();
         this.updateRendering();
+
         callback();
     }
 
     uninitialize(): boolean {
         unmountComponentAtNode(this.domNode);
+
         return true;
     }
 
@@ -44,7 +45,12 @@ class GoogleMaps extends WidgetBase {
         this.unsubscribeAll();
         if (this.contextObject) {
             this.subscribe({
-                callback: guid => this.updateRendering(),
+                callback: () => this.updateRendering(),
+                guid: this.contextObject.getGuid()
+            });
+            this.subscribe({
+                attr: this.addressAttribute,
+                callback: () => this.updateRendering(),
                 guid: this.contextObject.getGuid()
             });
         }
@@ -53,8 +59,9 @@ class GoogleMaps extends WidgetBase {
     private getProps(): MapProps {
         return {
             address: this.contextObject ?
-                String(this.contextObject.get(this.address)) : this.defaultAddress,
-            apiKey: this.apiKey
+                this.contextObject.get(this.addressAttribute) as string : "",
+            apiKey: this.apiKey,
+            defaultCenter: "Mendix, Summer Street, Boston, MA, United States"
         };
     }
 }
