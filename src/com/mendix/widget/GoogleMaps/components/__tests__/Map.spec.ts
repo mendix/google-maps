@@ -16,14 +16,6 @@ describe("Map component", () => {
         expect(mountMapComponent.find("div.mx-google-maps").length).toBe(1);
     });
 
-    xit("should handle empty address", () => {
-        // TODO: Implement test.
-    });
-
-    xit("should handle non existing address", () => {
-        // TODO: Implement test.
-    });
-
     it("should geocode address", (done) => {
         setTimeout(() => {
             map.getLocation(testProps.address, callback);
