@@ -14,10 +14,6 @@ class GoogleMaps extends WidgetBase {
     // internal variables
     private contextObject: mendix.lib.MxObject;
 
-    postCreate() {
-        this.updateRendering = this.updateRendering.bind(this);
-    }
-
     update(object: mendix.lib.MxObject, callback: Function) {
         this.contextObject = object;
         this.resetSubscriptions();
@@ -33,12 +29,7 @@ class GoogleMaps extends WidgetBase {
     }
 
     updateRendering() {
-        if (this.contextObject) {
-            this.domNode.className = this.domNode.className.replace("hidden", "");
-            render(createElement(Map, this.getProps()), this.domNode);
-        } else {
-            this.domNode.className = `${this.domNode.className} hidden`;
-        }
+        render(createElement(Map, this.getProps()), this.domNode);
     }
 
     resetSubscriptions() {
@@ -57,9 +48,11 @@ class GoogleMaps extends WidgetBase {
     }
 
     private getProps(): MapProps {
+        const address = this.contextObject
+            ? this.contextObject.get(this.addressAttribute) as string
+            : undefined;
         return {
-            address: this.contextObject ?
-                this.contextObject.get(this.addressAttribute) as string : "",
+            address,
             apiKey: this.apiKey
         };
     }

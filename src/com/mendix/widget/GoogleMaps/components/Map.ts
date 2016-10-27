@@ -13,7 +13,7 @@ interface MapState {
 
 export class Map extends Component<MapProps, MapState> {
     static defaultProps: MapProps = {
-        address: "",
+        address: undefined,
         defaultCenter: "Gedempte Zalmhaven 4k, 3011 BT Rotterdam, Netherlands"
     };
     private map: google.maps.Map;
@@ -39,6 +39,10 @@ export class Map extends Component<MapProps, MapState> {
         }
     }
 
+    componentWillUnmount() {
+        google.maps.event.clearListeners(this.map, "resize");
+    }
+
     render() {
         return DOM.div({ className: "mx-google-maps", ref: (c) => this.mapDiv = c });
     }
@@ -50,7 +54,9 @@ export class Map extends Component<MapProps, MapState> {
     private loadGoogleScript(callback?: Function) {
         const script = document.createElement("script");
         script.src = this.getGoogleMapsApiUrl();
-        script.onload = () => { this.setState({ isLoaded: true }); };
+        script.onload = () => {
+            this.setState({ isLoaded: true });
+        };
         script.onerror = () => {
             mx.ui.error("Could not load Google Maps script. Please check your internet connection");
         };
@@ -60,7 +66,11 @@ export class Map extends Component<MapProps, MapState> {
     private loadMap() {
         const mapConfig: google.maps.MapOptions = { zoom: 14 };
         this.map = new google.maps.Map(this.mapDiv, mapConfig);
-        this.getLocation(this.props.address, this.createMarker);
+        this.getLocation(this.props.address !== undefined
+            ? this.props.address
+            : this.props.defaultCenter,
+            this.createMarker
+        );
         google.maps.event.addDomListener(window, "resize", () => {
             const center = this.map.getCenter();
             google.maps.event.trigger(this.map, "resize");
