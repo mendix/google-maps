@@ -55,10 +55,6 @@ describe("Map component", () => {
         // TODO: Implement test.
     });
 
-    xit("should center map to default address", () => {
-        // TODO: Implement test.
-    });
-
     xit("should check that google maps is defined ", () => {
         // TODO: Implement test.
     });
