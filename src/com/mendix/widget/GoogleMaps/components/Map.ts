@@ -64,7 +64,7 @@ export class Map extends Component<MapProps, MapState> {
         this.getLocation(this.props.address, this.createMarker);
     }
 
-    private getLocation(address: string, callback: (location: google.maps.LatLng) => void) {
+    getLocation(address: string, callback: (location: google.maps.LatLng) => void) {
         const geocoder = new google.maps.Geocoder();
         geocoder.geocode({ address }, (results, status) => {
             if (status === google.maps.GeocoderStatus.OK) {
