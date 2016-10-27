@@ -2,10 +2,14 @@
 * Show locations on google maps
 
 ## Features
-* Show default location on map
+* Show location on a map based on an address
 
 ## Dependencies
-Mendix 6: Tested on 6.8.0.
+Mendix 6
+
+## Properties
+* Api key; The google maps Javascript API v3 does not require an API key to function correctly. However, google strongly encourages you to load the maps API using an APIs key
+* Address; Attribute containing address. Use names of known places such as cities, streets, etc
 
 ## Issues
 Please report issues at https://github.com/mendixlabs/google-maps/issues.

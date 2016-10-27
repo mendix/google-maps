@@ -1,6 +1,5 @@
-import { Component, DOM, Props } from "react";
-
 import { Marker } from "./Marker";
+import { Component, DOM, Props } from "react";
 
 export interface MapProps extends Props<Map> {
     apiKey?: string;
@@ -13,6 +12,10 @@ interface MapState {
 }
 
 export class Map extends Component<MapProps, MapState> {
+    static defaultProps: MapProps = {
+        address: "",
+        defaultCenter: "Gedempte Zalmhaven 4k, 3011 BT Rotterdam, Netherlands"
+    };
     private map: google.maps.Map;
     private mapDiv: HTMLElement;
 
@@ -20,7 +23,7 @@ export class Map extends Component<MapProps, MapState> {
         super(props);
 
         this.createMarker = this.createMarker.bind(this);
-        this.state = { isLoaded: typeof google !== "undefined" ? true : false };
+        this.state = { isLoaded: typeof google !== "undefined" };
         if (!this.state.isLoaded) {
             this.loadGoogleScript();
         }
@@ -47,9 +50,7 @@ export class Map extends Component<MapProps, MapState> {
     private loadGoogleScript(callback?: Function) {
         const script = document.createElement("script");
         script.src = this.getGoogleMapsApiUrl();
-        script.onload = () => {
-            this.setState({ isLoaded: true });
-        };
+        script.onload = () => { this.setState({ isLoaded: true }); };
         script.onerror = () => {
             mx.ui.error("Could not load Google Maps script. Please check your internet connection");
         };
@@ -57,11 +58,14 @@ export class Map extends Component<MapProps, MapState> {
     }
 
     private loadMap() {
-        const mapConfig: google.maps.MapOptions = {
-            zoom: 7
-        };
+        const mapConfig: google.maps.MapOptions = { zoom: 14 };
         this.map = new google.maps.Map(this.mapDiv, mapConfig);
         this.getLocation(this.props.address, this.createMarker);
+        google.maps.event.addDomListener(window, "resize", () => {
+            const center = this.map.getCenter();
+            google.maps.event.trigger(this.map, "resize");
+            this.map.setCenter(center);
+        });
     }
 
     getLocation(address: string, callback: (location: google.maps.LatLng) => void) {
@@ -81,8 +85,10 @@ export class Map extends Component<MapProps, MapState> {
             this.map.setCenter(location);
         } else {
             this.getLocation(this.props.defaultCenter, defaultLocation => {
+                Marker({ location: defaultLocation, map: this.map });
                 this.map.setCenter(defaultLocation);
-                logger.warn("Could not find address, map is set to default location");
+                mx.ui.error("Could not find address " + this.props.address +
+                    ". Map is set to default location");
             });
         }
     }
