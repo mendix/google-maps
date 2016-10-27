@@ -60,8 +60,7 @@ class GoogleMaps extends WidgetBase {
         return {
             address: this.contextObject ?
                 this.contextObject.get(this.addressAttribute) as string : "",
-            apiKey: this.apiKey,
-            defaultCenter: "Mendix, Summer Street, Boston, MA, United States"
+            apiKey: this.apiKey
         };
     }
 }

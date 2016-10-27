@@ -1,6 +1,5 @@
-import { Component, DOM, Props } from "react";
-
 import { Marker } from "./Marker";
+import { Component, DOM, Props } from "react";
 
 export interface MapProps extends Props<Map> {
     apiKey?: string;
@@ -13,6 +12,10 @@ interface MapState {
 }
 
 export class Map extends Component<MapProps, MapState> {
+    static defaultProps: MapProps = {
+        address: "",
+        defaultCenter: "Gedempte Zalmhaven 4k, 3011 BT Rotterdam, Netherlands"
+    };
     private map: google.maps.Map;
     private mapDiv: HTMLElement;
 
@@ -20,7 +23,7 @@ export class Map extends Component<MapProps, MapState> {
         super(props);
 
         this.createMarker = this.createMarker.bind(this);
-        this.state = { isLoaded: typeof google !== "undefined" ? true : false };
+        this.state = { isLoaded: typeof google !== "undefined" };
         if (!this.state.isLoaded) {
             this.loadGoogleScript();
         }
