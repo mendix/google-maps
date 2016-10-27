@@ -16,6 +16,21 @@ describe("Map component", () => {
         expect(mountMapComponent.find("div.mx-google-maps").length).toBe(1);
     });
 
+    it("should handle empty address", (done) => {
+        setTimeout(() => {
+            const noAddress = "";
+            mountMapComponent.setProps({ address: noAddress });
+            map.getLocation(noAddress, callback);
+        }, timeOut);
+        const callback = (coordinates: google.maps.LatLng) => {
+            expect(coordinates.lat()).not.toBe(0.3229765);
+            expect(coordinates.lng()).not.toBe(32.576219700000024);
+            // TODO check for default center
+
+            done();
+        };
+    });
+
     it("should geocode address", (done) => {
         setTimeout(() => {
             map.getLocation(testProps.address, callback);
