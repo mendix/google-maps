@@ -24,13 +24,11 @@
         OxZCHInBvwQYAKY4VALn8wykAAAAAElFTkSuQmCC
     </icon>
     <properties>
-    
         <property key="apiKey" type="string" required="false">
             <caption>Api key</caption>
             <category>Data source</category>
             <description>The google maps Javascript API v3 does not require an API key to function correctly. However, google strongly encourages you to load the maps API using an APIs key</description>
         </property>
-
         <property key="addressAttribute" type="attribute" required="true">
             <caption>Address</caption>
             <category>Data source</category>
@@ -39,6 +37,5 @@
                 <attributeType name="String"/>
             </attributeTypes>
         </property>
-        
     </properties>
 </widget>
