@@ -4,7 +4,7 @@ import { createElement } from "react";
 import { Map, MapProps } from "../Map";
 
 describe("Map component", () => {
-    const testProps: MapProps = {
+    let testProps: MapProps = {
         address: "Lumumba Ave, Kampala, Uganda",
         apiKey: "AIzaSyACjBNesZXeRFx86N7RMCWiTQP5GT_jDec"
     };
@@ -34,7 +34,6 @@ describe("Map component", () => {
 
             done();
         };
-
     });
 
     it("should fail to geocode address", (done) => {
@@ -51,12 +50,19 @@ describe("Map component", () => {
         };
     });
 
-    xit("should center map to user address", () => {
-        // TODO: Implement test.
+    xit("should center map to default address", (done) => {
+        // TODO: Implement test
     });
 
-    xit("should check that google maps is defined ", () => {
-        // TODO: Implement test.
+    it("should check that google maps is defined ", (done) => {
+        setTimeout(() => {
+            map.getLocation(testProps.address, callback);
+        }, timeOut);
+        const callback = (coordinates: google.maps.LatLng) => {
+            expect(google).toBeDefined();
+
+            done();
+        };
     });
 
     xit("should check that google maps is not defined", () => {
