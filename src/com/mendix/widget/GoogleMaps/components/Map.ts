@@ -62,7 +62,7 @@ export class Map extends Component<MapProps, MapState> {
         };
         this.map = new google.maps.Map(this.mapDiv, mapConfig);
         this.getLocation(this.props.address, this.createMarker);
-        google.maps.event.addDomListener(window, 'resize', () => {
+        google.maps.event.addDomListener(window, "resize", () => {
             const center = this.map.getCenter();
             google.maps.event.trigger(this.map, "resize");
             this.map.setCenter(center);
