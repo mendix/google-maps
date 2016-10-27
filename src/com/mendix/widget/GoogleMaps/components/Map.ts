@@ -50,9 +50,7 @@ export class Map extends Component<MapProps, MapState> {
     private loadGoogleScript(callback?: Function) {
         const script = document.createElement("script");
         script.src = this.getGoogleMapsApiUrl();
-        script.onload = () => {
-            this.setState({ isLoaded: true });
-        };
+        script.onload = () => { this.setState({ isLoaded: true }); };
         script.onerror = () => {
             mx.ui.error("Could not load Google Maps script. Please check your internet connection");
         };
@@ -60,9 +58,7 @@ export class Map extends Component<MapProps, MapState> {
     }
 
     private loadMap() {
-        const mapConfig: google.maps.MapOptions = {
-            zoom: 7
-        };
+        const mapConfig: google.maps.MapOptions = { zoom: 14 };
         this.map = new google.maps.Map(this.mapDiv, mapConfig);
         this.getLocation(this.props.address, this.createMarker);
         google.maps.event.addDomListener(window, "resize", () => {
@@ -89,8 +85,10 @@ export class Map extends Component<MapProps, MapState> {
             this.map.setCenter(location);
         } else {
             this.getLocation(this.props.defaultCenter, defaultLocation => {
+                Marker({ location: defaultLocation, map: this.map });
                 this.map.setCenter(defaultLocation);
-                logger.warn("Could not find address, map is set to default location");
+                mx.ui.error("Could not find address " + this.props.address +
+                    ". Map is set to default location");
             });
         }
     }
