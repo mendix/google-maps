@@ -1,4 +1,5 @@
 var webpack = require("webpack");
+var path = require("path");
 var CopyWebpackPlugin = require("copy-webpack-plugin");
 
 module.exports = {
@@ -18,10 +19,16 @@ module.exports = {
         loaders: [
             { test: /\.ts?$/, loaders: [ "ts-loader" ] },
             { test: /\.json$/, loader: "json" }
-        ]
+        ],
+        postLoaders: [ {
+             test: /\.ts$/,
+             loader: "istanbul-instrumenter",
+             include: path.resolve(__dirname, "src"),
+             exclude: /\.(spec)\.ts$/
+         } ],
     },
     devtool: "source-map",
-    externals: [ "mxui/widget/_WidgetBase", "dojo/_base/declare" ],
+    externals: [ "mxui/widget/_WidgetBase", "mendix/lang", "dojo/_base/declare" ],
     plugins: [
         new CopyWebpackPlugin([
             { from: "src/**/*.js" },
