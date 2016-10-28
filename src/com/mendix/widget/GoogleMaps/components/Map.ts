@@ -99,10 +99,8 @@ export class Map extends Component<MapProps, MapState> {
             this.map.setCenter(location);
         } else {
             this.getLocation(this.props.defaultCenter, defaultLocation => {
-                Marker({ location: defaultLocation, map: this.map });
                 this.map.setCenter(defaultLocation);
-                mx.ui.error("Could not find address " + this.props.address +
-                    ". Map is set to default location");
+                mx.ui.error(`Could not find location from address ${this.props.address}`);
             });
         }
     }
