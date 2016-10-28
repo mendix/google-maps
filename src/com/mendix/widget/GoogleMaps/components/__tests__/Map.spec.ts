@@ -78,4 +78,12 @@ describe("Map component", () => {
     xit("should check that google maps is not defined", () => {
         // TODO: Implement test.
     });
+
+    xit("should be created using correct props", () => {
+        // TODO: Implement test.
+    });
+
+    xit("should be on the given position", () => {
+        // TODO: Implement test.
+    });
 });
