@@ -20,7 +20,8 @@ module.exports = function(config) {
         ],
         exclude: [],
         preprocessors: {
-            "tests/test-index.js": [ "webpack", "sourcemap" ]
+            "tests/test-index.js": [ "webpack", "sourcemap" ],
+             "**/*.ts": [ "karma-typescript" ]
         },
         webpack: webpackConfig,
         webpackServer: { noInfo: true },
