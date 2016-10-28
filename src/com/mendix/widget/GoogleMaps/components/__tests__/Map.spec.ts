@@ -94,11 +94,8 @@ describe("Map component", () => {
             location: new google.maps.LatLng(defaultLatitude, defaultLongitude),
             map: mapComponent.getMap()
         });
+
         expect(marker.getPosition().lat()).toBe(defaultLatitude);
         expect(marker.getPosition().lng()).toBe(defaultLongitude);
-    });
-
-    xit("marker should be on the given position", () => {
-        // TODO: Implement test.
     });
 });
