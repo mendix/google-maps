@@ -2,6 +2,7 @@ import { mount } from "enzyme";
 import { createElement } from "react";
 
 import { Map, MapProps } from "../Map";
+import { Marker } from "../Marker";
 
 describe("Map component", () => {
     let testProps: MapProps = {
@@ -88,11 +89,16 @@ describe("Map component", () => {
         // TODO: Implement test.
     });
 
-    xit("should be created using correct props", () => {
-        // TODO: Implement test.
+    it("marker should be created using correct props", () => {
+        const marker = Marker({
+            location: new google.maps.LatLng(defaultLatitude, defaultLongitude),
+            map: mapComponent.getMap()
+        });
+        expect(marker.getPosition().lat()).toBe(defaultLatitude);
+        expect(marker.getPosition().lng()).toBe(defaultLongitude);
     });
 
-    xit("should be on the given position", () => {
+    xit("marker should be on the given position", () => {
         // TODO: Implement test.
     });
 });
