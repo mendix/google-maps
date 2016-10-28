@@ -51,6 +51,10 @@ export class Map extends Component<MapProps, MapState> {
         return `https://maps.googleapis.com/maps/api/js?key=${this.props.apiKey}`;
     }
 
+    getMap() {
+        return this.map;
+    }
+
     private loadGoogleScript(callback?: Function) {
         const script = document.createElement("script");
         script.src = this.getGoogleMapsApiUrl();
