@@ -12,6 +12,8 @@ describe("Map component", () => {
     let map = mountMapComponent.instance() as Map;
     const timeOut = 4000;
     jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
+    const latitude = 0.3229765;
+    const longitude = 32.576219700000024;
 
     it("should render google map structure", () => {
         expect(mountMapComponent.find("div.mx-google-maps").length).toBe(1);
@@ -24,8 +26,8 @@ describe("Map component", () => {
             map.getLocation(noAddress, callback);
         }, timeOut);
         const callback = (coordinates: google.maps.LatLng) => {
-            expect(coordinates.lat()).not.toBe(0.3229765);
-            expect(coordinates.lng()).not.toBe(32.576219700000024);
+            expect(coordinates.lat()).not.toBe(latitude);
+            expect(coordinates.lng()).not.toBe(longitude);
             // TODO check for default center
 
             done();
@@ -37,8 +39,8 @@ describe("Map component", () => {
             map.getLocation(testProps.address, callback);
         }, timeOut);
         const callback = (coordinates: google.maps.LatLng) => {
-            expect(coordinates.lat()).toBe(0.3229765);
-            expect(coordinates.lng()).toBe(32.576219700000024);
+            expect(coordinates.lat()).toBe(latitude);
+            expect(coordinates.lng()).toBe(longitude);
 
             done();
         };
@@ -51,8 +53,8 @@ describe("Map component", () => {
             map.getLocation(noAddress, callback);
         }, timeOut);
         const callback = (coordinates: google.maps.LatLng) => {
-            expect(coordinates.lat()).not.toBe(0.3229765);
-            expect(coordinates.lng()).not.toBe(32.576219700000024);
+            expect(coordinates.lat()).not.toBe(latitude);
+            expect(coordinates.lng()).not.toBe(longitude);
 
             done();
         };
