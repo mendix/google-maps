@@ -8,22 +8,22 @@ describe("Map component", () => {
         address: "Lumumba Ave, Kampala, Uganda",
         apiKey: "AIzaSyACjBNesZXeRFx86N7RMCWiTQP5GT_jDec"
     };
-    let mountMapComponent = mount(createElement(Map, testProps));
-    let map = mountMapComponent.instance() as Map;
+    let mountMapDocument = mount(createElement(Map, testProps));
+    let mapComponent = mountMapDocument.instance() as Map;
     const timeOut = 4000;
     jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
     const latitude = 0.3229765;
     const longitude = 32.576219700000024;
 
     it("should render google map structure", () => {
-        expect(mountMapComponent.find("div.mx-google-maps").length).toBe(1);
+        expect(mountMapDocument.find("div.mx-google-maps").length).toBe(1);
     });
 
     xit("should handle empty address", (done) => {
         setTimeout(() => {
             const noAddress = "";
-            mountMapComponent.setProps({ address: noAddress });
-            map.getLocation(noAddress, callback);
+            mountMapDocument.setProps({ address: noAddress });
+            mapComponent.getLocation(noAddress, callback);
         }, timeOut);
         const callback = (coordinates: google.maps.LatLng) => {
             expect(coordinates.lat()).not.toBe(latitude);
@@ -36,7 +36,7 @@ describe("Map component", () => {
 
     it("should geocode address", (done) => {
         setTimeout(() => {
-            map.getLocation(testProps.address, callback);
+            mapComponent.getLocation(testProps.address, callback);
         }, timeOut);
         const callback = (coordinates: google.maps.LatLng) => {
             expect(coordinates.lat()).toBe(latitude);
@@ -49,8 +49,8 @@ describe("Map component", () => {
     it("should fail to geocode address", (done) => {
         setTimeout(() => {
             const noAddress = "no address";
-            mountMapComponent.setProps({ address: noAddress });
-            map.getLocation(noAddress, callback);
+            mountMapDocument.setProps({ address: noAddress });
+            mapComponent.getLocation(noAddress, callback);
         }, timeOut);
         const callback = (coordinates: google.maps.LatLng) => {
             expect(coordinates.lat()).not.toBe(latitude);
@@ -61,12 +61,12 @@ describe("Map component", () => {
     });
 
     xit("should center map to default address", (done) => {
-        // TODO: Implement test
+       // TODO Implement test
     });
 
     it("should check that google maps is defined ", (done) => {
         setTimeout(() => {
-            map.getLocation(testProps.address, callback);
+            mapComponent.getLocation(testProps.address, callback);
         }, timeOut);
         const callback = (coordinates: google.maps.LatLng) => {
             expect(google).toBeDefined();
