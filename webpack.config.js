@@ -1,11 +1,11 @@
-var webpack = require("webpack");
-var path = require("path");
-var CopyWebpackPlugin = require("copy-webpack-plugin");
+const webpack = require("webpack");
+const path = require("path");
+const CopyWebpackPlugin = require("copy-webpack-plugin");
 
 module.exports = {
     entry: "./src/com/mendix/widget/GoogleMaps/GoogleMaps.ts",
     output: {
-        path: __dirname + "/dist/tmp",
+        path: path.resolve(__dirname, "dist/tmp"),
         filename: "src/com/mendix/widget/GoogleMaps/GoogleMaps.js",
         libraryTarget:  "umd",
         umdNamedDefine: true,
@@ -17,7 +17,7 @@ module.exports = {
     errorDetails: true,
     module: {
         loaders: [
-            { test: /\.ts?$/, loaders: [ "ts-loader" ] },
+            { test: /\.ts?$/, loader: "ts-loader" },
             { test: /\.json$/, loader: "json" }
         ],
         postLoaders: [ {
@@ -25,7 +25,7 @@ module.exports = {
              loader: "istanbul-instrumenter",
              include: path.resolve(__dirname, "src"),
              exclude: /\.(spec)\.ts$/
-         } ],
+         } ]
     },
     devtool: "source-map",
     externals: [ "mxui/widget/_WidgetBase", "mendix/lang", "dojo/_base/declare" ],
