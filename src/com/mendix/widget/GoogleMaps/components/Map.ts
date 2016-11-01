@@ -4,7 +4,6 @@ import { Component, DOM, Props } from "react";
 export interface MapProps extends Props<Map> {
     apiKey?: string;
     address: string;
-    defaultCenter?: string;
 }
 
 interface MapState {
@@ -13,16 +12,17 @@ interface MapState {
 
 export class Map extends Component<MapProps, MapState> {
     static defaultProps: MapProps = {
-        address: undefined,
-        defaultCenter: "Gedempte Zalmhaven 4k, 3011 BT Rotterdam, Netherlands"
+        address: undefined
     };
     private map: google.maps.Map;
     private mapDiv: HTMLElement;
+    private defaultCenter: "Gedempte Zalmhaven 4k, 3011 BT Rotterdam, Netherlands";
 
     constructor(props: MapProps) {
         super(props);
 
         this.createMarker = this.createMarker.bind(this);
+        this.centerToDefault = this.centerToDefault.bind(this);
         this.state = { isLoaded: typeof google !== "undefined" };
         if (!this.state.isLoaded) {
             this.loadGoogleScript();
@@ -72,8 +72,9 @@ export class Map extends Component<MapProps, MapState> {
         this.map = new google.maps.Map(this.mapDiv, mapConfig);
         this.getLocation(this.props.address !== undefined
             ? this.props.address
-            : this.props.defaultCenter,
-            this.createMarker
+            : this.defaultCenter,
+            this.createMarker,
+            this.centerToDefault
         );
         google.maps.event.addDomListener(window, "resize", () => {
             const center = this.map.getCenter();
@@ -82,26 +83,26 @@ export class Map extends Component<MapProps, MapState> {
         });
     }
 
-    getLocation(address: string, callback: (location: google.maps.LatLng) => void) {
+    getLocation(address: string, successCallback: Function, failureCallback?: Function) {
         const geocoder = new google.maps.Geocoder();
         geocoder.geocode({ address }, (results, status) => {
             if (status === google.maps.GeocoderStatus.OK) {
-                callback(results[0].geometry.location);
+                successCallback(results[0].geometry.location);
             } else {
-                callback(null);
+                failureCallback();
             }
         });
     }
 
     private createMarker(location: google.maps.LatLng) {
-        if (location) {
-            Marker({ location, map: this.map });
-            this.map.setCenter(location);
-        } else {
-            this.getLocation(this.props.defaultCenter, defaultLocation => {
-                this.map.setCenter(defaultLocation);
-                mx.ui.error(`Could not find location from address ${this.props.address}`);
-            });
-        }
+        Marker({ location, map: this.map });
+        this.map.setCenter(location);
+    }
+
+    private centerToDefault() {
+        this.getLocation(this.defaultCenter, (defaultLocation: google.maps.LatLng) => {
+            this.map.setCenter(defaultLocation);
+            mx.ui.error(`Could not find location from address ${this.props.address}`);
+        });
     }
 }
