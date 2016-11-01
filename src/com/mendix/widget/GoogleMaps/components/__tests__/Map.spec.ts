@@ -1,101 +1,89 @@
-import { mount } from "enzyme";
-import { createElement } from "react";
-
-import { Map, MapProps } from "../Map";
-import { Marker } from "../Marker";
-
-describe("Map component", () => {
-    let testProps: MapProps = {
-        address: "Lumumba Ave, Kampala, Uganda",
-        apiKey: "AIzaSyACjBNesZXeRFx86N7RMCWiTQP5GT_jDec"
-    };
-    let mountMapDocument = mount(createElement(Map, testProps));
-    let mapComponent = mountMapDocument.instance() as Map;
-    const timeOut = 4000;
-    jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
-    const testPropLatitude = 0.3229765;
-    const testPropLongitude = 32.576219700000024;
-    const defaultLatitude = 39.6081562;
-    const defaultLongitude = -77.31998970000001;
-
-    it("should render google map structure", () => {
-        expect(mountMapDocument.find("div.mx-google-maps").length).toBe(1);
+describe("Map", () => {
+    it("should render with the map structure", () => {
+        //
     });
 
-    xit("should handle empty address", (done) => {
-        setTimeout(() => {
-            const noAddress = "";
-            mountMapDocument.setProps({ address: noAddress });
-            mapComponent.getLocation(noAddress, callback);
-        }, timeOut);
-        const callback = (coordinates: google.maps.LatLng) => {
-            expect(coordinates.lat()).not.toBe(testPropLatitude);
-            expect(coordinates.lng()).not.toBe(testPropLongitude);
-            // TODO check for default center
-
-            done();
-        };
+    it("renders with classes", () => { // test against mx-google-maps
+        // 
     });
 
-    it("should geocode address", (done) => {
-        setTimeout(() => {
-            mapComponent.getLocation(testProps.address, callback);
-        }, timeOut);
-        const callback = (coordinates: google.maps.LatLng) => {
-            expect(coordinates.lat()).toBe(testPropLatitude);
-            expect(coordinates.lng()).toBe(testPropLongitude);
-
-            done();
-        };
+    it("should load the google maps script with API key", () => {
+        //
     });
 
-    it("should fail to geocode address", (done) => {
-        setTimeout(() => {
-            const noAddress = "no address";
-            mountMapDocument.setProps({ address: noAddress });
-            mapComponent.getLocation(noAddress, callback);
-        }, timeOut);
-        const callback = (coordinates: google.maps.LatLng) => {
-            expect(coordinates.lat()).not.toBe(testPropLatitude);
-            expect(coordinates.lng()).not.toBe(testPropLongitude);
-
-            done();
-        };
+    it("should load the google maps script without API key", () => {
+        //
     });
 
-    it("should center map to default address", (done) => {
-        setTimeout(() => {
-            const map = mapComponent.getMap();
-
-            expect(map.getCenter().lat()).toBe(defaultLatitude);
-            expect(map.getCenter().lng()).toBe(defaultLongitude);
-        }, timeOut);
-
-        done();
+    it("should add a resize listener", () => {
+        //
     });
 
-    it("should check that google maps is defined ", (done) => {
-        setTimeout(() => {
-            mapComponent.getLocation(testProps.address, callback);
-        }, timeOut);
-        const callback = (coordinates: google.maps.LatLng) => {
-            expect(google).toBeDefined();
-
-            done();
-        };
+    it("should center the map on resize", () => {
+        //
     });
 
-    xit("should check that google maps is not defined", () => {
-        // TODO: Implement test.
+    it("should remove the resize listener", () => {
+        //
     });
 
-    it("marker should be created using correct props", () => {
-        const marker = Marker({
-            location: new google.maps.LatLng(defaultLatitude, defaultLongitude),
-            map: mapComponent.getMap()
+    describe("with no address", () => {
+        it("should not look up the location", () => {
+            //
         });
 
-        expect(marker.getPosition().lat()).toBe(defaultLatitude);
-        expect(marker.getPosition().lng()).toBe(defaultLongitude);
+        it("should not display a marker", () => {
+            //
+        });
+
+        it("should center to the default address", () => {
+            //
+        });
+    });
+
+    describe("with a valid address", () => {
+        it("should lookup the location", () => {
+            //
+        });
+
+        it("should render a marker", () => {
+            //
+        });
+
+        it("should center to the location of the address", () => {
+            //
+        });
+
+        it("should display the first marker if multiple locations are found", () => {
+            // 
+        });
+    });
+
+    describe("with an invalid address", () => {
+        it("should fail to find a location", () => {
+            //
+        });
+
+        it("should not render a marker", () => {
+            //
+        });
+
+        it("should center to the default address", () => {
+            //
+        });
+
+        it("should display an error", () => {
+            //
+        });
+    });
+
+    describe("when offline", () => {
+        it("should show a user error on loading a map", () => {
+            //
+        });
+
+        it("should show a user error when looking up an address", () => {
+            //
+        });
     });
 });
