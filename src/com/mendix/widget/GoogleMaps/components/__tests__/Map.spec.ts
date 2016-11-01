@@ -1,5 +1,5 @@
 import { shallow } from "enzyme";
-import { createElement } from "react";
+import { DOM, createElement } from "react";
 
 import { Map, MapProps } from "../Map";
 
@@ -33,7 +33,11 @@ describe("Map", () => {
     });
 
     it("should render with the map structure", () => {
-        //
+         const renderMap = (props: MapProps) => shallow(createElement(Map, props));
+         const output = renderMap({ address })
+         expect(output).toMatchStructure(
+            DOM.div({ })
+          );
     });
 
     it("renders with classes", () => { // test against mx-google-maps
