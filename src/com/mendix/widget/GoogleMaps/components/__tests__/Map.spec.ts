@@ -19,7 +19,8 @@ describe("Map", () => {
     const originalEvent = window.google.maps.event;
 
     const address = "Lumumba Ave, Kampala, Uganda";
-
+    const renderMap = (props: MapProps) => shallow(createElement(Map, props));
+    const output = renderMap({ address });
 
     beforeEach(() => {
         window.google.maps.Geocoder = GeocoderMock;
@@ -33,15 +34,13 @@ describe("Map", () => {
     });
 
     it("should render with the map structure", () => {
-         const renderMap = (props: MapProps) => shallow(createElement(Map, props));
-         const output = renderMap({ address })
          expect(output).toMatchStructure(
             DOM.div({ })
           );
     });
 
-    it("renders with classes", () => { // test against mx-google-maps
-        // 
+    it("renders with classes", () => {
+        expect(output).toHaveClass("mx-google-maps");
     });
 
     it("should load the google maps script with API key", () => {
