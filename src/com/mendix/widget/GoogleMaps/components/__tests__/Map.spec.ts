@@ -20,7 +20,8 @@ describe("Map", () => {
 
     const address = "Lumumba Ave, Kampala, Uganda";
     const renderMap = (props: MapProps) => shallow(createElement(Map, props));
-    const output = renderMap({ address });
+    let mapDocument = renderMap({ address });
+    let mapComponent = mapDocument.instance() as Map;
 
     beforeEach(() => {
         window.google.maps.Geocoder = GeocoderMock;
@@ -34,13 +35,13 @@ describe("Map", () => {
     });
 
     it("should render with the map structure", () => {
-         expect(output).toMatchStructure(
+         expect(mapDocument).toMatchStructure(
             DOM.div({ })
           );
     });
 
     it("renders with classes", () => {
-        expect(output).toHaveClass("mx-google-maps");
+        expect(mapDocument).toHaveClass("mx-google-maps");
     });
 
     it("should load the google maps script with API key", () => {
@@ -81,8 +82,7 @@ describe("Map", () => {
         it("should lookup the location", () => {
             spyOn(window.google.maps.Geocoder.prototype, "geocode");
 
-            let maps = output.instance();
-            maps.setState({ isLoaded: true });
+            mapComponent.setState({ isLoaded: true });
 
             expect(window.google.maps.Geocoder.prototype.geocode).toHaveBeenCalled();
         });
