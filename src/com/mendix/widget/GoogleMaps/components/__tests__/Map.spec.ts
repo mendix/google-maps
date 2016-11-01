@@ -79,7 +79,12 @@ describe("Map", () => {
 
     describe("with a valid address", () => {
         it("should lookup the location", () => {
-            //
+            spyOn(window.google.maps.Geocoder.prototype, "geocode");
+
+            let maps = output.instance();
+            maps.setState({ isLoaded: true });
+
+            expect(window.google.maps.Geocoder.prototype.geocode).toHaveBeenCalled();
         });
 
         it("should render a marker", () => {
