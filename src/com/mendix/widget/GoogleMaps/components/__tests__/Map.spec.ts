@@ -84,7 +84,11 @@ describe("Map", () => {
         });
 
         it("should center to the default address", () => {
-            //
+            spyOn(window.google.maps.Map.prototype, "setCenter");
+
+            mapComponent.setState({ isLoaded: true });
+
+            expect(window.google.maps.Map.prototype.setCenter).toHaveBeenCalled();
         });
     });
 
@@ -120,7 +124,11 @@ describe("Map", () => {
         });
 
         it("should center to the default address", () => {
-            //
+            spyOn(window.google.maps.Map.prototype, "setCenter");
+
+            mapComponent.setState({ isLoaded: true });
+
+            expect(window.google.maps.Map.prototype.setCenter).toHaveBeenCalled();
         });
 
         it("should display an error", () => {
