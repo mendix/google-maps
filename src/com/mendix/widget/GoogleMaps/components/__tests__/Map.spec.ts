@@ -130,11 +130,16 @@ describe("Map", () => {
 
     describe("with an invalid address", () => {
         it("should fail to find a location", () => {
-            //
+          //
         });
 
         it("should not render a marker", () => {
-            //
+            spyOn(window.google.maps, "Marker");
+
+            const output = renderMap({ address: "" });
+            output.setState({ isLoaded: true });
+
+            expect(window.google.maps.Marker).not.toHaveBeenCalled();
         });
 
         it("should center to the default address", () => {
