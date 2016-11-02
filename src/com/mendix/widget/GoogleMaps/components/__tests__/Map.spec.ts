@@ -102,7 +102,11 @@ describe("Map", () => {
         });
 
         it("should render a marker", () => {
-            //
+            spyOn(window.google.maps, "Marker");
+
+            mapComponent.setState({ isLoaded: true });
+
+            expect(window.google.maps.Marker).toHaveBeenCalled();
         });
 
         it("should center to the location of the address", () => {
