@@ -19,6 +19,7 @@ describe("Map", () => {
     const originalEvent = window.google.maps.event;
 
     const address = "Lumumba Ave, Kampala, Uganda";
+    const APIKey = "AIzaSyACjBNesZXeRFx86N7RMCWiTQP5GT_jDec";
     const renderMap = (props: MapProps) => shallow(createElement(Map, props));
     let mapDocument = renderMap({ address });
     let mapComponent = mapDocument.instance() as Map;
@@ -35,9 +36,9 @@ describe("Map", () => {
     });
 
     it("should render with the map structure", () => {
-         expect(mapDocument).toMatchStructure(
+        expect(mapDocument).toMatchStructure(
             DOM.div({ })
-          );
+        );
     });
 
     it("renders with classes", () => {
@@ -45,11 +46,19 @@ describe("Map", () => {
     });
 
     it("should load the google maps script with API key", () => {
-        //
+        const renderMountMap = (props: MapProps) => shallow(createElement(Map, props));
+        const mDocument = renderMountMap({ address, apiKey: APIKey });
+        const mComponent = mDocument.instance() as Map;
+
+        mComponent.setState({ isLoaded: false });
+        mComponent.componentDidMount();
+
+        expect(document.body.innerHTML).toContain(APIKey);
+        expect(google).toBeDefined();
     });
 
     it("should load the google maps script without API key", () => {
-        //
+       //
     });
 
     it("should add a resize listener", () => {
@@ -138,7 +147,7 @@ describe("Map", () => {
 
     describe("with an invalid address", () => {
         it("should fail to find a location", () => {
-          //
+            //
         });
 
         it("should not render a marker", () => {
