@@ -1,5 +1,5 @@
-import { Marker } from "./Marker";
 import { Component, DOM, Props } from "react";
+import { Marker } from "./Marker";
 
 export interface MapProps extends Props<Map> {
     apiKey?: string;
@@ -24,18 +24,21 @@ export class Map extends Component<MapProps, MapState> {
         this.createMarker = this.createMarker.bind(this);
         this.centerToDefault = this.centerToDefault.bind(this);
         this.state = { isLoaded: typeof google !== "undefined" };
-        if (!this.state.isLoaded) {
-            this.loadGoogleScript();
-        }
     }
 
     componentDidUpdate() {
-        this.loadMap();
+        if (this.state.isLoaded) {
+            this.loadMap();
+        }
+    }
+
+    render() {
+        return DOM.div({ className: "mx-google-maps", ref: (c) => this.mapDiv = c });
     }
 
     componentDidMount() {
-        if (this.state.isLoaded) {
-            this.loadMap();
+        if (!this.state.isLoaded) {
+            this.loadGoogleScript();
         }
     }
 
@@ -43,21 +46,9 @@ export class Map extends Component<MapProps, MapState> {
         google.maps.event.clearListeners(this.map, "resize");
     }
 
-    render() {
-        return DOM.div({ className: "mx-google-maps", ref: (c) => this.mapDiv = c });
-    }
-
-    private getGoogleMapsApiUrl() {
-        return `https://maps.googleapis.com/maps/api/js?key=${this.props.apiKey}`;
-    }
-
-    getMap() {
-        return this.map;
-    }
-
     private loadGoogleScript(callback?: Function) {
         const script = document.createElement("script");
-        script.src = this.getGoogleMapsApiUrl();
+        script.src = `https://maps.googleapis.com/maps/api/js?key=${this.props.apiKey}`;
         script.onload = () => {
             this.setState({ isLoaded: true });
         };
@@ -83,7 +74,7 @@ export class Map extends Component<MapProps, MapState> {
         });
     }
 
-    getLocation(address: string, successCallback: Function, failureCallback?: Function) {
+    private getLocation(address: string, successCallback: Function, failureCallback?: Function) {
         const geocoder = new google.maps.Geocoder();
         geocoder.geocode({ address }, (results, status) => {
             if (status === google.maps.GeocoderStatus.OK) {
