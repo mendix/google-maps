@@ -1,13 +1,14 @@
 export class MapsMock implements google.maps.Map {
-    constructor(mapDiv: Element, opts?: google.maps.MapOptions) {
-        console.log("Google Maps mock is used.");
-    }
-    fitBounds(bounds: google.maps.LatLngBounds): void {/** */ }
     controls: google.maps.MVCArray[];
     data: google.maps.Data;
     mapTypes: google.maps.MapTypeRegistry;
     overlayMapTypes: google.maps.MVCArray;
 
+    constructor(mapDiv: Element, opts?: google.maps.MapOptions) {
+        console.log("Google Maps mock is used.");
+    }
+
+    fitBounds(bounds: google.maps.LatLngBounds): void {/** */ }
     getBounds(): google.maps.LatLngBounds { return new google.maps.LatLngBounds(); }
     getCenter(): google.maps.LatLng { return new google.maps.LatLng(0, 0); }
     getDiv(): Element { return new Element(); }
@@ -46,7 +47,8 @@ export class MapsMock implements google.maps.Map {
 }
 
 export class GeocoderMock implements google.maps.Geocoder {
-    successResult = [
+    // cant make it static, at time of require not all classes are mocked.
+    successResult: google.maps.GeocoderResult[] = [
         {
             address_components: [
                 {
@@ -98,6 +100,22 @@ export class GeocoderMock implements google.maps.Geocoder {
             types: [ "street_address" ]
         }
     ];
+    zeroResult: google.maps.GeocoderResult[] = [
+        {
+            address_components: [],
+            formatted_address: "",
+            geometry: {
+                bounds: null,
+                location: null,
+                location_type: 0,
+                viewport: null
+            },
+            partial_match: null,
+            place_id: null,
+            postcode_localities: [ null ],
+            types: [ null ]
+        }
+    ];
     geocode(request: google.maps.GeocoderRequest, callback: (results: google.maps.GeocoderResult[],
         status: google.maps.GeocoderStatus) => void): void {
         console.log("Mock result");
@@ -122,14 +140,22 @@ export class LatLngBoundsMock implements google.maps.LatLngBounds {
         return new google.maps.LatLngBounds();
     }
 }
-
+// Implemented for mocking
 export class LatLngMock implements google.maps.LatLng {
-    constructor(lat: number, lng: number, noWrap?: boolean) { /** */ }
-    equals(other: google.maps.LatLng): boolean { return true; }
-    lat(): number { return 0; }
-    lng(): number { return 0; }
-    toString(): string { return "Fake"; }
+    _lat: number;
+    _lng: number;
+    constructor(lat: number, lng: number, noWrap?: boolean) {
+        this._lat = lat;
+        this._lng = lng;
+    }
+    equals(other: google.maps.LatLng): boolean {
+        return other.lat() === this.lat() && other.lng() === this.lng();
+     }
+    lat(): number { return this._lat; }
+    lng(): number { return this._lng; }
+    toString(): string { return `Mock lat:{this._lat} lng {this._lng}`; }
     toUrlValue(precision?: number): string { return ""; }
+    toJSON(): google.maps.LatLngLiteral { return({ lat: 0, lng: 0 }); }
 }
 
 export class MarkerMock implements google.maps.Marker {
@@ -199,21 +225,38 @@ export enum GeocoderLocationType {
     ROOFTOP
 }
 
+// Add basic static handler store for testing.
 export class EventMock {
+    static handlers: Function[] = [];
     static addDomListener(instance: Object, eventName: string, handler: Function, capture?: boolean): google.maps.MapsEventListener {
+        EventMock.handlers.push(handler);
         return { remove: () => { /** */ } };
     }
     static addDomListenerOnce(instance: Object, eventName: string, handler: Function, capture?: boolean): google.maps.MapsEventListener {
+        EventMock.handlers.push(handler);
         return { remove: () => { /** */ } };
     }
     static addListener(instance: Object, eventName: string, handler: Function): google.maps.MapsEventListener {
+        EventMock.handlers.push(handler);
         return { remove: () => { /** */ } };
     }
     static addListenerOnce(instance: Object, eventName: string, handler: Function): google.maps.MapsEventListener {
+        EventMock.handlers.push(handler);
         return { remove: () => { /** */ } };
     }
-    static clearInstanceListeners(instance: Object): void {/** */ }
-    static clearListeners(instance: Object, eventName: string): void {/** */ }
+    static clearInstanceListeners(instance: Object): void {
+        EventMock.handlers = [];
+    }
+    static clearListeners(instance: Object, eventName: string): void {
+        EventMock.handlers = [];
+    }
     static removeListener(listener: google.maps.MapsEventListener): void {/** */ }
     static trigger(instance: any, eventName: string, ...args: any[]): void {/** */ }
+    static mockEvent() {
+        console.log("Mocking event");
+        EventMock.handlers.forEach(f => f());
+    }
+    static mockClearListeners() {
+        EventMock.handlers = [];
+    }
 }
