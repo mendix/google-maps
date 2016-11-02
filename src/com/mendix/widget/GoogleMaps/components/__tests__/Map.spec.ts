@@ -45,6 +45,18 @@ describe("Map", () => {
         expect(mapDocument).toHaveClass("mx-google-maps");
     });
 
+    it("should load the google maps script without API key", () => {
+        const rMountMap = (props: MapProps) => shallow(createElement(Map, props));
+        const doc = rMountMap({ address });
+        const component = doc.instance() as Map;
+
+        component.setState({ isLoaded: false });
+        component.componentDidMount();
+
+        expect(document.body.innerHTML).not.toContain(APIKey);
+        expect(google).toBeDefined();
+    });
+
     it("should load the google maps script with API key", () => {
         const renderMountMap = (props: MapProps) => shallow(createElement(Map, props));
         const mDocument = renderMountMap({ address, apiKey: APIKey });
@@ -55,10 +67,6 @@ describe("Map", () => {
 
         expect(document.body.innerHTML).toContain(APIKey);
         expect(google).toBeDefined();
-    });
-
-    it("should load the google maps script without API key", () => {
-       //
     });
 
     it("should add a resize listener", () => {
