@@ -62,7 +62,15 @@ describe("Map", () => {
     });
 
     it("should center the map on resize", () => {
-        //
+        spyOn(window.google.maps.event, "trigger");
+        spyOn(window.google.maps.Map.prototype, "setCenter");
+
+        const output = renderMap({ address });
+        output.setState({ isLoaded: true });
+        window.google.maps.event.trigger(window, "resize");
+
+        expect(window.google.maps.event.trigger).toHaveBeenCalledTimes(1);
+        expect(window.google.maps.Map.prototype.setCenter).toHaveBeenCalled();
     });
 
     it("should remove the resize listener", () => {
