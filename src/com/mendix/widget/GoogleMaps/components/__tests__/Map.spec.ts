@@ -106,7 +106,12 @@ describe("Map", () => {
         });
 
         it("should center to the location of the address", () => {
-            //
+            spyOn(window.google.maps.Map.prototype, "setCenter");
+
+            mapComponent.setState({ isLoaded: true });
+
+            expect(mapComponent.props.address).toBe("Lumumba Ave, Kampala, Uganda");
+            expect(window.google.maps.Map.prototype.setCenter).toHaveBeenCalled();
         });
 
         it("should display the first marker if multiple locations are found", () => {
