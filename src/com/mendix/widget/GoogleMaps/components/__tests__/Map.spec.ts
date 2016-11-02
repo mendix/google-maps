@@ -53,7 +53,12 @@ describe("Map", () => {
     });
 
     it("should add a resize listener", () => {
-        //
+        spyOn(window.google.maps.event, "addDomListener");
+
+        const output = renderMap({ address: "" });
+        output.setState({ isLoaded: true });
+
+        expect(window.google.maps.event.addDomListener).toHaveBeenCalledTimes(1);
     });
 
     it("should center the map on resize", () => {
