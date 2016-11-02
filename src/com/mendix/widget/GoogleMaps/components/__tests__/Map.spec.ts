@@ -66,7 +66,12 @@ describe("Map", () => {
     });
 
     it("should remove the resize listener", () => {
-        //
+        spyOn(window.google.maps.event, "clearListeners");
+
+        const output = renderMap({ address: "" });
+        output.unmount();
+
+        expect(window.google.maps.event.clearListeners).toHaveBeenCalledTimes(1);
     });
 
     describe("with no address", () => {
