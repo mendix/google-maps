@@ -31,7 +31,7 @@ describe("Map", () => {
         window.google.maps.Marker = MarkerMock;
         window.google.maps.event = EventMock;
         window.google.maps.GeocoderStatus = GeocoderStatus;
-        window.google.maps.GeocoderStatus = GeocoderLocationType;
+        window.google.maps.GeocoderLocationType = GeocoderLocationType;
     });
 
     it("should render with the map structure", () => {
@@ -80,7 +80,12 @@ describe("Map", () => {
         });
 
         it("should not display a marker", () => {
-            //
+            spyOn(window.google.maps, "Marker");
+
+            const output = renderMap({ address: undefined });
+            output.setState({ isLoaded: true });
+
+            expect(window.google.maps.Marker).not.toHaveBeenCalled();
         });
 
         it("should center to the default address", () => {

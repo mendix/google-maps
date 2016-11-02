@@ -119,7 +119,11 @@ export class GeocoderMock implements google.maps.Geocoder {
     geocode(request: google.maps.GeocoderRequest, callback: (results: google.maps.GeocoderResult[],
         status: google.maps.GeocoderStatus) => void): void {
         console.log("Mock result");
-        callback(this.successResult, google.maps.GeocoderStatus.OK);
+        if (request.address) {
+            callback(this.successResult, google.maps.GeocoderStatus.OK);
+        } else {
+            callback(this.zeroResult, google.maps.GeocoderStatus.ZERO_RESULTS);
+        }
     }
 }
 

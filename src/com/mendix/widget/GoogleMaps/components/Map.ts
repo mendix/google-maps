@@ -80,7 +80,9 @@ export class Map extends Component<MapProps, MapState> {
             if (status === google.maps.GeocoderStatus.OK) {
                 successCallback(results[0].geometry.location);
             } else {
-                failureCallback();
+                if (failureCallback) {
+                    failureCallback();
+                }
             }
         });
     }
