@@ -96,7 +96,12 @@ describe("Map", () => {
 
     describe("with no address", () => {
         it("should not look up the location", () => {
-            //
+            spyOn(window.google.maps.Geocoder.prototype, "geocode").and.callThrough();
+
+            const output = renderMap({ address: "" });
+            output.setState({ isLoaded: true });
+
+            expect(window.google.maps.Geocoder.prototype.geocode).toHaveBeenCalledTimes(2);
         });
 
         it("should not display a marker", () => {
