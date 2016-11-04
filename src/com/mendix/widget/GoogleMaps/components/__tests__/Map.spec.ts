@@ -7,21 +7,14 @@ import { EventMock, GeocoderLocationType, GeocoderMock, GeocoderStatus, LatLngBo
     LatLngMock, MapsMock, MarkerMock } from "../../../../../../../tests/mocks/GoogleMaps";
 
 describe("Map", () => {
-    window.google = window.google || {};
-    window.google.maps = window.google.maps || {};
-    window.google.event = window.google.event || {};
-    const originalMap = window.google.maps.Map;
-    const originalGeocoder = window.google.maps.Geocoder;
-    const originalLatLngBounds = window.google.maps.LatLngBounds;
-    const originalLatLng = window.google.maps.LatLng;
-    const originalMarker = window.google.maps.Marker;
-    const originalEvent = window.google.maps.event;
-
     const address = "Lumumba Ave, Kampala, Uganda";
     const APIKey = "AIzaSyACjBNesZXeRFx86N7RMCWiTQP5GT_jDec";
     const renderMap = (props: MapProps) => shallow(createElement(Map, props));
 
     beforeAll(() => {
+        window.google = window.google || {};
+        window.google.maps = window.google.maps || {};
+        window.google.event = window.google.event || {};
         window.google.maps.Geocoder = GeocoderMock;
         window.google.maps.Map = MapsMock;
         window.google.maps.LatLngBounds = LatLngBoundsMock;
@@ -211,11 +204,11 @@ describe("Map", () => {
     afterAll(() => {
         // Probably its good enough the reset fully.
         // window.google = undefined;
-        window.google.maps.Map = originalMap;
-        window.google.maps.Geocoder = originalGeocoder;
-        window.google.maps.LatLngBounds = originalLatLngBounds;
-        window.google.maps.LatLng = originalLatLng;
-        window.google.maps.Marker = originalMarker;
-        window.google.maps.event = originalEvent;
+        window.google.maps.Map = MapsMock;
+        window.google.maps.Geocoder = GeocoderMock;
+        window.google.maps.LatLngBounds = LatLngBoundsMock;
+        window.google.maps.LatLng = LatLngMock;
+        window.google.maps.Marker = MarkerMock;
+        window.google.maps.event = EventMock;
     });
 });
