@@ -116,10 +116,104 @@ export class GeocoderMock implements google.maps.Geocoder {
             types: [ null ]
         }
     ];
+    multipleResult: google.maps.GeocoderResult[] = [
+        {
+            address_components: [
+                {
+                    long_name: "Winnetka",
+                    short_name: "Winnetka",
+                    types: ["sublocality", "political"]
+                },
+                {
+                    long_name: "Los Angeles",
+                    short_name: "Los Angeles",
+                    types: ["administrative_area_level_3", "political"]
+                },
+                {
+                    long_name: "Los Angeles",
+                    short_name: "Los Angeles",
+                    types: ["administrative_area_level_2", "political"]
+                },
+                {
+                    long_name: "California",
+                    short_name: "CA",
+                    types: ["administrative_area_level_1", "political"]
+                },
+                {
+                    long_name: "United States",
+                    short_name: "US",
+                    types: ["country", "political"]
+                }
+            ],
+            formatted_address: "Winnetka, California, USA",
+            geometry: {
+                bounds: new google.maps.LatLngBounds(),
+                location: new google.maps.LatLng(34.213171, -118.571022),
+                location_type: 0,
+                viewport: new google.maps.LatLngBounds()
+            },
+            partial_match: true,
+            place_id: "ChIJ0fd4S_KbwoAR2hRDrsr3HmQ",
+            postcode_localities: [""],
+            types: ["sublocality", "political"]
+        },
+        {
+            address_components: [
+                {
+                    long_name: "1600",
+                    short_name: "1600",
+                    types: ["street_number"]
+                },
+                {
+                    long_name: "Amphitheatre Pkwy",
+                    short_name: "Amphitheatre Pkwy",
+                    types: ["route"]
+                },
+                {
+                    long_name: "Mountain View",
+                    short_name: "Mountain View",
+                    types: ["locality", "political"]
+                },
+                {
+                    long_name: "Santa Clara County",
+                    short_name: "Santa Clara County",
+                    types: ["administrative_area_level_2", "political"]
+                },
+                {
+                    long_name: "California",
+                    short_name: "CA",
+                    types: ["administrative_area_level_1", "political"]
+                },
+                {
+                    long_name: "United States",
+                    short_name: "US",
+                    types: ["country", "political"]
+                },
+                {
+                    long_name: "94043",
+                    short_name: "94043",
+                    types: ["postal_code"]
+                }
+            ],
+            formatted_address: "1600 Amphitheatre Parkway, Mountain View, CA 94043, USA",
+            geometry: {
+                bounds: new google.maps.LatLngBounds(),
+                location: new google.maps.LatLng(0, 0),
+                location_type: 0,
+                viewport: new google.maps.LatLngBounds()
+            },
+            partial_match: true,
+            place_id: "ChIJ2eUgeAK6j4ARbn5u_wAGqWA",
+            postcode_localities: [""],
+            types: ["street_address"]
+        }
+    ];
     geocode(request: google.maps.GeocoderRequest, callback: (results: google.maps.GeocoderResult[],
         status: google.maps.GeocoderStatus) => void): void {
         console.log("Mock result");
-        if (request.address) {
+        if (request.address === "multipleAddress") {
+            callback(this.multipleResult, google.maps.GeocoderStatus.OK);
+        } else if (request.address) {
             callback(this.successResult, google.maps.GeocoderStatus.OK);
         } else {
             callback(this.zeroResult, google.maps.GeocoderStatus.ZERO_RESULTS);

@@ -151,7 +151,17 @@ describe("Map", () => {
         });
 
         it("should display the first marker if multiple locations are found", () => {
-            //
+            spyOn(window.google.maps, "Marker");
+            spyOn(window.google.maps.Geocoder.prototype, "geocode").and.callThrough();
+
+            const mapDiv = document.createElement("div");
+            const map = renderMap({ address: "multipleAddress" });
+            map.setState({ isLoaded: true });
+
+            expect(window.google.maps.Marker.calls.argsFor(0)).toEqual(
+                [ Object({ map: new MapsMock(mapDiv), position: new LatLngMock(34.213171, -118.571022) }) ]
+            );
+            expect(window.google.maps.Geocoder.prototype.geocode).toHaveBeenCalled();
         });
     });
 
