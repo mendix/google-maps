@@ -1,3 +1,19 @@
+/* tslint:disable */
+export class MxMock implements mx.mx {
+    appUrl: string;
+    baseUrl: string;
+    modulePath: string;
+    addOnLoad(callback: Function): void { /* */ }
+    login(username: string, password: string, onSuccess: Function, onError: Function): void { /* */ }
+    logout(): void { /* */ }
+    data: mx.data;
+    meta: mx.meta;
+    parser: mx.parser;
+    server: mx.server;
+    session: mx.session;
+    ui: mx.ui;
+    onError(error: Error): void { /* */ }
+}
 export class MxUiMock implements mx.ui {
     action(
         actionname: string,
