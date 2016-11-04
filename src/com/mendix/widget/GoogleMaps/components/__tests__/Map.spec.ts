@@ -7,7 +7,6 @@ import { EventMock, GeocoderLocationType, GeocoderMock, GeocoderStatus, LatLngBo
     LatLngMock, MapsMock, MarkerMock } from "../../../../../../../tests/mocks/GoogleMaps";
 
 describe("Map", () => {
-
     window.google = window.google || {};
     window.google.maps = window.google.maps || {};
     window.google.event = window.google.event || {};
@@ -21,10 +20,8 @@ describe("Map", () => {
     const address = "Lumumba Ave, Kampala, Uganda";
     const APIKey = "AIzaSyACjBNesZXeRFx86N7RMCWiTQP5GT_jDec";
     const renderMap = (props: MapProps) => shallow(createElement(Map, props));
-    let mapDocument = renderMap({ address });
-    let mapComponent = mapDocument.instance() as Map;
 
-    beforeEach(() => {
+    beforeAll(() => {
         window.google.maps.Geocoder = GeocoderMock;
         window.google.maps.Map = MapsMock;
         window.google.maps.LatLngBounds = LatLngBoundsMock;
@@ -36,29 +33,30 @@ describe("Map", () => {
     });
 
     it("should render with the map structure", () => {
-        expect(mapDocument).toMatchStructure(
-            DOM.div({ })
+        const map = renderMap({ address });
+        expect(map).toMatchStructure(
+            DOM.div({})
         );
     });
 
     it("renders with classes", () => {
-        expect(mapDocument).toHaveClass("mx-google-maps");
+        const map = renderMap({ address });
+        expect(map).toHaveClass("mx-google-maps");
     });
 
     it("should load the google maps script without API key", () => {
-        mapComponent.setState({ isLoaded: false });
-        mapComponent.componentDidMount();
+        const map = renderMap({ address }).instance() as Map;
+        map.setState({ isLoaded: false });
+        map.componentDidMount();
 
         expect(document.body.innerHTML).not.toContain(APIKey);
         expect(google).toBeDefined();
     });
 
     it("should load the google maps script with API key", () => {
-        mapDocument = renderMap({ address, apiKey: APIKey });
-        mapComponent = mapDocument.instance() as Map;
-
-        mapComponent.setState({ isLoaded: false });
-        mapComponent.componentDidMount();
+        const map = renderMap({ address, apiKey: APIKey }).instance() as Map;
+        map.setState({ isLoaded: false });
+        map.componentDidMount();
 
         expect(document.body.innerHTML).toContain(APIKey);
         expect(google).toBeDefined();
@@ -67,39 +65,39 @@ describe("Map", () => {
     it("should add a resize listener", () => {
         spyOn(window.google.maps.event, "addDomListener");
 
-        const output = renderMap({ address: "" });
-        output.setState({ isLoaded: true });
+        const map = renderMap({ address: "" });
+        map.setState({ isLoaded: true });
 
-        expect(window.google.maps.event.addDomListener).toHaveBeenCalledTimes(1);
+        expect(window.google.maps.event.addDomListener).toHaveBeenCalled();
     });
 
     it("should center the map on resize", () => {
         spyOn(window.google.maps.event, "trigger");
         spyOn(window.google.maps.Map.prototype, "setCenter");
 
-        const output = renderMap({ address });
-        output.setState({ isLoaded: true });
+        const map = renderMap({ address });
+        map.setState({ isLoaded: true });
         window.google.maps.event.trigger(window, "resize");
 
-        expect(window.google.maps.event.trigger).toHaveBeenCalledTimes(1);
+        expect(window.google.maps.event.trigger).toHaveBeenCalled();
         expect(window.google.maps.Map.prototype.setCenter).toHaveBeenCalled();
     });
 
     it("should remove the resize listener", () => {
         spyOn(window.google.maps.event, "clearListeners");
 
-        const output = renderMap({ address: "" });
-        output.unmount();
+        const map = renderMap({ address: "" });
+        map.unmount();
 
-        expect(window.google.maps.event.clearListeners).toHaveBeenCalledTimes(1);
+        expect(window.google.maps.event.clearListeners).toHaveBeenCalled();
     });
 
     describe("with no address", () => {
         it("should not look up the location", () => {
             spyOn(window.google.maps.Geocoder.prototype, "geocode").and.callThrough();
 
-            const output = renderMap({ address: "" });
-            output.setState({ isLoaded: true });
+            const map = renderMap({ address: undefined });
+            map.setState({ isLoaded: true });
 
             expect(window.google.maps.Geocoder.prototype.geocode).toHaveBeenCalledTimes(2);
         });
@@ -107,8 +105,8 @@ describe("Map", () => {
         it("should not display a marker", () => {
             spyOn(window.google.maps, "Marker");
 
-            const output = renderMap({ address: undefined });
-            output.setState({ isLoaded: true });
+            const map = renderMap({ address: undefined });
+            map.setState({ isLoaded: true });
 
             expect(window.google.maps.Marker).not.toHaveBeenCalled();
         });
@@ -116,7 +114,8 @@ describe("Map", () => {
         it("should center to the default address", () => {
             spyOn(window.google.maps.Map.prototype, "setCenter");
 
-            mapComponent.setState({ isLoaded: true });
+            const map = renderMap({ address });
+            map.setState({ isLoaded: true });
 
             expect(window.google.maps.Map.prototype.setCenter).toHaveBeenCalled();
         });
@@ -126,7 +125,8 @@ describe("Map", () => {
         it("should lookup the location", () => {
             spyOn(window.google.maps.Geocoder.prototype, "geocode");
 
-            mapComponent.setState({ isLoaded: true });
+            const map = renderMap({ address });
+            map.setState({ isLoaded: true });
 
             expect(window.google.maps.Geocoder.prototype.geocode).toHaveBeenCalled();
         });
@@ -134,7 +134,8 @@ describe("Map", () => {
         it("should render a marker", () => {
             spyOn(window.google.maps, "Marker");
 
-            mapComponent.setState({ isLoaded: true });
+            const map = renderMap({ address });
+            map.setState({ isLoaded: true });
 
             expect(window.google.maps.Marker).toHaveBeenCalled();
         });
@@ -142,14 +143,15 @@ describe("Map", () => {
         it("should center to the location of the address", () => {
             spyOn(window.google.maps.Map.prototype, "setCenter");
 
-            mapComponent.setState({ isLoaded: true });
+            const map = renderMap({ address }).instance() as Map;
+            map.setState({ isLoaded: true });
 
-            expect(mapComponent.props.address).toBe("Lumumba Ave, Kampala, Uganda");
+            expect(map.props.address).toBe("Lumumba Ave, Kampala, Uganda");
             expect(window.google.maps.Map.prototype.setCenter).toHaveBeenCalled();
         });
 
         it("should display the first marker if multiple locations are found", () => {
-            // 
+            //
         });
     });
 
@@ -157,8 +159,8 @@ describe("Map", () => {
         it("should fail to find a location", () => {
             spyOn(window.google.maps.Geocoder.prototype, "geocode").and.callThrough();
 
-            const output = renderMap({ address: "" });
-            output.setState({ isLoaded: true });
+            const map = renderMap({ address: "" });
+            map.setState({ isLoaded: true });
 
             expect(window.google.maps.Geocoder.prototype.geocode).toHaveBeenCalledTimes(2);
         });
@@ -166,8 +168,8 @@ describe("Map", () => {
         it("should not render a marker", () => {
             spyOn(window.google.maps, "Marker");
 
-            const output = renderMap({ address: "" });
-            output.setState({ isLoaded: true });
+            const map = renderMap({ address: "" });
+            map.setState({ isLoaded: true });
 
             expect(window.google.maps.Marker).not.toHaveBeenCalled();
         });
@@ -175,7 +177,8 @@ describe("Map", () => {
         it("should center to the default address", () => {
             spyOn(window.google.maps.Map.prototype, "setCenter");
 
-            mapComponent.setState({ isLoaded: true });
+            const map = renderMap({ address });
+            map.setState({ isLoaded: true });
 
             expect(window.google.maps.Map.prototype.setCenter).toHaveBeenCalled();
         });
@@ -195,7 +198,7 @@ describe("Map", () => {
         });
     });
 
-    afterEach(() => {
+    afterAll(() => {
         // Probably its good enough the reset fully.
         // window.google = undefined;
         window.google.maps.Map = originalMap;
