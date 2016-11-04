@@ -1,5 +1,4 @@
 import { Component, DOM, Props } from "react";
-import { Marker } from "./Marker";
 
 export interface MapProps extends Props<Map> {
     apiKey?: string;
@@ -88,7 +87,8 @@ export class Map extends Component<MapProps, MapState> {
     }
 
     private createMarker(location: google.maps.LatLng) {
-        Marker({ location, map: this.map });
+        // tslint:disable-next-line
+        new google.maps.Marker({ map: this.map, position: location });
         this.map.setCenter(location);
     }
 
