@@ -16,7 +16,7 @@ export class Map extends Component<MapProps, MapState> {
     private map: google.maps.Map;
     private mapDiv: HTMLElement;
     private defaultCenter: string = "Gedempte Zalmhaven 4k, 3011 BT Rotterdam, Netherlands";
-
+    URL = `https://maps.googleapis.com/maps/api/js?key=${this.props.apiKey}`;
     constructor(props: MapProps) {
         super(props);
 
@@ -51,7 +51,7 @@ export class Map extends Component<MapProps, MapState> {
 
     private loadGoogleScript(callback?: Function) {
         const script = document.createElement("script");
-        script.src = `https://maps.googleapis.com/maps/api/js?key=${this.props.apiKey}`;
+        script.src = this.URL;
         script.onload = () => {
             this.setState({ isLoaded: true });
         };
