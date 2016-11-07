@@ -181,9 +181,7 @@ describe("Map", () => {
                 const map = renderMap({ address: invalidAddress });
                 map.setState({ isLoaded: true });
 
-                expect(window.mx.ui.error).toHaveBeenCalledWith("Could not find location from address " +
-                    invalidAddress
-                );
+                expect(window.mx.ui.error).toHaveBeenCalledWith(`Can not find address ${invalidAddress}`);
             });
         });
 
@@ -223,7 +221,7 @@ describe("Map", () => {
 
     describe("when offline", () => {
         it("should show a user error on loading a map", () => {
-            //
+           //
         });
 
         it("should show a user error when looking up an address", () => {
