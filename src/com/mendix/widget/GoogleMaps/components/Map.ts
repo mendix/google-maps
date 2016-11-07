@@ -15,7 +15,7 @@ export class Map extends Component<MapProps, MapState> {
     };
     private map: google.maps.Map;
     private mapDiv: HTMLElement;
-    private defaultCenter: "Gedempte Zalmhaven 4k, 3011 BT Rotterdam, Netherlands";
+    private defaultCenter: string = "Gedempte Zalmhaven 4k, 3011 BT Rotterdam, Netherlands";
 
     constructor(props: MapProps) {
         super(props);
@@ -38,11 +38,15 @@ export class Map extends Component<MapProps, MapState> {
     componentDidMount() {
         if (!this.state.isLoaded) {
             this.loadGoogleScript();
+        } else {
+            this.loadMap();
         }
     }
 
     componentWillUnmount() {
-        google.maps.event.clearListeners(this.map, "resize");
+        if (this.map) {
+            google.maps.event.clearListeners(this.map, "resize");
+        }
     }
 
     private loadGoogleScript(callback?: Function) {
@@ -60,12 +64,11 @@ export class Map extends Component<MapProps, MapState> {
     private loadMap() {
         const mapConfig: google.maps.MapOptions = { zoom: 14 };
         this.map = new google.maps.Map(this.mapDiv, mapConfig);
-        this.getLocation(this.props.address !== undefined
-            ? this.props.address
-            : this.defaultCenter,
-            this.createMarker,
-            this.centerToDefault
-        );
+        if (this.props.address === "" || this.props.address === undefined) {
+            this.centerToDefault();
+        } else {
+            this.getLocation(this.props.address, this.createMarker, this.centerToDefault);
+        }
         google.maps.event.addDomListener(window, "resize", () => {
             const center = this.map.getCenter();
             google.maps.event.trigger(this.map, "resize");
