@@ -6,6 +6,8 @@ import { Map, MapProps } from "../Map";
 import { EventMock, GeocoderLocationType, GeocoderMock, GeocoderStatus, LatLngBoundsMock,
     LatLngMock, MapsMock, MarkerMock } from "../../../../../../../tests/mocks/GoogleMaps";
 
+import { MxUiMock } from "../../../../../../../tests/mocks/Mendix";
+
 describe("Map", () => {
     const address = "Lumumba Ave, Kampala, Uganda";
     const APIKey = "AIzaSyACjBNesZXeRFx86N7RMCWiTQP5GT_jDec";
@@ -23,6 +25,8 @@ describe("Map", () => {
         window.google.maps.event = EventMock;
         window.google.maps.GeocoderStatus = GeocoderStatus;
         window.google.maps.GeocoderLocationType = GeocoderLocationType;
+        window.mx = window.mx || {};
+        window.mx.ui = MxUiMock.prototype;
     });
 
     describe("when online", () => {
@@ -62,8 +66,9 @@ describe("Map", () => {
         it("should remove the resize listener", () => {
             spyOn(window.google.maps.event, "clearListeners");
 
-            const map = renderMap({ address: "" });
-            map.unmount();
+            const map = renderMap({ address }).instance() as Map;
+            map.componentDidMount();
+            map.componentWillUnmount();
 
             expect(window.google.maps.event.clearListeners).toHaveBeenCalled();
         });
@@ -75,7 +80,7 @@ describe("Map", () => {
                 const map = renderMap({ address: undefined });
                 map.setState({ isLoaded: true });
 
-                expect(window.google.maps.Geocoder.prototype.geocode).toHaveBeenCalledTimes(2);
+                expect(window.google.maps.Geocoder.prototype.geocode).toHaveBeenCalled();
             });
 
             it("should not display a marker", () => {
@@ -148,7 +153,7 @@ describe("Map", () => {
                 const map = renderMap({ address: "" });
                 map.setState({ isLoaded: true });
 
-                expect(window.google.maps.Geocoder.prototype.geocode).toHaveBeenCalledTimes(2);
+                expect(window.google.maps.Geocoder.prototype.geocode).toHaveBeenCalled();
             });
 
             it("should not render a marker", () => {
@@ -161,9 +166,9 @@ describe("Map", () => {
             });
 
             it("should center to the default address", () => {
-                spyOn(window.google.maps.Map.prototype, "setCenter");
+                spyOn(window.google.maps.Map.prototype, "setCenter").and.callThrough();
 
-                const map = renderMap({ address });
+                const map = renderMap({ address: "" });
                 map.setState({ isLoaded: true });
 
                 expect(window.google.maps.Map.prototype.setCenter).toHaveBeenCalled();
@@ -186,7 +191,7 @@ describe("Map", () => {
         });
     });
 
-    describe("when offline", () => {
+    describe("on loading", () => {
         it("should load the google maps script without API key", () => {
             window.google.maps.Map = undefined;
             const map = renderMap({ address }).instance() as Map;
@@ -206,6 +211,9 @@ describe("Map", () => {
             expect(document.body.innerHTML).toContain(APIKey);
             expect(google).toBeDefined();
         });
+    });
+
+    describe("when offline", () => {
         it("should show a user error on loading a map", () => {
             //
         });
