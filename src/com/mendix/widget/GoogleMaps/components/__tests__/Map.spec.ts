@@ -175,7 +175,15 @@ describe("Map", () => {
             });
 
             it("should display an error", () => {
-                //
+                spyOn(window.mx.ui, "error").and.callThrough();
+
+                const invalidAddress = "";
+                const map = renderMap({ address: invalidAddress });
+                map.setState({ isLoaded: true });
+
+                expect(window.mx.ui.error).toHaveBeenCalledWith("Could not find location from address " +
+                    invalidAddress
+                );
             });
         });
 
