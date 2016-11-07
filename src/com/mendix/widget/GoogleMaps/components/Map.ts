@@ -98,7 +98,7 @@ export class Map extends Component<MapProps, MapState> {
     private centerToDefault() {
         this.getLocation(this.defaultCenter, (defaultLocation: google.maps.LatLng) => {
             this.map.setCenter(defaultLocation);
-            mx.ui.error(`Could not find location from address ${this.props.address}`);
+            mx.ui.error(`Can not find address ${this.props.address}`);
         });
     }
 }
