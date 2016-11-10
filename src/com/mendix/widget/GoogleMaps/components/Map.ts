@@ -1,7 +1,7 @@
 
 import * as _ from "lodash";
 import { Component, DOM, Props, createElement } from "react";
-import { GoogleMap, withGoogleMap } from "react-google-maps";
+import { GoogleMap, Marker, withGoogleMap } from "react-google-maps";
 import withScriptjs from "react-google-maps/lib/async/withScriptjs";
 
 export interface MapProps extends Props<Map> {
@@ -11,11 +11,13 @@ export interface MapProps extends Props<Map> {
 
 const MxGoogleMap = _.flowRight(
     withScriptjs,
-    withGoogleMap(
-        createElement(GoogleMap, {
-            defaultCenter: { lat: 59.938043, lng: 30.337157 },
-            defaultZoom: 14
-        })));
+    withGoogleMap,
+)((props: any) => (
+    createElement(GoogleMap, {
+        defaultCenter: { lat: 59.938043, lng: 30.337157 },
+        defaultZoom: 14
+    }, createElement(Marker, { position: { lat: 59.938043, lng: 30.337157 } }))
+));
 
 export class Map extends Component<MapProps, {}> {
     static defaultProps: MapProps = {
@@ -27,16 +29,15 @@ export class Map extends Component<MapProps, {}> {
         this.state = { isLoaded: typeof google !== "undefined" };
     }
 
-
     render() {
         return (
-                createElement(MxGoogleMap({
-                    containerElement: DOM.div({ style: { height: "100%" } }),
-                    googleMapURL: "https://maps.googleapis.com/maps/api/js?key=AIzaSyACjBNesZXeRFx86N7RMCWiTQP5GT_jDec",
-                    loadingElement: DOM.div({ style: { height: "100%" } }),
-                    mapElement: DOM.div({ style: { height: "100%" } })
-                }))
-            );
+            createElement(MxGoogleMap, {
+                containerElement: DOM.div({ style: { height: "100%" } }),
+                googleMapURL: "https://maps.googleapis.com/maps/api/js?key=AIzaSyACjBNesZXeRFx86N7RMCWiTQP5GT_jDec",
+                loadingElement: DOM.div({ style: { height: 500 } }, "Loading map"),
+                mapElement: DOM.div({ style: { height: 500 } })
+            })
+        );
     }
 
     componentDidMount() {
@@ -44,6 +45,6 @@ export class Map extends Component<MapProps, {}> {
     }
 
     componentWillUnmount() {
-      //
-     }
+        //
+    }
 }
