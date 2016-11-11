@@ -2,6 +2,8 @@ declare module "react-google-maps" {
     interface GoogleMapProps {
         defaultCenter: any;
         defaultZoom: number;
+        onClick:()=>{};
+        ref:()=>{};
     }
     export const GoogleMap: React.ComponentClass<GoogleMapProps>;
     interface GoogleMapLoaderProps {

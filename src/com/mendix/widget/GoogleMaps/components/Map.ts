@@ -15,18 +15,32 @@ const MxGoogleMap = _.flowRight(
 )((props: any) => (
     createElement(GoogleMap, {
         defaultCenter: { lat: 59.938043, lng: 30.337157 },
-        defaultZoom: 14
+        defaultZoom: 14,
+        onClick: props.onMapClick,
+        ref: props.onMapLoad
     }, createElement(Marker, { position: { lat: 59.938043, lng: 30.337157 } }))
 ));
 
 export class Map extends Component<MapProps, {}> {
+    mapComponent: any;
+    google: any;
     static defaultProps: MapProps = {
         address: undefined
     };
 
     constructor(props: MapProps) {
         super(props);
+        this.handleMapLoad = this.handleMapLoad.bind(this);
+        this.handleMapClick = this.handleMapClick.bind(this);
         this.state = { isLoaded: typeof google !== "undefined" };
+    }
+
+    private handleMapLoad(mapComponent: any) {
+        this.mapComponent = mapComponent;
+        this.google = google;
+    }
+    handleMapClick(event: any) {
+       //
     }
 
     render() {
@@ -35,7 +49,9 @@ export class Map extends Component<MapProps, {}> {
                 containerElement: DOM.div({ style: { height: "100%" } }),
                 googleMapURL: "https://maps.googleapis.com/maps/api/js?key=AIzaSyACjBNesZXeRFx86N7RMCWiTQP5GT_jDec",
                 loadingElement: DOM.div({ style: { height: 500 } }, "Loading map"),
-                mapElement: DOM.div({ style: { height: 500 } })
+                mapElement: DOM.div({ style: { height: 500 } }),
+                onMapClick: this.handleMapClick,
+                onMapLoad: this.handleMapLoad
             })
         );
     }
