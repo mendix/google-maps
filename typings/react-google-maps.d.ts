@@ -3,10 +3,16 @@ declare module "react-google-maps" {
         lat: number;
         lng: number;
     }
-    interface GoogleMapProps {
+    interface MarkerProps {
+        position: { lat: number; lng: number; };
+    }
+    export const Marker: React.ComponentClass<MarkerProps>;
+    export interface GoogleMapProps {
         center: LatLng;
         defaultZoom: number;
         ref:Function;
+        marker?:  React.ComponentClass<MarkerProps>;
+        onMapLoad?: Function;
     }
     export const GoogleMap: React.ComponentClass<GoogleMapProps>;
     interface GoogleMapLoaderProps {
@@ -17,11 +23,7 @@ declare module "react-google-maps" {
         containerElement: React.ReactElement;
         mapElement: React.ReactElement;
     }
-    interface MarkerProps {
-        position: { lat: number; lng: number; };
-    }
     export const GoogleMapLoader: React.ComponentClass<GoogleMapLoaderProps>;
-    export const Marker: React.ComponentClass<MarkerProps>;
     export function withGoogleMap(WrappedComponent: React.Component): React.ComponentClass<withGoogleMapProps>;
 };
 declare module "react-google-maps/lib/async/withScriptjs" {
