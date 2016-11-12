@@ -1,4 +1,3 @@
-
 import * as _ from "lodash";
 import { Component, DOM, Props, createElement } from "react";
 import { GoogleMap, GoogleMapProps, LatLng, Marker, withGoogleMap } from "react-google-maps";
@@ -23,6 +22,7 @@ const MxGoogleMap = _.flowRight(withScriptjs, withGoogleMap)((googleMapProps: Go
 ));
 
 export class Map extends Component<MapProps, MapState> {
+    // Location of Mendix Netherlands office
     private defaultCenterLocation: LatLng = { lat: 51.9107963, lng: 4.4789878 };
 
     constructor(props: MapProps) {
