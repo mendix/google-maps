@@ -227,11 +227,12 @@ describe("Map", () => {
     });
 
     describe("on loading", () => {
-        xit("should load the google maps script without API key", () => {
+        it("should load the google maps script without API key", () => {
             window.google.maps.Map = undefined;
-            const map = renderMap({ address }).instance() as Map;
-            map.setState({ isLoaded: false });
-            map.componentDidMount();
+            const output = renderMap({ address: undefined });
+            const map = output.instance() as Map;
+
+            map.componentWillReceiveProps({ address });
 
             expect(document.body.innerHTML).not.toContain(APIKey);
             expect(google).toBeDefined();
