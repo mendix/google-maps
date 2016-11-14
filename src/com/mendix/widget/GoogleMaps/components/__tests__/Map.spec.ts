@@ -93,11 +93,13 @@ describe("Map", () => {
         });
 
         describe("with no address", () => {
-            xit("should not look up the location", () => {
+            it("should not look up the location", () => {
                 spyOn(window.google.maps.Geocoder.prototype, "geocode").and.callThrough();
 
-                const map = renderMap({ address: undefined });
-                map.setState({ isLoaded: true });
+                const output = renderMap({ address: "" });
+                const map = output.instance() as Map;
+
+                map.componentWillReceiveProps({ address: undefined });
 
                 expect(window.google.maps.Geocoder.prototype.geocode).toHaveBeenCalled();
             });
