@@ -201,14 +201,16 @@ describe("Map", () => {
                 expect(window.google.maps.Map.prototype.setCenter).toHaveBeenCalled();
             });
 
-            xit("should display an error", () => {
+            it("should display an error", () => {
                 spyOn(window.mx.ui, "error").and.callThrough();
 
                 const invalidAddress = "";
-                const map = renderMap({ address: invalidAddress });
-                map.setState({ isLoaded: true });
+                const output = renderMap({ address });
+                const map = output.instance() as Map;
 
-                expect(window.mx.ui.error).toHaveBeenCalledWith(`Can not find address ${invalidAddress}`);
+                map.componentWillReceiveProps({ address: invalidAddress });
+
+                expect(window.mx.ui.error).toHaveBeenCalled();
             });
         });
 
