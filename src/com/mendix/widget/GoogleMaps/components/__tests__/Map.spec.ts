@@ -15,7 +15,6 @@ describe("Map", () => {
     const address = "Lumumba Ave, Kampala, Uganda";
     const APIKey = "AIzaSyACjBNesZXeRFx86N7RMCWiTQP5GT_jDec";
     const renderMap = (props: MapProps) => shallow(createElement(Map, props));
-    const defaultCenterLocation = { lat: 51.9107963, lng: 4.4789878 };
 
     const MxGoogleMap = _.flowRight(withScriptjs, withGoogleMap)((googleMapProps: GoogleMapProps) => (
         createElement(GoogleMap, {
@@ -24,10 +23,6 @@ describe("Map", () => {
             ref: googleMapProps.onMapLoad
         }, googleMapProps.marker)
     ));
-    const handleMapLoad = () => {
-        //
-    };
-
 
     beforeAll(() => {
         window.google = window.google || {};
@@ -53,9 +48,10 @@ describe("Map", () => {
             );
         });
 
-        xit("renders with classes", () => {
+        it("renders with classes", () => {
             const map = renderMap({ address });
-            expect(map).toHaveClass("mx-google-maps");
+            console.log(map);
+            expect(map).toHaveClass("mx-google-map-container");
         });
 
         xit("should add a resize listener", () => {
