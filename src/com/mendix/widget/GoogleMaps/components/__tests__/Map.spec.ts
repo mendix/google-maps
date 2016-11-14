@@ -126,11 +126,13 @@ describe("Map", () => {
         });
 
         describe("with a valid address", () => {
-            xit("should lookup the location", () => {
+            it("should lookup the location", () => {
                 spyOn(window.google.maps.Geocoder.prototype, "geocode");
 
-                const map = renderMap({ address });
-                map.setState({ isLoaded: true });
+                const output = renderMap({ address: "" });
+                const map = output.instance() as Map;
+
+                map.componentWillReceiveProps({ address });
 
                 expect(window.google.maps.Geocoder.prototype.geocode).toHaveBeenCalled();
             });
