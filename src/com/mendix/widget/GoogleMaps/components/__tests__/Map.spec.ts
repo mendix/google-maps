@@ -172,11 +172,13 @@ describe("Map", () => {
         });
 
         describe("with an invalid address", () => {
-            xit("should fail to find a location", () => {
+            it("should fail to find a location", () => {
                 spyOn(window.google.maps.Geocoder.prototype, "geocode").and.callThrough();
 
-                const map = renderMap({ address: "" });
-                map.setState({ isLoaded: true });
+                const output = renderMap({ address });
+                const map = output.instance() as Map;
+
+                map.componentWillReceiveProps({ address: "" });
 
                 expect(window.google.maps.Geocoder.prototype.geocode).toHaveBeenCalled();
             });
