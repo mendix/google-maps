@@ -104,11 +104,13 @@ describe("Map", () => {
                 expect(window.google.maps.Geocoder.prototype.geocode).toHaveBeenCalled();
             });
 
-            xit("should not display a marker", () => {
+            it("should not display a marker", () => {
                 spyOn(window.google.maps, "Marker");
 
-                const map = renderMap({ address: undefined });
-                map.setState({ isLoaded: true });
+                const output = renderMap({ address: "" });
+                const map = output.instance() as Map;
+
+                map.componentWillReceiveProps({ address: undefined });
 
                 expect(window.google.maps.Marker).not.toHaveBeenCalled();
             });
