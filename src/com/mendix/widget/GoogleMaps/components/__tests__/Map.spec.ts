@@ -118,13 +118,11 @@ describe("Map", () => {
                 expect(window.google.maps.Marker).not.toHaveBeenCalled();
             });
 
-            xit("should center to the default address", () => {
-                spyOn(window.google.maps.Map.prototype, "setCenter");
+            it("should center to the default address", () => {
+                const googleMap = renderMap({ address }).first();
 
-                const map = renderMap({ address });
-                map.setState({ isLoaded: true });
-
-                expect(window.google.maps.Map.prototype.setCenter).toHaveBeenCalled();
+                expect(googleMap.prop("center").lat).toBe(defaultCenterLocation.lat);
+                expect(googleMap.prop("center").lng).toBe(defaultCenterLocation.lng);
             });
         });
 
