@@ -237,13 +237,11 @@ describe("Map", () => {
             expect(google).toBeDefined();
         });
 
-        xit("should load the google maps script with API key", () => {
+        it("should load the google maps script with API key", () => {
             window.google.maps.Map = undefined;
-            const map = renderMap({ address, apiKey: APIKey }).instance() as Map;
-            map.setState({ isLoaded: false });
-            map.componentDidMount();
+            const googleMap = renderMap({ address, apiKey: APIKey }).first();
 
-            expect(document.body.innerHTML).toContain(APIKey);
+            expect(googleMap.prop("googleMapURL")).toContain(APIKey);
             expect(google).toBeDefined();
         });
     });
