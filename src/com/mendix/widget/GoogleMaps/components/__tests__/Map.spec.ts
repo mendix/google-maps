@@ -246,14 +246,4 @@ describe("Map", () => {
         });
     });
 
-    describe("when offline", () => {
-        xit("should show a user error on loading a map", () => {
-           //
-        });
-
-        xit("should show a user error when looking up an address", () => {
-            //
-        });
-    });
-
 });
