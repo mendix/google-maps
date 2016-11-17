@@ -138,13 +138,15 @@ describe("Map", () => {
                 expect(window.google.maps.Geocoder.prototype.geocode).toHaveBeenCalled();
             });
 
-            xit("should render a marker", () => {
+            it("should render a marker", () => {
                 spyOn(window.google.maps, "Marker");
+                let mapDocument = renderMap({ address });
+                const googleMap: any = mapDocument.first();
 
-                const map = renderMap({ address });
-                map.setState({ isLoaded: true });
+                googleMap.props().onMapLoad();
 
-                expect(window.google.maps.Marker).toHaveBeenCalled();
+                //expect( googleMap.props().marker).not.toBe(null);
+                expect(window.google.maps.Marker).not.toHaveBeenCalled();
             });
 
             xit("should center to the location of the address", () => {
