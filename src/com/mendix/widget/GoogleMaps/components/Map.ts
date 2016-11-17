@@ -69,18 +69,18 @@ export class Map extends Component<MapProps, MapState> {
     private handleCenterChanged() {
         //React google maps component has a bug
         //https://github.com/tomchentw/react-google-maps/issues/337
-        const nextCenter = this.reactGoogleMap.getCenter();
-        this.setState({ location: { lat: nextCenter.lat(), lng: nextCenter.lng() } });
+        //const nextCenter = this.reactGoogleMap.getCenter();
+        //this.setState({ location: { lat: nextCenter.lat(), lng: nextCenter.lng() } });
     }
-     private handleOnResize() {
-         console.log("on resize");
-     }
+    private handleOnResize() {
+       //
+    }
 
     private getLocation(address: string, callback: Function) {
         const geocoder = new google.maps.Geocoder();
         geocoder.geocode({ address }, (results, status) => {
             if (status === google.maps.GeocoderStatus.OK) {
-                callback( {
+                callback({
                     lat: results[0].geometry.location.lat(),
                     lng: results[0].geometry.location.lng()
                 });
