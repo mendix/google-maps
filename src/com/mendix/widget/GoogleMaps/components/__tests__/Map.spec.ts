@@ -17,6 +17,7 @@ describe("Map", () => {
     const renderMap = (props: MapProps) => shallow(createElement(Map, props));
     const defaultCenterLocation = { lat: 51.9107963, lng: 4.4789878 };
     const successMockLocation = { lat: 30, lng: 118 };
+    const multipleAddressMockLocation = { lat: 34.213171, lng: -118.571022 };
 
     const MxGoogleMap = _.flowRight(withScriptjs, withGoogleMap)((googleMapProps: GoogleMapProps) => (
         createElement(GoogleMap, {
@@ -100,7 +101,6 @@ describe("Map", () => {
         describe("with no address", () => {
             it("should not look up the location", () => {
                 spyOn(window.google.maps.Geocoder.prototype, "geocode").and.callThrough();
-
                 const output = renderMap({ address: "" });
                 const map = output.instance() as Map;
 
@@ -111,7 +111,6 @@ describe("Map", () => {
 
             it("should not display a marker", () => {
                 spyOn(window.google.maps, "Marker");
-
                 const output = renderMap({ address: "" });
                 const map = output.instance() as Map;
 
@@ -131,7 +130,6 @@ describe("Map", () => {
         describe("with a valid address", () => {
             it("should lookup the location", () => {
                 spyOn(window.google.maps.Geocoder.prototype, "geocode");
-
                 const output = renderMap({ address: "" });
                 const map = output.instance() as Map;
 
@@ -154,11 +152,9 @@ describe("Map", () => {
             it("should center to the location of the address", () => {
                 spyOn(window.google.maps, "Marker");
                 spyOn(window.google.maps.Geocoder.prototype, "geocode").and.callThrough();
-
-                let mapDocument = renderMap({ address });
+                const mapDocument = renderMap({ address });
                 const mapComponent = mapDocument.instance() as Map;
 
-                mapComponent.setState({ isLoaded: false });
                 const googleMap: any = mapDocument.first();
                 googleMap.props().onMapLoad();
 
@@ -168,17 +164,18 @@ describe("Map", () => {
                 expect(window.google.maps.Geocoder.prototype.geocode).toHaveBeenCalled();
             });
 
-            xit("should display the first marker if multiple locations are found", () => {
+            it("should display the first marker if multiple locations are found", () => {
                 spyOn(window.google.maps, "Marker");
                 spyOn(window.google.maps.Geocoder.prototype, "geocode").and.callThrough();
+                const mapDocument = renderMap({ address: "multipleAddress" });
+                const mapComponent = mapDocument.instance() as Map;
 
-                const mapDiv = document.createElement("div");
-                const map = renderMap({ address: "multipleAddress" });
-                map.setState({ isLoaded: true });
+                const googleMap: any = mapDocument.first();
+                googleMap.props().onMapLoad();
 
-                expect(window.google.maps.Marker.calls.argsFor(0)).toEqual(
-                    [ Object({ map: new MapsMock(mapDiv), position: new LatLngMock(34.213171, -118.571022) }) ]
-                );
+                expect(mapComponent.state.location.lat).toBe(multipleAddressMockLocation.lat);
+                expect(mapComponent.state.location.lng).toBe(multipleAddressMockLocation.lng);
+                expect(window.google.maps.Marker).not.toHaveBeenCalled();
                 expect(window.google.maps.Geocoder.prototype.geocode).toHaveBeenCalled();
             });
         });
@@ -186,7 +183,6 @@ describe("Map", () => {
         describe("with an invalid address", () => {
             it("should fail to find a location", () => {
                 spyOn(window.google.maps.Geocoder.prototype, "geocode").and.callThrough();
-
                 const output = renderMap({ address });
                 const map = output.instance() as Map;
 
@@ -210,7 +206,6 @@ describe("Map", () => {
 
             it("should display an error", () => {
                 spyOn(window.mx.ui, "error").and.callThrough();
-
                 const invalidAddress = "";
                 const output = renderMap({ address });
                 const map = output.instance() as Map;
