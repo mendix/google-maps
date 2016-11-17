@@ -1,7 +1,7 @@
 import { shallow } from "enzyme";
 import * as _ from "lodash";
 import { DOM, createElement } from "react";
-import { GoogleMap, GoogleMapProps, LatLng, Marker, withGoogleMap } from "react-google-maps";
+import { GoogleMap, GoogleMapProps, withGoogleMap } from "react-google-maps";
 
 import { Map, MapProps } from "../Map";
 
@@ -16,6 +16,7 @@ describe("Map", () => {
     const APIKey = "AIzaSyACjBNesZXeRFx86N7RMCWiTQP5GT_jDec";
     const renderMap = (props: MapProps) => shallow(createElement(Map, props));
     const defaultCenterLocation = { lat: 51.9107963, lng: 4.4789878 };
+    const successMockLocation = { lat: 30, lng: 118 };
 
     const MxGoogleMap = _.flowRight(withScriptjs, withGoogleMap)((googleMapProps: GoogleMapProps) => (
         createElement(GoogleMap, {
@@ -150,14 +151,21 @@ describe("Map", () => {
                 expect(window.google.maps.Marker).not.toHaveBeenCalled();
             });
 
-            xit("should center to the location of the address", () => {
-                spyOn(window.google.maps.Map.prototype, "setCenter");
+            it("should center to the location of the address", () => {
+                spyOn(window.google.maps, "Marker");
+                spyOn(window.google.maps.Geocoder.prototype, "geocode").and.callThrough();
 
-                const map = renderMap({ address }).instance() as Map;
-                map.setState({ isLoaded: true });
+                let mapDocument = renderMap({ address });
+                const mapComponent = mapDocument.instance() as Map;
 
-                expect(map.props.address).toBe("Lumumba Ave, Kampala, Uganda");
-                expect(window.google.maps.Map.prototype.setCenter).toHaveBeenCalled();
+                mapComponent.setState({ isLoaded: false });
+                const googleMap: any = mapDocument.first();
+                googleMap.props().onMapLoad();
+
+                expect(mapComponent.state.location.lat).toBe(successMockLocation.lat);
+                expect(mapComponent.state.location.lng).toBe(successMockLocation.lng);
+                expect(window.google.maps.Marker).not.toHaveBeenCalled();
+                expect(window.google.maps.Geocoder.prototype.geocode).toHaveBeenCalled();
             });
 
             xit("should display the first marker if multiple locations are found", () => {

@@ -83,7 +83,7 @@ export class Map extends Component<MapProps, MapState> {
         this.setState({ location: { lat: nextCenter.lat(), lng: nextCenter.lng() } });
     }
      private handleOnResize() {
-         console.log("on rise");
+         console.log("on resize");
      }
 
     private getLocation(address: string, callback: Function) {

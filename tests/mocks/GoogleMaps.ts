@@ -90,7 +90,7 @@ export class GeocoderMock implements google.maps.Geocoder {
             formatted_address: "1600 Amphitheatre Parkway, Mountain View, CA 94043, USA",
             geometry: {
                 bounds: new google.maps.LatLngBounds(),
-                location: new google.maps.LatLng(0, 0),
+                location: new google.maps.LatLng(30, 118),
                 location_type: 0,
                 viewport: new google.maps.LatLngBounds()
             },
