@@ -59,26 +59,16 @@ export class Map extends Component<MapProps, MapState> {
         );
     }
 
-    componentDidMount() {
-        //
-    }
-
-    componentWillUnmount() {
-        //
-    }
-
     private handleMapLoad(map: any) {
         this.reactGoogleMap = map;
         if (this.props.address !== undefined && !this.state.isLoaded) {
             this.getLocation(this.props.address, (location: LatLng) =>
                 this.setLocation(location));
         }
-        google.maps.event.addDomListener(window, "resize", () => {
-           //React google maps component has a bug
-           //https://github.com/tomchentw/react-google-maps/issues/337
-        });
     }
     private handleCenterChanged() {
+        //React google maps component has a bug
+        //https://github.com/tomchentw/react-google-maps/issues/337
         const nextCenter = this.reactGoogleMap.getCenter();
         this.setState({ location: { lat: nextCenter.lat(), lng: nextCenter.lng() } });
     }
