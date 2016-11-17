@@ -184,13 +184,10 @@ describe("Map", () => {
                 expect(window.google.maps.Geocoder.prototype.geocode).toHaveBeenCalled();
             });
 
-            xit("should not render a marker", () => {
-                spyOn(window.google.maps, "Marker");
+            it("should not render a marker", () => {
+                const googleMap = renderMap({ address: "" }).first();
 
-                const map = renderMap({ address: "" });
-                map.setState({ isLoaded: true });
-
-                expect(window.google.maps.Marker).not.toHaveBeenCalled();
+                expect(googleMap.prop("marker")).toBe(null);
             });
 
             it("should center to the default address", () => {
