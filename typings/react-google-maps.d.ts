@@ -10,11 +10,19 @@ declare module "react-google-maps" {
     export interface GoogleMapProps {
         center: LatLng;
         defaultZoom: number;
-        ref:Function;
+        ref?:Function;
         marker?:  React.ComponentClass<MarkerProps>;
+        onCenterChanged?:Function;
         onMapLoad?: Function;
+        onResize?:Function;
     }
-    export const GoogleMap: React.ComponentClass<GoogleMapProps>;
+
+    export const GoogleMap: GoogleMapComponent;
+    export interface GoogleMapComponent extends React.ComponentClass<GoogleMapProps> {
+         getCenter: Function;
+         map: Object;
+         panTo: Function;
+    };
     interface GoogleMapLoaderProps {
         containerElement: React.ReactElement;
         googleMapElement: React.ReactElement;
@@ -34,4 +42,5 @@ declare module "react-google-maps/lib/async/withScriptjs" {
     }
     
     export default function withScriptjs(WrappedComponent: React.Component): React.ComponentClass<withScriptjsProps>;
+    
 }

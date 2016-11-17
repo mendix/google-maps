@@ -64,11 +64,12 @@ describe("Map", () => {
             expect(googleMap.prop("mapElement").props.className).toBe("mx-google-maps");
         });
 
-        xit("should add a resize listener", () => {
+        it("should add a resize listener", () => {
             spyOn(window.google.maps.event, "addDomListener");
+            const mapDocument = renderMap({ address });
+            const googleMap: any = mapDocument.first();
 
-            const map = renderMap({ address: "" });
-            map.setState({ isLoaded: true });
+            googleMap.props().onMapLoad();
 
             expect(window.google.maps.event.addDomListener).toHaveBeenCalled();
         });

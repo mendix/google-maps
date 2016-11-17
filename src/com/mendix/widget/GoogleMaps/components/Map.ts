@@ -1,6 +1,6 @@
 import * as _ from "lodash";
 import { Component, DOM, Props, createElement } from "react";
-import { GoogleMap, GoogleMapProps, LatLng, Marker, withGoogleMap } from "react-google-maps";
+import { GoogleMap, GoogleMapComponent, GoogleMapProps, LatLng, Marker, withGoogleMap } from "react-google-maps";
 import withScriptjs from "react-google-maps/lib/async/withScriptjs";
 
 export interface MapProps extends Props<Map> {
@@ -17,6 +17,7 @@ const MxGoogleMap = _.flowRight(withScriptjs, withGoogleMap)((googleMapProps: Go
     createElement(GoogleMap, {
         center: googleMapProps.center,
         defaultZoom: 14,
+        onCenterChanged: googleMapProps.onCenterChanged,
         ref: googleMapProps.onMapLoad
     }, googleMapProps.marker)
 ));
@@ -24,6 +25,7 @@ const MxGoogleMap = _.flowRight(withScriptjs, withGoogleMap)((googleMapProps: Go
 export class Map extends Component<MapProps, MapState> {
     // Location of Mendix Netherlands office
     private defaultCenterLocation: LatLng = { lat: 51.9107963, lng: 4.4789878 };
+    private reactGoogleMap: GoogleMapComponent;
 
     constructor(props: MapProps) {
         super(props);
@@ -50,7 +52,9 @@ export class Map extends Component<MapProps, MapState> {
                 loadingElement: DOM.div({ className: "mx-google-maps-loading" }, "Loading map"),
                 mapElement: DOM.div({ className: "mx-google-maps" }),
                 marker: this.state.location ? this.createMaker(this.state.location) : null,
-                onMapLoad: () => this.handleMapLoad()
+                onCenterChanged: () => this.handleCenterChanged(),
+                onMapLoad: (map: any) => this.handleMapLoad(map),
+                onResize: () => this.handleOnResize()
             })
         );
     }
@@ -63,12 +67,24 @@ export class Map extends Component<MapProps, MapState> {
         //
     }
 
-    private handleMapLoad() {
+    private handleMapLoad(map: any) {
+        this.reactGoogleMap = map;
         if (this.props.address !== undefined && !this.state.isLoaded) {
             this.getLocation(this.props.address, (location: LatLng) =>
                 this.setLocation(location));
         }
+        google.maps.event.addDomListener(window, "resize", () => {
+           //React google maps component has a bug
+           //https://github.com/tomchentw/react-google-maps/issues/337
+        });
     }
+    private handleCenterChanged() {
+        const nextCenter = this.reactGoogleMap.getCenter();
+        this.setState({ location: { lat: nextCenter.lat(), lng: nextCenter.lng() } });
+    }
+     private handleOnResize() {
+         console.log("on rise");
+     }
 
     private getLocation(address: string, callback: Function) {
         const geocoder = new google.maps.Geocoder();
