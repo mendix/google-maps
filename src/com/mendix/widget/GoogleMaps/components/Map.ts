@@ -18,6 +18,7 @@ const MxGoogleMap = _.flowRight(withScriptjs, withGoogleMap)((googleMapProps: Go
         center: googleMapProps.center,
         defaultZoom: 14,
         onCenterChanged: googleMapProps.onCenterChanged,
+        onResize: googleMapProps.onResize,
         ref: googleMapProps.onMapLoad
     }, googleMapProps.marker)
 ));
