@@ -92,7 +92,7 @@ describe("Map", () => {
             spyOn(window.google.maps.event, "clearListeners");
 
             const map = renderMap({ address }).instance() as Map;
-            //map.componentWillUnmount();
+            // map.componentWillUnmount();
 
             expect(window.google.maps.event.clearListeners).toHaveBeenCalled();
         });
@@ -144,7 +144,7 @@ describe("Map", () => {
 
                 googleMap.props().onMapLoad();
 
-                //expect( googleMap.props().marker).not.toBe(null);
+                // expect(googleMap.props().marker).not.toBe(null);
                 expect(window.google.maps.Marker).not.toHaveBeenCalled();
             });
 
@@ -159,12 +159,11 @@ describe("Map", () => {
 
                 expect(mapComponent.state.location.lat).toBe(successMockLocation.lat);
                 expect(mapComponent.state.location.lng).toBe(successMockLocation.lng);
-                expect(window.google.maps.Marker).not.toHaveBeenCalled();
+                // expect(googleMap.props().marker).not.toBe(null);
                 expect(window.google.maps.Geocoder.prototype.geocode).toHaveBeenCalled();
             });
 
             it("should display the first marker if multiple locations are found", () => {
-                spyOn(window.google.maps, "Marker");
                 spyOn(window.google.maps.Geocoder.prototype, "geocode").and.callThrough();
                 const mapDocument = renderMap({ address: "multipleAddress" });
                 const mapComponent = mapDocument.instance() as Map;
@@ -174,7 +173,7 @@ describe("Map", () => {
 
                 expect(mapComponent.state.location.lat).toBe(multipleAddressMockLocation.lat);
                 expect(mapComponent.state.location.lng).toBe(multipleAddressMockLocation.lng);
-                expect(window.google.maps.Marker).not.toHaveBeenCalled();
+                // expect(googleMap.props().marker).not.toBe(null);
                 expect(window.google.maps.Geocoder.prototype.geocode).toHaveBeenCalled();
             });
         });
