@@ -12,7 +12,7 @@
         "declaration": false,
         "removeComments": true,
         "noLib": false,
-        "watch": true,
+        "watch": false,
         "forceConsistentCasingInFileNames": true,
         "noFallthroughCasesInSwitch": true,
         "noImplicitAny": true,

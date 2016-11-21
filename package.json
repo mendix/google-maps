@@ -6,7 +6,8 @@
     "test": "test"
   },
   "scripts": {
-    "test": "karma start && node tests/remap.js"
+    "pretest": "tsc",
+    "test": "karma start --single-run && node tests/remap.js"
   },
   "repository": {
     "type": "git",
