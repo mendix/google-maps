@@ -53,9 +53,9 @@ export class Map extends Component<MapProps, MapState> {
                 loadingElement: DOM.div({ className: "mx-google-maps-loading" }, "Loading map"),
                 mapElement: DOM.div({ className: "mx-google-maps" }),
                 marker: this.state.location ? this.createMaker(this.state.location) : null,
-                onCenterChanged: () => this.handleCenterChanged(),
-                onMapLoad: (map: any) => this.handleMapLoad(map),
-                onResize: () => this.handleOnResize()
+                onCenterChanged: () => { /* */ },
+                onMapLoad: (map: GoogleMapComponent) => this.handleMapLoad(map),
+                onResize: () => { /* */}
             })
         );
     }
@@ -66,15 +66,17 @@ export class Map extends Component<MapProps, MapState> {
             this.getLocation(this.props.address, (location: LatLng) =>
                 this.setLocation(location));
         }
+        this.registerResizeHandler();
     }
-    private handleCenterChanged() {
-        //React google maps component has a bug
-        //https://github.com/tomchentw/react-google-maps/issues/337
-        //const nextCenter = this.reactGoogleMap.getCenter();
-        //this.setState({ location: { lat: nextCenter.lat(), lng: nextCenter.lng() } });
-    }
-    private handleOnResize() {
-       //
+
+    private registerResizeHandler() {
+        // Hack for recenter issue
+        // https://github.com/tomchentw/react-google-maps/issues/392
+        google.maps.event.addDomListener(window, "resize", () => {
+            const center = this.reactGoogleMap.getCenter();
+            google.maps.event.trigger(this.reactGoogleMap.context.__SECRET_MAP_DO_NOT_USE_OR_YOU_WILL_BE_FIRED, "resize");
+            this.reactGoogleMap.context.__SECRET_MAP_DO_NOT_USE_OR_YOU_WILL_BE_FIRED.setCenter(center);
+        });
     }
 
     private getLocation(address: string, callback: Function) {
