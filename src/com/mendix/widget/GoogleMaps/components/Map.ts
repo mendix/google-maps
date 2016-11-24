@@ -1,7 +1,7 @@
-import * as _ from "lodash";
+import { MapMarker } from "./MapMarker";
+import { GoogleMapProps, LatLng } from "google-map-react";
+import GoogleMap from "google-map-react";
 import { Component, DOM, Props, createElement } from "react";
-import { GoogleMap, GoogleMapComponent, GoogleMapProps, LatLng, Marker, withGoogleMap } from "react-google-maps";
-import withScriptjs from "react-google-maps/lib/async/withScriptjs";
 
 export interface MapProps extends Props<Map> {
     apiKey?: string;
@@ -13,21 +13,10 @@ interface MapState {
     location?: LatLng;
 }
 
-const MxGoogleMap = _.flowRight(withScriptjs, withGoogleMap)((googleMapProps: GoogleMapProps) => (
-    createElement(GoogleMap, {
-        center: googleMapProps.center,
-        defaultZoom: 14,
-        onCenterChanged: googleMapProps.onCenterChanged,
-        onResize: googleMapProps.onResize,
-        ref: googleMapProps.onMapLoad
-    }, googleMapProps.marker)
-));
-
 export class Map extends Component<MapProps, MapState> {
     // Location of Mendix Netherlands office
     private defaultCenterLocation: LatLng = { lat: 51.9107963, lng: 4.4789878 };
-    private reactGoogleMap: GoogleMapComponent;
-
+    private googleMap: any;
     constructor(props: MapProps) {
         super(props);
 
@@ -46,22 +35,24 @@ export class Map extends Component<MapProps, MapState> {
 
     render() {
         return (
-            createElement(MxGoogleMap, {
-                center: this.state.location ? this.state.location : this.defaultCenterLocation,
-                containerElement: DOM.div({ className: "mx-google-map-container" }),
-                googleMapURL: `https://maps.googleapis.com/maps/api/js?key=${this.props.apiKey}`,
-                loadingElement: DOM.div({ className: "mx-google-maps-loading" }, "Loading map"),
-                mapElement: DOM.div({ className: "mx-google-maps" }),
-                marker: this.state.location ? this.createMaker(this.state.location) : null,
-                onCenterChanged: () => { /* */ },
-                onMapLoad: (map: GoogleMapComponent) => this.handleMapLoad(map),
-                onResize: () => { /* */}
-            })
+            DOM.div({ className: "mx-google-maps" },
+                createElement(GoogleMap, this.getGoogleMapProps(),
+                     this.state.location ? this.createMaker(this.state.location) : null
+                )
+            )
         );
     }
-
+    private getGoogleMapProps(): GoogleMapProps {
+        return {
+                bootstrapURLKeys: { key: this.props.apiKey },
+                center: this.state.location ? this.state.location : this.defaultCenterLocation,
+                defaultZoom: 14,
+                onGoogleApiLoaded: (map: any) => this.handleMapLoad(map)
+                // resetBoundsOnResize: true
+            };
+    }
     private handleMapLoad(map: any) {
-        this.reactGoogleMap = map;
+        this.googleMap = map;
         if (this.props.address !== undefined && !this.state.isLoaded) {
             this.getLocation(this.props.address, (location: LatLng) =>
                 this.setLocation(location));
@@ -70,12 +61,9 @@ export class Map extends Component<MapProps, MapState> {
     }
 
     private registerResizeHandler() {
-        // Hack for recenter issue
-        // https://github.com/tomchentw/react-google-maps/issues/392
         google.maps.event.addDomListener(window, "resize", () => {
-            const center = this.reactGoogleMap.getCenter();
-            google.maps.event.trigger(this.reactGoogleMap.context.__SECRET_MAP_DO_NOT_USE_OR_YOU_WILL_BE_FIRED, "resize");
-            this.reactGoogleMap.context.__SECRET_MAP_DO_NOT_USE_OR_YOU_WILL_BE_FIRED.setCenter(center);
+            google.maps.event.trigger(this.googleMap, "resize");
+            this.googleMap.map.setCenter( this.state.location);
         });
     }
 
@@ -102,11 +90,9 @@ export class Map extends Component<MapProps, MapState> {
     }
 
     private createMaker(location: LatLng) {
-        return createElement(Marker, {
-            position: {
+        return createElement(MapMarker, {
                 lat: location.lat,
                 lng: location.lng
-            }
         });
     }
 }
