@@ -16,7 +16,7 @@ interface MapState {
 export class Map extends Component<MapProps, MapState> {
     // Location of Mendix Netherlands office
     private defaultCenterLocation: LatLng = { lat: 51.9107963, lng: 4.4789878 };
-    private googleMap: GoogleMapLoader;
+    private googleMapLoader: GoogleMapLoader;
     constructor(props: MapProps) {
         super(props);
 
@@ -45,16 +45,16 @@ export class Map extends Component<MapProps, MapState> {
 
     private getGoogleMapProps(): GoogleMapProps {
         return {
-                bootstrapURLKeys: { key: this.props.apiKey },
-                center: this.state.location ? this.state.location : this.defaultCenterLocation,
-                defaultZoom: 14,
-                onGoogleApiLoaded: (map: GoogleMapLoader) => this.handleMapLoad(map),
-                resetBoundsOnResize: true
-            };
+            bootstrapURLKeys: { key: this.props.apiKey },
+            center: this.state.location ? this.state.location : this.defaultCenterLocation,
+            defaultZoom: 14,
+            onGoogleApiLoaded: (map: GoogleMapLoader) => this.handleMapLoad(map),
+            resetBoundsOnResize: true
+        };
     }
 
     private handleMapLoad(map: GoogleMapLoader) {
-        this.googleMap = map;
+        this.googleMapLoader = map;
         if (this.props.address !== undefined && !this.state.isLoaded) {
             this.getLocation(this.props.address, (location: LatLng) =>
                 this.setLocation(location));
