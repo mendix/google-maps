@@ -163,7 +163,7 @@ describe("Map", () => {
                 const output = renderMap({ address: "multipleAddress" });
                 const mapComponent = output.instance() as Map;
 
-                const googleMap: any = output.childAt(0);
+                const googleMap = output.childAt(0);
                 googleMap.props().onGoogleApiLoaded();
 
                 expect(mapComponent.state.location.lat).toBe(multipleAddressMockLocation.lat);
@@ -174,13 +174,17 @@ describe("Map", () => {
         });
 
         describe("with an invalid address", () => {
-            xit("should fail to find a location", () => {
+            it("should fail to find a location", () => {
+                spyOn(window.google.maps, "Marker");
                 spyOn(window.google.maps.Geocoder.prototype, "geocode").and.callThrough();
                 const output = renderMap({ address });
                 const map = output.instance() as Map;
+                const googleMap = output.childAt(0);
 
                 map.componentWillReceiveProps({ address: "" });
 
+                expect(googleMap.prop("center").lat).toBe(defaultCenterLocation.lat);
+                expect(googleMap.prop("center").lng).toBe(defaultCenterLocation.lng);
                 expect(window.google.maps.Geocoder.prototype.geocode).toHaveBeenCalled();
             });
 
