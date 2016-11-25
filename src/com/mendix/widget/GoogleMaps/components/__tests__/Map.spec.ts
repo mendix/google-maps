@@ -199,7 +199,7 @@ describe("Map", () => {
                 expect(googleMap.prop("center").lng).toBe(defaultCenterLocation.lng);
             });
 
-            xit("should display an error", () => {
+            it("should display an error", () => {
                 spyOn(window.mx.ui, "error").and.callThrough();
                 const invalidAddress = "";
                 const output = renderMap({ address });
