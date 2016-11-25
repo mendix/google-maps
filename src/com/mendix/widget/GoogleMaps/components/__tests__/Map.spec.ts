@@ -52,12 +52,10 @@ describe("Map", () => {
             );
         });
 
-        xit("renders with classes", () => {
-            const googleMap = renderMap({ address }).first();
+        it("renders with classes", () => {
+            const googleMap = renderMap({ address });
 
-            expect(googleMap.prop("containerElement").props.className).toBe("mx-google-map-container");
-            expect(googleMap.prop("loadingElement").props.className).toBe("mx-google-maps-loading");
-            expect(googleMap.prop("mapElement").props.className).toBe("mx-google-maps");
+            expect(googleMap.hasClass("mx-google-maps"));
         });
 
         xit("should add a resize listener", () => {
