@@ -4,6 +4,10 @@ declare module "google-map-react" {
         lat: number;
         lng: number;
     }
+    export interface GoogleMapLoader {
+        map: google.maps.Map;
+        maps: google.maps;
+    }
 
     export interface bootstrapURLKeysProps {
         key: string
