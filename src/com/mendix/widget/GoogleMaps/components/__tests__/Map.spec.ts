@@ -158,13 +158,13 @@ describe("Map", () => {
                 expect(window.google.maps.Geocoder.prototype.geocode).toHaveBeenCalled();
             });
 
-            xit("should display the first marker if multiple locations are found", () => {
+            it("should display the first marker if multiple locations are found", () => {
                 spyOn(window.google.maps.Geocoder.prototype, "geocode").and.callThrough();
-                const mapDocument = renderMap({ address: "multipleAddress" });
-                const mapComponent = mapDocument.instance() as Map;
+                const output = renderMap({ address: "multipleAddress" });
+                const mapComponent = output.instance() as Map;
 
-                const googleMap: any = mapDocument.first();
-                googleMap.props().onMapLoad();
+                const googleMap: any = output.childAt(0);
+                googleMap.props().onGoogleApiLoaded();
 
                 expect(mapComponent.state.location.lat).toBe(multipleAddressMockLocation.lat);
                 expect(mapComponent.state.location.lng).toBe(multipleAddressMockLocation.lng);
