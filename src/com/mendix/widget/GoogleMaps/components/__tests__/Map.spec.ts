@@ -120,9 +120,9 @@ describe("Map", () => {
         describe("with a valid address", () => {
             it("should lookup the location", () => {
                 spyOn(window.google.maps.Geocoder.prototype, "geocode");
-                const output = renderMap({ address });
+                const output = renderMap({ address: "" });
                 const map = output.instance() as Map;
-                const googleMap: any = output.childAt(0);
+                const googleMap = output.childAt(0);
 
                 map.componentWillReceiveProps({ address });
                 googleMap.props().onGoogleApiLoaded();
@@ -130,12 +130,14 @@ describe("Map", () => {
                 expect(window.google.maps.Geocoder.prototype.geocode).toHaveBeenCalled();
             });
 
-            xit("should render a marker", () => {
+            it("should render a marker", () => {
                 spyOn(window.google.maps, "Marker");
-                let mapDocument = renderMap({ address });
-                const googleMap: any = mapDocument.first();
+                const output = renderMap({ address });
+                const map = output.instance() as Map;
+                const googleMap = output.childAt(0);
 
-                googleMap.props().onMapLoad();
+                map.componentWillReceiveProps({ address });
+                googleMap.props().onGoogleApiLoaded();
 
                 // expect(googleMap.props().marker).not.toBe(null);
                 expect(window.google.maps.Marker).not.toHaveBeenCalled();
