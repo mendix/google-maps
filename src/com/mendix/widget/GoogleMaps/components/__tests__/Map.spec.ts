@@ -226,20 +226,17 @@ describe("Map", () => {
     describe("on loading", () => {
         it("should load the google maps script without API key", () => {
             window.google.maps.Map = undefined;
-            const output = renderMap({ address: undefined });
-            const map = output.instance() as Map;
+            const googleMap = renderMap({ address, apiKey: undefined }).childAt(0);
 
-            map.componentWillReceiveProps({ address });
-
-            expect(document.body.innerHTML).not.toContain(APIKey);
+            expect(googleMap.prop("bootstrapURLKeys").key).not.toContain(APIKey);
             expect(google).toBeDefined();
         });
 
-        xit("should load the google maps script with API key", () => {
+        it("should load the google maps script with API key", () => {
             window.google.maps.Map = undefined;
-            const googleMap = renderMap({ address, apiKey: APIKey }).first();
+            const googleMap = renderMap({ address, apiKey: APIKey }).childAt(0);
 
-            expect(googleMap.prop("googleMapURL")).toContain(APIKey);
+            expect(googleMap.prop("bootstrapURLKeys").key).toContain(APIKey);
             expect(google).toBeDefined();
         });
     });
