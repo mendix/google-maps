@@ -10,7 +10,6 @@ import { EventMock, GeocoderLocationType, GeocoderMock, GeocoderStatus, LatLngBo
     LatLngMock, MapsMock, MarkerMock } from "../../../../../../../tests/mocks/GoogleMaps";
 
 import { MxUiMock } from "../../../../../../../tests/mocks/Mendix";
-
 describe("Map", () => {
     const address = "Lumumba Ave, Kampala, Uganda";
     const APIKey = "AIzaSyACjBNesZXeRFx86N7RMCWiTQP5GT_jDec";
@@ -110,8 +109,8 @@ describe("Map", () => {
                 expect(window.google.maps.Marker).not.toHaveBeenCalled();
             });
 
-            xit("should center to the default address", () => {
-                const googleMap = renderMap({ address }).first();
+            it("should center to the default address", () => {
+                const googleMap = renderMap({ address }).childAt(0);
 
                 expect(googleMap.prop("center").lat).toBe(defaultCenterLocation.lat);
                 expect(googleMap.prop("center").lng).toBe(defaultCenterLocation.lng);
