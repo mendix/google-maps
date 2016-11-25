@@ -143,14 +143,14 @@ describe("Map", () => {
                 expect(window.google.maps.Marker).not.toHaveBeenCalled();
             });
 
-            xit("should center to the location of the address", () => {
+            it("should center to the location of the address", () => {
                 spyOn(window.google.maps, "Marker");
                 spyOn(window.google.maps.Geocoder.prototype, "geocode").and.callThrough();
-                const mapDocument = renderMap({ address });
-                const mapComponent = mapDocument.instance() as Map;
-
-                const googleMap: any = mapDocument.first();
-                googleMap.props().onMapLoad();
+                const output = renderMap({ address: "" });
+                const mapComponent = output.instance() as Map;
+                const googleMap: any = output.childAt(0);
+                mapComponent.componentWillReceiveProps({ address });
+                googleMap.props().onGoogleApiLoaded();
 
                 expect(mapComponent.state.location.lat).toBe(successMockLocation.lat);
                 expect(mapComponent.state.location.lng).toBe(successMockLocation.lng);
