@@ -42,6 +42,7 @@ export class Map extends Component<MapProps, MapState> {
             )
         );
     }
+
     private getGoogleMapProps(): GoogleMapProps {
         return {
                 bootstrapURLKeys: { key: this.props.apiKey },
@@ -51,6 +52,7 @@ export class Map extends Component<MapProps, MapState> {
                 resetBoundsOnResize: true
             };
     }
+
     private handleMapLoad(map: GoogleMapLoader) {
         this.googleMap = map;
         if (this.props.address !== undefined && !this.state.isLoaded) {
