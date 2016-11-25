@@ -224,7 +224,7 @@ describe("Map", () => {
     });
 
     describe("on loading", () => {
-        xit("should load the google maps script without API key", () => {
+        it("should load the google maps script without API key", () => {
             window.google.maps.Map = undefined;
             const output = renderMap({ address: undefined });
             const map = output.instance() as Map;
