@@ -47,10 +47,6 @@ describe("Map", () => {
                         onGoogleApiLoaded: jasmine.any(Function) as any,
                         resetBoundsOnResize: true
                     },
-                        createElement(MapMarker, {
-                            lat: defaultCenterLocation.lat,
-                            lng: defaultCenterLocation.lng
-                        })
                     )
                 )
             );
