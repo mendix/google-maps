@@ -1,5 +1,5 @@
 import { MapMarker } from "./MapMarker";
-import { GoogleMapProps, LatLng } from "google-map-react";
+import { GoogleMapLoader, GoogleMapProps, LatLng } from "google-map-react";
 import GoogleMap from "google-map-react";
 import { Component, DOM, Props, createElement } from "react";
 
@@ -16,7 +16,7 @@ interface MapState {
 export class Map extends Component<MapProps, MapState> {
     // Location of Mendix Netherlands office
     private defaultCenterLocation: LatLng = { lat: 51.9107963, lng: 4.4789878 };
-    private googleMap: any;
+    private googleMap: GoogleMapLoader;
     constructor(props: MapProps) {
         super(props);
 
@@ -47,24 +47,16 @@ export class Map extends Component<MapProps, MapState> {
                 bootstrapURLKeys: { key: this.props.apiKey },
                 center: this.state.location ? this.state.location : this.defaultCenterLocation,
                 defaultZoom: 14,
-                onGoogleApiLoaded: (map: any) => this.handleMapLoad(map)
-                // resetBoundsOnResize: true
+                onGoogleApiLoaded: (map: GoogleMapLoader) => this.handleMapLoad(map),
+                resetBoundsOnResize: true
             };
     }
-    private handleMapLoad(map: any) {
+    private handleMapLoad(map: GoogleMapLoader) {
         this.googleMap = map;
         if (this.props.address !== undefined && !this.state.isLoaded) {
             this.getLocation(this.props.address, (location: LatLng) =>
                 this.setLocation(location));
         }
-        this.registerResizeHandler();
-    }
-
-    private registerResizeHandler() {
-        google.maps.event.addDomListener(window, "resize", () => {
-            google.maps.event.trigger(this.googleMap, "resize");
-            this.googleMap.map.setCenter( this.state.location);
-        });
     }
 
     private getLocation(address: string, callback: Function) {
