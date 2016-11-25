@@ -148,7 +148,7 @@ describe("Map", () => {
                 spyOn(window.google.maps.Geocoder.prototype, "geocode").and.callThrough();
                 const output = renderMap({ address: "" });
                 const mapComponent = output.instance() as Map;
-                const googleMap: any = output.childAt(0);
+                const googleMap = output.childAt(0);
                 mapComponent.componentWillReceiveProps({ address });
                 googleMap.props().onGoogleApiLoaded();
 
@@ -183,8 +183,6 @@ describe("Map", () => {
 
                 map.componentWillReceiveProps({ address: "" });
 
-                expect(googleMap.prop("center").lat).toBe(defaultCenterLocation.lat);
-                expect(googleMap.prop("center").lng).toBe(defaultCenterLocation.lng);
                 expect(window.google.maps.Geocoder.prototype.geocode).toHaveBeenCalled();
             });
 
@@ -194,8 +192,8 @@ describe("Map", () => {
                 expect(googleMap.prop("marker")).toBe(null);
             });
 
-            xit("should center to the default address", () => {
-                const googleMap = renderMap({ address: "" }).first();
+            it("should center to the default address", () => {
+                const googleMap = renderMap({ address: "" }).childAt(0);
 
                 expect(googleMap.prop("center").lat).toBe(defaultCenterLocation.lat);
                 expect(googleMap.prop("center").lng).toBe(defaultCenterLocation.lng);
