@@ -1,4 +1,3 @@
-import { MapMarker } from "./MapMarker";
 import { GoogleMapLoader, GoogleMapProps, LatLng } from "google-map-react";
 import GoogleMap from "google-map-react";
 import { Component, DOM, Props, createElement } from "react";
@@ -84,9 +83,10 @@ export class Map extends Component<MapProps, MapState> {
     }
 
     private createMaker(location: LatLng) {
-        return createElement(MapMarker, {
-                lat: location.lat,
-                lng: location.lng
+        return createElement("div", {
+            className: "mx-google-maps-marker",
+            lat: location.lat,
+            lng: location.lng
         });
     }
 }

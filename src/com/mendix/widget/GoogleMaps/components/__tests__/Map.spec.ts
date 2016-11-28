@@ -4,7 +4,6 @@ import GoogleMap from "google-map-react";
 import { DOM, createElement } from "react";
 
 import { Map, MapProps } from "../Map";
-import { MapMarker } from "../MapMarker";
 
 import { EventMock, GeocoderLocationType, GeocoderMock, GeocoderStatus, LatLngBoundsMock,
     LatLngMock, MapsMock, MarkerMock } from "../../../../../../../tests/mocks/GoogleMaps";
