@@ -217,6 +217,8 @@ export class GeocoderMock implements google.maps.Geocoder {
         console.log("Mock result");
         if (request.address === "multipleAddress") {
             callback(this.multipleResult, google.maps.GeocoderStatus.OK);
+        } else if (request.address === "invalidAddress") {
+            callback(this.zeroResult, google.maps.GeocoderStatus.ZERO_RESULTS);
         } else if (request.address) {
             callback(this.successResult, google.maps.GeocoderStatus.OK);
         } else {

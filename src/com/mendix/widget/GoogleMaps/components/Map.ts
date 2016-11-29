@@ -8,19 +8,16 @@ export interface MapProps extends Props<Map> {
 }
 
 interface MapState {
-    isLoaded?: boolean;
     location?: LatLng;
 }
 
 export class Map extends Component<MapProps, MapState> {
     // Location of Mendix Netherlands office
     private defaultCenterLocation: LatLng = { lat: 51.9107963, lng: 4.4789878 };
-    private googleMapLoader: GoogleMapLoader;
-    constructor(props: MapProps) {
+    private googleMapLoader: GoogleMapLoader;    constructor(props: MapProps) {
         super(props);
 
         this.state = {
-            isLoaded: false,
             location: null
         };
     }
@@ -33,13 +30,19 @@ export class Map extends Component<MapProps, MapState> {
     }
 
     render() {
-        return (
-            DOM.div({ className: "mx-google-maps" },
-                createElement(GoogleMap, this.getGoogleMapProps(),
-                     this.state.location ? this.createMaker(this.state.location) : null
-                )
+        return DOM.div({ className: "mx-google-maps" },
+            createElement(GoogleMap, this.getGoogleMapProps(),
+                this.state.location ? this.createMaker(this.state.location) : null
             )
         );
+    }
+
+    componentDidMount() {
+        console.log(".componentDidMount");
+        if (this.props.address) {
+            this.getLocation(this.props.address, (location: LatLng) =>
+                this.setLocation(location));
+        }
     }
 
     private getGoogleMapProps(): GoogleMapProps {
@@ -47,17 +50,9 @@ export class Map extends Component<MapProps, MapState> {
             bootstrapURLKeys: { key: this.props.apiKey },
             center: this.state.location ? this.state.location : this.defaultCenterLocation,
             defaultZoom: 14,
-            onGoogleApiLoaded: (map: GoogleMapLoader) => this.handleMapLoad(map),
+            onGoogleApiLoaded: (map: GoogleMapLoader) => this.googleMapLoader = map,
             resetBoundsOnResize: true
         };
-    }
-
-    private handleMapLoad(map: GoogleMapLoader) {
-        this.googleMapLoader = map;
-        if (this.props.address !== undefined && !this.state.isLoaded) {
-            this.getLocation(this.props.address, (location: LatLng) =>
-                this.setLocation(location));
-        }
     }
 
     private getLocation(address: string, callback: Function) {
@@ -77,7 +72,6 @@ export class Map extends Component<MapProps, MapState> {
 
     private setLocation(location: LatLng) {
         this.setState({
-            isLoaded: true,
             location
         });
     }
