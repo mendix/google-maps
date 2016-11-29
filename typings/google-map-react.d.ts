@@ -4,9 +4,9 @@ declare module "google-map-react" {
         lat: number;
         lng: number;
     }
+
     export interface GoogleMapLoader {
         map: google.maps.Map;
-        maps: google.maps;
     }
 
     export interface bootstrapURLKeysProps {
@@ -22,12 +22,10 @@ declare module "google-map-react" {
         googleMapLoader?:Function;
         resetBoundsOnResize?: boolean;
     }
-    
 
-    export interface GoogleMapComponent extends React.ComponentClass<GoogleMapProps> {
-    };
+    export interface GoogleMapComponent extends React.ComponentClass<GoogleMapProps> {}
 
     export const GoogleMap: GoogleMapComponent;
 
     export { GoogleMap as default };
-};
+}

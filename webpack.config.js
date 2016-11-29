@@ -12,7 +12,7 @@ module.exports = {
         library: "com.mendix.widget.GoogleMaps.GoogleMaps"
     },
     resolve: {
-        extensions: ["", ".ts", ".js", ".json"],
+        extensions: [ "", ".ts", ".js", ".json" ],
         alias: {
             "react-google-maps": path.resolve(__dirname, "./node_modules/react-google-maps")
         },
@@ -20,7 +20,7 @@ module.exports = {
     errorDetails: true,
     module: {
         loaders: [
-            { test: /\.ts?$/, loader: "ts-loader" },
+            { test: /\.ts$/, loader: "ts-loader" },
             { test: /\.json$/, loader: "json" }
         ],
         postLoaders: [ {

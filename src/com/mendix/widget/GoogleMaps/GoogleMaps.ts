@@ -22,17 +22,17 @@ class GoogleMaps extends WidgetBase {
         callback();
     }
 
+    updateRendering() {
+        render(createElement(Map, this.getProps()), this.domNode);
+    }
+
     uninitialize(): boolean {
         unmountComponentAtNode(this.domNode);
 
         return true;
     }
 
-    updateRendering() {
-        render(createElement(Map, this.getProps()), this.domNode);
-    }
-
-    resetSubscriptions() {
+    private resetSubscriptions() {
         this.unsubscribeAll();
         if (this.contextObject) {
             this.subscribe({
@@ -61,7 +61,7 @@ class GoogleMaps extends WidgetBase {
 // Declare widget prototype the Dojo way
 // Thanks to https://github.com/DefinitelyTyped/DefinitelyTyped/blob/master/dojo/README.md
 // tslint:disable : only-arrow-functions
-DojoDeclare("com.mendix.widget.GoogleMaps.GoogleMaps", [ WidgetBase ], (function (Source: any) {
+DojoDeclare("com.mendix.widget.GoogleMaps.GoogleMaps", [ WidgetBase ], (function(Source: any) {
     let result: any = {};
     for (let i in Source.prototype) {
         if (i !== "constructor" && Source.prototype.hasOwnProperty(i)) {
