@@ -14,7 +14,9 @@ interface MapState {
 export class Map extends Component<MapProps, MapState> {
     // Location of Mendix Netherlands office
     private defaultCenterLocation: LatLng = { lat: 51.9107963, lng: 4.4789878 };
-    private googleMapLoader: GoogleMapLoader;    constructor(props: MapProps) {
+    private googleMapLoader: GoogleMapLoader;
+
+    constructor(props: MapProps) {
         super(props);
 
         this.state = {
