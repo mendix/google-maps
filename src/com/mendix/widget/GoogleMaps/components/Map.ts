@@ -34,7 +34,7 @@ export class Map extends Component<MapProps, MapState> {
     }
 
     render() {
-        return DOM.div({ className: "mx-google-maps" },
+        return DOM.div({ className: "widget-google-maps" },
             createElement(GoogleMap, this.getGoogleMapProps(),
                 this.state.location ? this.createMaker(this.state.location) : null
             )

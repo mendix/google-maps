@@ -38,13 +38,14 @@ describe("Map", () => {
     it("should render with the map structure", () => {
         const map = renderMap({ address });
         expect(map).toBeElement(
-            DOM.div({ className: "mx-google-maps" },
+            DOM.div({ className: "widget-google-maps" },
                 createElement(GoogleMap, {
                     bootstrapURLKeys: { key: undefined },
                     center: defaultCenterLocation,
                     defaultZoom: 14,
                     onGoogleApiLoaded: jasmine.any(Function) as any,
-                    resetBoundsOnResize: true
+                    resetBoundsOnResize: true,
+                    yesIWantToUseGoogleMapApiInternals: true
                 })
             )
         );
@@ -53,7 +54,7 @@ describe("Map", () => {
     it("renders with classes", () => {
         const googleMap = renderMap({ address });
 
-        expect(googleMap.hasClass("mx-google-maps")).toBe(true);
+        expect(googleMap.hasClass("widget-google-maps")).toBe(true);
     });
 
     describe("with no address", () => {

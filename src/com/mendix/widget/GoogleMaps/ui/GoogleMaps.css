@@ -1,13 +1,9 @@
-.mx-google-maps {
+.widget-google-maps {
     height: 500px;
     width: auto;
 }
 
-.mx-google-map-container {
-    height: 100%
-}
-
-.mx-google-maps-marker{
+.widget-google-maps-marker{
     background-image: url('./com/mendix/widget/GoogleMaps/ui/mapIcon.png');
     cursor: pointer;
     width: 50px;
