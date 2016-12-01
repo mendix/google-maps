@@ -10,8 +10,7 @@ class GoogleMaps extends WidgetBase {
     // Properties from Mendix modeler
     private apiKey: string;
     private addressAttribute: string;
-
-    // internal variables
+    // Internal variables
     private contextObject: mendix.lib.MxObject;
 
     update(object: mendix.lib.MxObject, callback: Function) {

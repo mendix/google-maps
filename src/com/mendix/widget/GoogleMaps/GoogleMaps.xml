@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <widget id="com.mendix.widget.GoogleMaps.GoogleMaps" needsEntityContext="true" xmlns="http://www.mendix.com/widget/1.0/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mendix.com/widget/1.0/ ../../../../xsd/widget.xsd">
     <name>Google Maps</name>
-    <description>Show locations on google maps</description>
+    <description>Show address on Google Maps</description>
     <icon>
         iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAGXRFWHRTb2Z0d2Fy
         ZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyBJREFUeNpkk01sVFUYhp/7f+evDNOZ
@@ -25,14 +25,14 @@
     </icon>
     <properties>
         <property key="apiKey" type="string" required="false">
-            <caption>Api key</caption>
+            <caption>API key</caption>
             <category>Data source</category>
-            <description>The google maps Javascript API v3 does not require an API key to function correctly. However, google strongly encourages you to load the maps API using an APIs key</description>
+            <description>The Google Maps Javascript API v3 does not require an API key to function correctly. However, Google strongly encourages you to load the Maps API using an APIs key</description>
         </property>
         <property key="addressAttribute" type="attribute" required="true">
             <caption>Address</caption>
             <category>Data source</category>
-            <description>Use address of known places such as cities, street</description>
+            <description>Use an address of known places</description>
             <attributeTypes>
                 <attributeType name="String"/>
             </attributeTypes>

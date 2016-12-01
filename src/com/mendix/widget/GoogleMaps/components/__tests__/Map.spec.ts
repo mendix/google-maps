@@ -22,8 +22,7 @@ describe("Map", () => {
 
     beforeAll(() => {
         window.google = MockGoogle;
-        window.google.maps = window.google.maps || {};
-        window.google.event = window.google.event || {};
+        window.google.maps = {};
         window.google.maps.Geocoder = GeocoderMock;
         window.google.maps.Map = MapsMock;
         window.google.maps.LatLngBounds = LatLngBoundsMock;
@@ -60,8 +59,8 @@ describe("Map", () => {
     describe("with no address", () => {
         it("should not look up the location", () => {
             spyOn(window.google.maps.Geocoder.prototype, "geocode").and.callThrough();
-            const output = renderMap({ address: "" });
 
+            const output = renderMap({ address: "" });
             output.find(GoogleMap).prop("onGoogleApiLoaded")();
 
             expect(window.google.maps.Geocoder.prototype.geocode).not.toHaveBeenCalled();
@@ -69,7 +68,6 @@ describe("Map", () => {
 
         it("should not display a marker", () => {
             const output = renderMap({ address: "" });
-
             output.find(GoogleMap).prop("onGoogleApiLoaded")();
 
             const marker = output.find(Marker);
@@ -87,8 +85,8 @@ describe("Map", () => {
     describe("with a valid address", () => {
         it("should lookup the location", () => {
             spyOn(window.google.maps.Geocoder.prototype, "geocode");
-            const output = renderMap({ address });
 
+            const output = renderMap({ address });
             output.find(GoogleMap).prop("onGoogleApiLoaded")();
 
             expect(window.google.maps.Geocoder.prototype.geocode).toHaveBeenCalled();
@@ -96,8 +94,8 @@ describe("Map", () => {
 
         it("should render a marker", () => {
             const output = renderMap({ address });
-
             output.find(GoogleMap).prop("onGoogleApiLoaded")();
+
             const marker = output.find(Marker);
             expect(marker.length).toBe(1);
             expect(marker.prop("lat")).toBe(successMockLocation.lat);
@@ -106,7 +104,6 @@ describe("Map", () => {
 
         it("should center to the location of the address", () => {
             const output = renderMap({ address });
-
             const mapComponent = output.instance() as Map;
             output.find(GoogleMap).prop("onGoogleApiLoaded")();
 
@@ -116,7 +113,6 @@ describe("Map", () => {
 
         it("should display the first marker if multiple locations are found", () => {
             const output = renderMap({ address: "multipleAddress" });
-
             output.find(GoogleMap).prop("onGoogleApiLoaded")();
 
             const marker = output.find(Marker);
@@ -128,7 +124,6 @@ describe("Map", () => {
     describe("with an invalid address", () => {
         it("should not render a marker", () => {
             const output = renderMap({ address: invalidAddress });
-
             output.find(GoogleMap).prop("onGoogleApiLoaded")();
 
             const marker = output.find(Marker);
@@ -138,14 +133,15 @@ describe("Map", () => {
         it("should center to the default address", () => {
             const output = renderMap({ address: invalidAddress });
             output.find(GoogleMap).prop("onGoogleApiLoaded")();
-            const marker = output.childAt(0);
 
+            const marker = output.childAt(0);
             expect(marker.prop("center").lat).toBe(defaultCenterLocation.lat);
             expect(marker.prop("center").lng).toBe(defaultCenterLocation.lng);
         });
 
         it("should display an error", () => {
             spyOn(window.mx.ui, "error").and.callThrough();
+
             const output = renderMap({ address: invalidAddress });
             output.find(GoogleMap).prop("onGoogleApiLoaded")();
 
@@ -170,7 +166,6 @@ describe("Map", () => {
     describe("with updated the address", () => {
         it("should change marker location to new address", () => {
             const output = renderMap({ address });
-
             output.find(GoogleMap).prop("onGoogleApiLoaded")();
 
             const marker = output.find(Marker).at(0);
@@ -188,6 +183,7 @@ describe("Map", () => {
         it("should not lookup the location if address is not changed", () => {
             const output = renderMap({ address });
             output.find(GoogleMap).prop("onGoogleApiLoaded")();
+
             spyOn(window.google.maps.Geocoder.prototype, "geocode");
             const map = output.instance() as Map;
 
