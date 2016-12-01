@@ -3,6 +3,7 @@ import GoogleMap from "google-map-react";
 import { DOM, createElement } from "react";
 
 import { Map, MapProps } from "../Map";
+import { Marker } from "../Marker";
 
 import {
     EventMock, GeocoderLocationType, GeocoderMock, GeocoderStatus, LatLngBoundsMock,
@@ -61,8 +62,7 @@ describe("Map", () => {
             spyOn(window.google.maps.Geocoder.prototype, "geocode").and.callThrough();
             const output = renderMap({ address: "" });
 
-            const mapComponent = output.instance() as Map;
-            mapComponent.componentDidMount();
+            output.find(GoogleMap).prop("onGoogleApiLoaded")();
 
             expect(window.google.maps.Geocoder.prototype.geocode).not.toHaveBeenCalled();
         });
@@ -70,10 +70,9 @@ describe("Map", () => {
         it("should not display a marker", () => {
             const output = renderMap({ address: "" });
 
-            const mapComponent = output.instance() as Map;
-            mapComponent.componentDidMount();
+            output.find(GoogleMap).prop("onGoogleApiLoaded")();
 
-            const marker = output.find(".mx-google-maps-marker");
+            const marker = output.find(Marker);
             expect(marker.length).toBe(0);
         });
 
@@ -88,12 +87,9 @@ describe("Map", () => {
     describe("with a valid address", () => {
         it("should lookup the location", () => {
             spyOn(window.google.maps.Geocoder.prototype, "geocode");
-            const output = renderMap({ address: "" });
-            const map = output.instance() as Map;
-            const googleMap = output.childAt(0);
+            const output = renderMap({ address });
 
-            map.componentWillReceiveProps({ address });
-            googleMap.props().onGoogleApiLoaded();
+            output.find(GoogleMap).prop("onGoogleApiLoaded")();
 
             expect(window.google.maps.Geocoder.prototype.geocode).toHaveBeenCalled();
         });
@@ -101,10 +97,8 @@ describe("Map", () => {
         it("should render a marker", () => {
             const output = renderMap({ address });
 
-            const mapComponent = output.instance() as Map;
-            mapComponent.componentDidMount();
-
-            const marker = output.find(".mx-google-maps-marker");
+            output.find(GoogleMap).prop("onGoogleApiLoaded")();
+            const marker = output.find(Marker);
             expect(marker.length).toBe(1);
             expect(marker.prop("lat")).toBe(successMockLocation.lat);
             expect(marker.prop("lng")).toBe(successMockLocation.lng);
@@ -114,7 +108,7 @@ describe("Map", () => {
             const output = renderMap({ address });
 
             const mapComponent = output.instance() as Map;
-            mapComponent.componentDidMount();
+            output.find(GoogleMap).prop("onGoogleApiLoaded")();
 
             expect(mapComponent.state.location.lat).toBe(successMockLocation.lat);
             expect(mapComponent.state.location.lng).toBe(successMockLocation.lng);
@@ -123,32 +117,11 @@ describe("Map", () => {
         it("should display the first marker if multiple locations are found", () => {
             const output = renderMap({ address: "multipleAddress" });
 
-            const mapComponent = output.instance() as Map;
-            mapComponent.componentDidMount();
+            output.find(GoogleMap).prop("onGoogleApiLoaded")();
 
-            const marker = output.find(".mx-google-maps-marker");
+            const marker = output.find(Marker);
             expect(marker.prop("lat")).toBe(multipleAddressMockLocation.lat);
             expect(marker.prop("lng")).toBe(multipleAddressMockLocation.lng);
-        });
-    });
-
-    describe("update the address", () => {
-        it("with new location", () => {
-            const output = renderMap({ address });
-
-            const mapComponent = output.instance() as Map;
-            mapComponent.componentDidMount();
-
-            const marker = output.find(".mx-google-maps-marker").at(0);
-            expect(marker.prop("lat")).toBe(successMockLocation.lat);
-            expect(marker.prop("lng")).toBe(successMockLocation.lng);
-
-            const map = output.instance() as Map;
-            map.componentWillReceiveProps({ address: "multipleAddress" });
-
-            const markerNew = output.find(".mx-google-maps-marker").at(0);
-            expect(markerNew.prop("lat")).toBe(multipleAddressMockLocation.lat);
-            expect(markerNew.prop("lng")).toBe(multipleAddressMockLocation.lng);
         });
     });
 
@@ -156,18 +129,16 @@ describe("Map", () => {
         it("should not render a marker", () => {
             const output = renderMap({ address: invalidAddress });
 
-            const mapComponent = output.instance() as Map;
-            mapComponent.componentDidMount();
+            output.find(GoogleMap).prop("onGoogleApiLoaded")();
 
-            const marker = output.find(".mx-google-maps-marker");
+            const marker = output.find(Marker);
             expect(marker.length).toBe(0);
         });
 
         it("should center to the default address", () => {
-            const googleMap = renderMap({ address: invalidAddress });
-            const mapComponent = googleMap.instance() as Map;
-            mapComponent.componentDidMount();
-            const marker = googleMap.childAt(0);
+            const output = renderMap({ address: invalidAddress });
+            output.find(GoogleMap).prop("onGoogleApiLoaded")();
+            const marker = output.childAt(0);
 
             expect(marker.prop("center").lat).toBe(defaultCenterLocation.lat);
             expect(marker.prop("center").lng).toBe(defaultCenterLocation.lng);
@@ -176,25 +147,55 @@ describe("Map", () => {
         it("should display an error", () => {
             spyOn(window.mx.ui, "error").and.callThrough();
             const output = renderMap({ address: invalidAddress });
-            const mapComponent = output.instance() as Map;
-            mapComponent.componentDidMount();
+            output.find(GoogleMap).prop("onGoogleApiLoaded")();
 
             expect(window.mx.ui.error).toHaveBeenCalled();
         });
+    });
 
-        describe("on loading", () => {
-            it("should load the google maps script without API key", () => {
-                const googleMap = renderMap({ address, apiKey: undefined }).childAt(0);
+    describe("on loading", () => {
+        it("should load the google maps script without API key", () => {
+            const googleMap = renderMap({ address, apiKey: undefined }).childAt(0);
 
-                expect(googleMap.prop("bootstrapURLKeys").key).not.toContain(APIKey);
-            });
-
-            it("should load the google maps script with API key", () => {
-                const googleMap = renderMap({ address, apiKey: APIKey }).childAt(0);
-
-                expect(googleMap.prop("bootstrapURLKeys").key).toContain(APIKey);
-            });
+            expect(googleMap.prop("bootstrapURLKeys").key).not.toContain(APIKey);
         });
+
+        it("should load the google maps script with API key", () => {
+            const googleMap = renderMap({ address, apiKey: APIKey }).childAt(0);
+
+            expect(googleMap.prop("bootstrapURLKeys").key).toContain(APIKey);
+        });
+    });
+
+    describe("with updated the address", () => {
+        it("should change marker location to new address", () => {
+            const output = renderMap({ address });
+
+            output.find(GoogleMap).prop("onGoogleApiLoaded")();
+
+            const marker = output.find(Marker).at(0);
+            expect(marker.prop("lat")).toBe(successMockLocation.lat);
+            expect(marker.prop("lng")).toBe(successMockLocation.lng);
+
+            const map = output.instance() as Map;
+            map.componentWillReceiveProps({ address: "multipleAddress" });
+
+            const markerNew = output.find(Marker).at(0);
+            expect(markerNew.prop("lat")).toBe(multipleAddressMockLocation.lat);
+            expect(markerNew.prop("lng")).toBe(multipleAddressMockLocation.lng);
+        });
+
+        it("should not lookup the location if address is not changed", () => {
+            const output = renderMap({ address });
+            output.find(GoogleMap).prop("onGoogleApiLoaded")();
+            spyOn(window.google.maps.Geocoder.prototype, "geocode");
+            const map = output.instance() as Map;
+
+            map.componentWillReceiveProps({ address });
+
+            expect(window.google.maps.Geocoder.prototype.geocode).not.toHaveBeenCalled();
+        });
+
     });
 
     afterAll(() => {
