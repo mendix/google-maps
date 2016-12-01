@@ -47,7 +47,8 @@ export class Map extends Component<MapProps, MapState> {
             center: this.state.location ? this.state.location : this.defaultCenterLocation,
             defaultZoom: 14,
             onGoogleApiLoaded: () => this.onGoogleApiLoaded(),
-            resetBoundsOnResize: true
+            resetBoundsOnResize: true,
+            yesIWantToUseGoogleMapApiInternals: true
         };
     }
 
@@ -68,11 +69,11 @@ export class Map extends Component<MapProps, MapState> {
                     });
                 } else {
                     mx.ui.error(`Can not find address ${this.props.address}`);
-                    callback(null);
+                    callback();
                 }
             });
         } else {
-            callback(null);
+            callback();
         }
     }
 

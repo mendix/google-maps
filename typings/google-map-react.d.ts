@@ -21,6 +21,7 @@ declare module "google-map-react" {
         onCenterChange?:Function;
         googleMapLoader?:Function;
         resetBoundsOnResize?: boolean;
+        yesIWantToUseGoogleMapApiInternals?: boolean;
     }
 
     export interface GoogleMapComponent extends React.ComponentClass<GoogleMapProps> {}
