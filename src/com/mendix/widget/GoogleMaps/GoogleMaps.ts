@@ -13,22 +13,24 @@ class GoogleMaps extends WidgetBase {
     // Internal variables
     private contextObject: mendix.lib.MxObject;
 
-    update(object: mendix.lib.MxObject, callback: Function) {
+    update(object: mendix.lib.MxObject, callback?: Function) {
         this.contextObject = object;
         this.resetSubscriptions();
         this.updateRendering();
 
-        callback();
-    }
-
-    updateRendering() {
-        render(createElement(Map, this.getProps()), this.domNode);
+        if (callback) {
+            callback();
+        }
     }
 
     uninitialize(): boolean {
         unmountComponentAtNode(this.domNode);
 
         return true;
+    }
+
+    private updateRendering() {
+        render(createElement(Map, this.getProps()), this.domNode);
     }
 
     private resetSubscriptions() {
