@@ -26,7 +26,7 @@ export class Map extends Component<MapProps, MapState> {
     }
 
     componentWillReceiveProps(nextProps: MapProps) {
-        if (this.props.address !== nextProps.address) {
+        if (this.state.location && this.props.address !== nextProps.address) {
             this.getLocation(nextProps.address, (location: LatLng) =>
                 this.setState({ location })
             );
@@ -46,19 +46,15 @@ export class Map extends Component<MapProps, MapState> {
             bootstrapURLKeys: { key: this.props.apiKey },
             center: this.state.location ? this.state.location : this.defaultCenterLocation,
             defaultZoom: 14,
-            onGoogleApiLoaded: () => this.onGoogleApiLoaded(),
+            onGoogleApiLoaded: () =>
+                this.getLocation(this.props.address, (location: LatLng) =>
+                    this.setState({ location })
+                ),
             resetBoundsOnResize: true,
             yesIWantToUseGoogleMapApiInternals: true
         };
     }
-
-    private onGoogleApiLoaded() {
-        this.getLocation(this.props.address, (location: LatLng) =>
-            this.setState({ location })
-        );
-    }
-
-    private getLocation(address: string, callback: Function) {
+    private getLocation(address: string, callback: (result: LatLng) => void) {
         if (address) {
             const geocoder = new google.maps.Geocoder();
             geocoder.geocode({ address }, (results, status) => {
@@ -69,11 +65,11 @@ export class Map extends Component<MapProps, MapState> {
                     });
                 } else {
                     mx.ui.error(`Can not find address ${this.props.address}`);
-                    callback();
+                    callback(null);
                 }
             });
         } else {
-            callback();
+            callback(null);
         }
     }
 
