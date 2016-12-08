@@ -26,13 +26,13 @@
     <properties>
         <property key="apiKey" type="string" required="false">
             <caption>API key</caption>
-            <category>Data source</category>
+            <category>General</category>
             <description>The Google Maps Javascript API v3 does not require an API key to function correctly. However, Google strongly encourages you to load the Maps API using an APIs key</description>
         </property>
         <property key="addressAttribute" type="attribute" required="true">
-            <caption>Address</caption>
+            <caption>Address attribute</caption>
             <category>Data source</category>
-            <description>Use an address of known places</description>
+            <description>Attribute where the address string is stored</description>
             <attributeTypes>
                 <attributeType name="String"/>
             </attributeTypes>
