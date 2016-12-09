@@ -38,12 +38,6 @@ describe("Map", () => {
         );
     });
 
-    it("renders with classes", () => {
-        const googleMap = renderMap({ address });
-
-        expect(googleMap.hasClass("widget-google-maps")).toBe(true);
-    });
-
     describe("with no address", () => {
         it("should not look up the location", () => {
             spyOn(window.google.maps.Geocoder.prototype, "geocode").and.callThrough();
