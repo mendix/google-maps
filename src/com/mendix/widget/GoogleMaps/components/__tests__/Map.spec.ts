@@ -129,13 +129,13 @@ describe("Map", () => {
     });
 
     describe("on loading", () => {
-        it("should load the google maps script without API key", () => {
+        it("if no key is configured", () => {
             const googleMap = renderMap({ address, apiKey: undefined }).find(GoogleMap);
 
             expect(googleMap.prop("bootstrapURLKeys").key).not.toContain(APIKey);
         });
 
-        it("should load the google maps script with API key", () => {
+        it("when key is configured", () => {
             const googleMap = renderMap({ address, apiKey: APIKey }).find(GoogleMap);
 
             expect(googleMap.prop("bootstrapURLKeys").key).toContain(APIKey);
