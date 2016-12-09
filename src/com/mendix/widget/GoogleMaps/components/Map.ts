@@ -9,7 +9,7 @@ export interface MapProps extends Props<Map> {
     address?: string;
 }
 
-interface MapState {
+export interface MapState {
     location?: LatLng;
 }
 
