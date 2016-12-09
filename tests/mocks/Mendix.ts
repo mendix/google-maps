@@ -1,5 +1,5 @@
 /* tslint:disable */
-export class MxMock implements mx.mx {
+class MxMock implements mx.mx {
     appUrl: string;
     baseUrl: string;
     modulePath: string
@@ -14,7 +14,8 @@ export class MxMock implements mx.mx {
     ui: mx.ui;
     onError(error: Error): void { /* */ }
 }
-export class MxUiMock implements mx.ui {
+
+class MxUiMock implements mx.ui {
     action(
         actionname: string,
         action: {
@@ -37,7 +38,6 @@ export class MxUiMock implements mx.ui {
         },
         scope?: any
     ): void { /* */ }
-
     back(): void { /* */ }
     confirmation(args: { content: string, proceed: string, cancel: string, handler: Function }): void { /* */ }
     error(msg: string, modal?: boolean): void { /* */ }
@@ -68,3 +68,8 @@ export class MxUiMock implements mx.ui {
     ): void { /* */ }
     showLogin(messageCode: number): void { /* */ }
 }
+
+let mxMockObject =  MxMock.prototype;
+mxMockObject.ui = MxUiMock.prototype;
+
+export const mockMendix = mxMockObject;

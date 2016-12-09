@@ -1,9 +1,9 @@
 /* tslint:disable:max-line-length */
-export class MockGoogle {
-    maps: google.maps.Map;
+class MockGoogle {
+    maps: MapsMock;
 }
 
-export class MapsMock implements google.maps.Map {
+class MapsMock implements google.maps.Map {
     controls: google.maps.MVCArray[];
     data: google.maps.Data;
     mapTypes: google.maps.MapTypeRegistry;
@@ -51,7 +51,7 @@ export class MapsMock implements google.maps.Map {
     unbindAll(): void {/** */ }
 }
 
-export class GeocoderMock implements google.maps.Geocoder {
+class MockGeocoder implements google.maps.Geocoder {
     // cant make it static, at time of require not all classes are mocked.
     successResult: google.maps.GeocoderResult[] = [ {
         address_components: [ {
@@ -188,7 +188,6 @@ export class GeocoderMock implements google.maps.Geocoder {
     ];
     geocode(request: google.maps.GeocoderRequest, callback: (results: google.maps.GeocoderResult[],
         status: google.maps.GeocoderStatus) => void): void {
-        console.log("Mock result");
         if (request.address === "multipleAddress") {
             callback(this.multipleResult, google.maps.GeocoderStatus.OK);
         } else if (request.address === "invalidAddress") {
@@ -201,7 +200,7 @@ export class GeocoderMock implements google.maps.Geocoder {
     }
 }
 
-export class LatLngBoundsMock implements google.maps.LatLngBounds {
+class LatLngBoundsMock implements google.maps.LatLngBounds {
     constructor(sw?: google.maps.LatLng | google.maps.LatLngLiteral, ne?: google.maps.LatLng | google.maps.LatLngLiteral) {/** */ }
     contains(latLng: google.maps.LatLng): boolean { return true; }
     equals(other: google.maps.LatLngBounds | google.maps.LatLngBoundsLiteral): boolean { return true; }
@@ -219,7 +218,7 @@ export class LatLngBoundsMock implements google.maps.LatLngBounds {
     }
 }
 // Implemented for mocking
-export class LatLngMock implements google.maps.LatLng {
+class LatLngMock implements google.maps.LatLng {
     _lat: number;
     _lng: number;
     constructor(lat: number, lng: number, noWrap?: boolean) {
@@ -236,7 +235,7 @@ export class LatLngMock implements google.maps.LatLng {
     toJSON(): google.maps.LatLngLiteral { return({ lat: 0, lng: 0 }); }
 }
 
-export class MarkerMock implements google.maps.Marker {
+class MarkerMock implements google.maps.Marker {
     static MAX_ZINDEX: number;
     map: google.maps.Map;
     constructor(opts?: google.maps.MarkerOptions) {/** */ }
@@ -286,7 +285,7 @@ export class MarkerMock implements google.maps.Marker {
     unbindAll(): void {/** */ }
 }
 
-export enum GeocoderStatus {
+enum GeocoderStatus {
     ERROR,
     INVALID_REQUEST,
     OK,
@@ -296,7 +295,7 @@ export enum GeocoderStatus {
     ZERO_RESULTS
 }
 
-export enum GeocoderLocationType {
+enum GeocoderLocationType {
     APPROXIMATE,
     GEOMETRIC_CENTER,
     RANGE_INTERPOLATED,
@@ -304,7 +303,7 @@ export enum GeocoderLocationType {
 }
 
 // Add basic static handler store for testing.
-export class EventMock {
+class EventMock {
     static handlers: Function[] = [];
     static addDomListener(instance: Object, eventName: string, handler: Function, capture?: boolean): google.maps.MapsEventListener {
         EventMock.handlers.push(handler);
@@ -338,3 +337,15 @@ export class EventMock {
         EventMock.handlers = [];
     }
 }
+
+let googleMockObject = MockGoogle.prototype as any;
+googleMockObject.maps = MapsMock.prototype;
+googleMockObject.maps.Geocoder = MockGeocoder;
+googleMockObject.maps.Map = MapsMock;
+googleMockObject.maps.LatLngBounds = LatLngBoundsMock;
+googleMockObject.maps.LatLng = LatLngMock;
+googleMockObject.maps.Marker = MarkerMock;
+googleMockObject.maps.event = EventMock;
+googleMockObject.maps.GeocoderStatus = GeocoderStatus;
+
+export const mockGoogleMaps = googleMockObject;

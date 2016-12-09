@@ -5,12 +5,9 @@ import { DOM, createElement } from "react";
 import { Map, MapProps } from "../Map";
 import { Marker } from "../Marker";
 
-import {
-    EventMock, GeocoderLocationType, GeocoderMock, GeocoderStatus, LatLngBoundsMock,
-    LatLngMock, MapsMock, MarkerMock, MockGoogle
-} from "../../../../../../../tests/mocks/GoogleMaps";
+import { mockGoogleMaps } from "tests/mocks/GoogleMaps";
+import { mockMendix } from "tests/mocks/Mendix";
 
-import { MxMock, MxUiMock } from "../../../../../../../tests/mocks/Mendix";
 describe("Map", () => {
     const address = "Lumumba Ave, Kampala, Uganda";
     const invalidAddress = "invalidAddress";
@@ -21,18 +18,8 @@ describe("Map", () => {
     const multipleAddressMockLocation = { lat: 34.213171, lng: -118.571022 };
 
     beforeAll(() => {
-        window.google = MockGoogle;
-        window.google.maps = {};
-        window.google.maps.Geocoder = GeocoderMock;
-        window.google.maps.Map = MapsMock;
-        window.google.maps.LatLngBounds = LatLngBoundsMock;
-        window.google.maps.LatLng = LatLngMock;
-        window.google.maps.Marker = MarkerMock;
-        window.google.maps.event = EventMock;
-        window.google.maps.GeocoderStatus = GeocoderStatus;
-        window.google.maps.GeocoderLocationType = GeocoderLocationType;
-        window.mx = MxMock.prototype;
-        window.mx.ui = MxUiMock.prototype;
+        window.google = mockGoogleMaps;
+        window.mx = mockMendix;
     });
 
     it("should render with the map structure", () => {
@@ -196,6 +183,7 @@ describe("Map", () => {
     });
 
     afterAll(() => {
+        window.mx = undefined;
         window.google = undefined;
     });
 });
