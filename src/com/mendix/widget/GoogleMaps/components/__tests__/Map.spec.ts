@@ -150,8 +150,7 @@ describe("Map", () => {
             expect(marker.prop("lat")).toBe(successMockLocation.lat);
             expect(marker.prop("lng")).toBe(successMockLocation.lng);
 
-            const map = output.instance() as Map;
-            map.componentWillReceiveProps({ address: "multipleAddress" });
+            output.setProps({ address: "multipleAddress" });
 
             const markerNew = output.find(Marker).at(0);
             expect(markerNew.prop("lat")).toBe(multipleAddressMockLocation.lat);
@@ -162,9 +161,8 @@ describe("Map", () => {
             const output = setUpMap(address);
 
             spyOn(window.google.maps.Geocoder.prototype, "geocode");
-            const map = output.instance() as Map;
 
-            map.componentWillReceiveProps({ address });
+            output.setProps({ address });
 
             expect(window.google.maps.Geocoder.prototype.geocode).not.toHaveBeenCalled();
         });
