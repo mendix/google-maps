@@ -61,7 +61,7 @@ describe("Map", () => {
         });
 
         it("should center to the default address", () => {
-            const googleMap = renderMap({ address }).childAt(0);
+            const googleMap = renderMap({ address }).find(GoogleMap);
 
             expect(googleMap.prop("center").lat).toBe(defaultCenterLocation.lat);
             expect(googleMap.prop("center").lng).toBe(defaultCenterLocation.lng);
@@ -130,13 +130,13 @@ describe("Map", () => {
 
     describe("on loading", () => {
         it("should load the google maps script without API key", () => {
-            const googleMap = renderMap({ address, apiKey: undefined }).childAt(0);
+            const googleMap = renderMap({ address, apiKey: undefined }).find(GoogleMap);
 
             expect(googleMap.prop("bootstrapURLKeys").key).not.toContain(APIKey);
         });
 
         it("should load the google maps script with API key", () => {
-            const googleMap = renderMap({ address, apiKey: APIKey }).childAt(0);
+            const googleMap = renderMap({ address, apiKey: APIKey }).find(GoogleMap);
 
             expect(googleMap.prop("bootstrapURLKeys").key).toContain(APIKey);
         });
@@ -144,8 +144,7 @@ describe("Map", () => {
 
     describe("with updated the address", () => {
         it("should change marker location to new address", () => {
-            const output = renderMap({ address });
-            output.find(GoogleMap).prop("onGoogleApiLoaded").apply();
+            const output = setUpMap(address);
 
             const marker = output.find(Marker).at(0);
             expect(marker.prop("lat")).toBe(successMockLocation.lat);
@@ -160,8 +159,7 @@ describe("Map", () => {
         });
 
         it("should not lookup the location if address is not changed", () => {
-            const output = renderMap({ address });
-            output.find(GoogleMap).prop("onGoogleApiLoaded").apply();
+            const output = setUpMap(address);
 
             spyOn(window.google.maps.Geocoder.prototype, "geocode");
             const map = output.instance() as Map;
