@@ -15,11 +15,15 @@
     "url": "https://github.com/mendixlabs/google-maps/issues"
   },
   "devDependencies": {
+    "@types/big.js": "0.0.31",
     "@types/core-js": "^0.9.34",
+    "@types/dojo": "^1.9.35",
     "@types/enzyme": "^2.4.36",
+    "@types/googlemaps": "^3.25.35",
     "@types/jasmine": "^2.5.35",
     "@types/karma": "^0.13.33",
-    "@types/lodash": "^4.14.38",
+    "@types/react": "^0.14.37",
+    "@types/react-dom": "^0.14.17",
     "copy-webpack-plugin": "^3.0.1",
     "enzyme": "^2.5.1",
     "grunt": "1.0.1",
@@ -49,12 +53,7 @@
     "webpack": "^1.13.2",
     "webpack-dev-server": "^1.16.2"
   },
-  "dependencies": {    
-    "@types/big.js": "0.0.31",
-    "@types/dojo": "^1.9.35",
-    "@types/googlemaps": "^3.25.35",
-    "@types/react": "^0.14.37",
-    "@types/react-dom": "^0.14.17",
+  "dependencies": {
     "google-map-react": "~0.21.5",
     "react": "~15.3.2",
     "react-dom": "~15.3.2"
