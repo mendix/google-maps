@@ -7,10 +7,6 @@
 ## Dependencies
 Mendix 6
 
-## Properties
-* API key; The google maps Javascript API v3 does not require an API key to function correctly. However, google strongly encourages you to load the maps API using an APIs key
-* Address attribute containing address. Use names of known places such as cities, streets, etc
-
 ## Issues
 Please report issues at https://github.com/mendixlabs/google-maps/issues.
 
