@@ -10,6 +10,7 @@ export interface MapProps extends Props<Map> {
 }
 
 export interface MapState {
+    isLoaded?: Boolean;
     location?: LatLng;
 }
 
@@ -21,15 +22,14 @@ export class Map extends Component<MapProps, MapState> {
         super(props);
 
         this.state = {
+            isLoaded: false,
             location: null
         };
     }
 
     componentWillReceiveProps(nextProps: MapProps) {
-        if (this.state.location && this.props.address !== nextProps.address) {
-            this.getLocation(nextProps.address, (location: LatLng) =>
-                this.setState({ location })
-            );
+        if (this.state.isLoaded && this.props.address !== nextProps.address) {
+            this.updateAddress(nextProps.address);
         }
     }
 
@@ -46,31 +46,40 @@ export class Map extends Component<MapProps, MapState> {
             bootstrapURLKeys: { key: this.props.apiKey },
             center: this.state.location ? this.state.location : this.defaultCenterLocation,
             defaultZoom: 14,
-            onGoogleApiLoaded: () =>
-                this.getLocation(this.props.address, (location: LatLng) =>
-                    this.setState({ location })
-                ),
+            onGoogleApiLoaded: () => this.handleOnGoogleApiLoaded(),
             resetBoundsOnResize: true,
             yesIWantToUseGoogleMapApiInternals: true
         };
     }
-    private getLocation(address: string, callback: (result: LatLng) => void) {
-        if (address) {
-            const geocoder = new google.maps.Geocoder();
-            geocoder.geocode({ address }, (results, status) => {
-                if (status === google.maps.GeocoderStatus.OK) {
-                    callback({
-                        lat: results[0].geometry.location.lat(),
-                        lng: results[0].geometry.location.lng()
-                    });
-                } else {
-                    mx.ui.error(`Can not find address ${this.props.address}`);
-                    callback(null);
-                }
-            });
+
+    private handleOnGoogleApiLoaded() {
+        this.setState({ isLoaded: true });
+        this.updateAddress(this.props.address);
+    }
+
+    private updateAddress(address: string) {
+        if (this.state.isLoaded && address) {
+            this.getLocation(address, (location: LatLng) =>
+                this.setState({ location })
+            );
         } else {
-            callback(null);
+            this.setState({ location: null });
         }
+    }
+
+    private getLocation(address: string, callback: (result: LatLng) => void) {
+        const geocoder = new google.maps.Geocoder();
+        geocoder.geocode({ address }, (results, status) => {
+            if (status === google.maps.GeocoderStatus.OK) {
+                callback({
+                    lat: results[0].geometry.location.lat(),
+                    lng: results[0].geometry.location.lng()
+                });
+            } else {
+                mx.ui.error(`Can not find address ${this.props.address}`);
+                callback(null);
+            }
+        });
     }
 
     private createMaker(location: LatLng) {
