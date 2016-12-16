@@ -28,7 +28,7 @@ export class Map extends Component<MapProps, MapState> {
     }
 
     componentWillReceiveProps(nextProps: MapProps) {
-        if (this.state.isLoaded && this.props.address !== nextProps.address) {
+        if (this.props.address !== nextProps.address) {
             this.updateAddress(nextProps.address);
         }
     }

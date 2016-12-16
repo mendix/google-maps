@@ -1,6 +1,17 @@
 /* tslint:disable:max-line-length */
 class MockGoogle {
     maps: MapsMock;
+    setup(): void {
+        let googleMockObject = MockGoogle.prototype as any;
+        googleMockObject.maps = MapsMock.prototype;
+        googleMockObject.maps.Geocoder = MockGeocoder;
+        googleMockObject.maps.Map = MapsMock;
+        googleMockObject.maps.LatLngBounds = LatLngBoundsMock;
+        googleMockObject.maps.LatLng = LatLngMock;
+        googleMockObject.maps.Marker = MarkerMock;
+        googleMockObject.maps.event = EventMock;
+        googleMockObject.maps.GeocoderStatus = GeocoderStatus;
+    }
 }
 
 class MapsMock implements google.maps.Map {
@@ -285,7 +296,7 @@ class MarkerMock implements google.maps.Marker {
     unbindAll(): void {/** */ }
 }
 
-enum GeocoderStatus {
+export enum GeocoderStatus {
     ERROR,
     INVALID_REQUEST,
     OK,
@@ -339,13 +350,5 @@ class EventMock {
 }
 
 let googleMockObject = MockGoogle.prototype as any;
-googleMockObject.maps = MapsMock.prototype;
-googleMockObject.maps.Geocoder = MockGeocoder;
-googleMockObject.maps.Map = MapsMock;
-googleMockObject.maps.LatLngBounds = LatLngBoundsMock;
-googleMockObject.maps.LatLng = LatLngMock;
-googleMockObject.maps.Marker = MarkerMock;
-googleMockObject.maps.event = EventMock;
-googleMockObject.maps.GeocoderStatus = GeocoderStatus;
 
 export const mockGoogleMaps = googleMockObject;

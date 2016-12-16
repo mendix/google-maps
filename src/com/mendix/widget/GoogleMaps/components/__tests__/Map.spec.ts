@@ -19,6 +19,7 @@ describe("Map", () => {
 
     const setUpMap = (addressParam: string, APIKeyParam?: string): ShallowWrapper<MapProps, MapState> => {
         const output = renderMap({ address: addressParam, apiKey: APIKeyParam });
+        mockGoogleMaps.setup();
         output.find(GoogleMap).prop("onGoogleApiLoaded").apply();
         return output;
     };
@@ -46,9 +47,8 @@ describe("Map", () => {
 
     describe("with no address", () => {
         it("should not look up the location", () => {
-            spyOn(window.google.maps.Geocoder.prototype, "geocode").and.callThrough();
-
             setUpMap("");
+            spyOn(window.google.maps.Geocoder.prototype, "geocode").and.callThrough();
 
             expect(window.google.maps.Geocoder.prototype.geocode).not.toHaveBeenCalled();
         });
@@ -98,6 +98,7 @@ describe("Map", () => {
             const output = setUpMap("multipleAddress" );
 
             const marker = output.find(Marker);
+
             expect(marker.prop("lat")).toBe(multipleAddressMockLocation.lat);
             expect(marker.prop("lng")).toBe(multipleAddressMockLocation.lng);
         });
