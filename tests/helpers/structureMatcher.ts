@@ -7,7 +7,7 @@ import * as find from "core-js/fn/array/find";
 import { ReactChild, ReactElement, isValidElement } from "react";
 
 export type ElementStructure = string | jasmine.Any | ElementJson;
-export type ElementJson = { type: string, props: { [name: string]: any }, children: ElementStructure[] };
+export type ElementJson = { type: string, props: { [ name: string ]: any }, children: ElementStructure[] };
 
 export function findDifference(expected: ElementStructure | ElementStructure[], actual: ElementStructure | ElementStructure[], strict: boolean): string {
     if (Array.isArray(expected)) {
@@ -77,9 +77,13 @@ export function findDifference(expected: ElementStructure | ElementStructure[], 
         const actualClasses = (actualClassName || "").trim().split(/\s+/);
 
         const missingClasses = expectedClasses.filter(c => actualClasses.indexOf(c) === -1);
+        const superfluousClasses = actualClasses.filter(c => expectedClasses.indexOf(c) === -1);
 
         if (missingClasses.length) {
             return `${msgPrefix} classes ${missingClasses.join(", ")}`;
+        }
+        if (strict && superfluousClasses.length) {
+            return `${msgPrefix} classes ${expectedClassName} but not ${superfluousClasses.join(", ")}`;
         }
         return null;
     }
