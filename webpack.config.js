@@ -7,9 +7,7 @@ module.exports = {
     output: {
         path: path.resolve(__dirname, "dist/tmp"),
         filename: "src/com/mendix/widget/GoogleMaps/GoogleMaps.js",
-        libraryTarget:  "umd",
-        umdNamedDefine: true,
-        library: "com.mendix.widget.GoogleMaps.GoogleMaps"
+        libraryTarget:  "umd"
     },
     resolve: {
         extensions: [ "", ".ts", ".js", ".json" ],

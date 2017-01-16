@@ -16,6 +16,7 @@ describe("Map", () => {
     const defaultCenterLocation = { lat: 51.9107963, lng: 4.4789878 };
     const successMockLocation = { lat: 30, lng: 118 };
     const multipleAddressMockLocation = { lat: 34.213171, lng: -118.571022 };
+    let mxOriginal: mx.mx;
 
     const setUpMap = (addressParam: string, APIKeyParam?: string): ShallowWrapper<MapProps, MapState> => {
         const output = renderMap({ address: addressParam, apiKey: APIKeyParam });
@@ -25,6 +26,7 @@ describe("Map", () => {
     };
 
     beforeAll(() => {
+         mxOriginal = window.mx;
         window.google = mockGoogleMaps;
         window.mx = mockMendix;
     });
@@ -88,10 +90,9 @@ describe("Map", () => {
 
         it("should center to the location of the address", () => {
             const output = setUpMap(address);
-            const mapComponent = output.instance() as Map;
 
-            expect(mapComponent.state.location.lat).toBe(successMockLocation.lat);
-            expect(mapComponent.state.location.lng).toBe(successMockLocation.lng);
+            expect(output.state("location").lat).toBe(successMockLocation.lat);
+            expect(output.state("location").lng).toBe(successMockLocation.lng);
         });
 
         it("should display the first marker if multiple locations are found", () => {
@@ -171,7 +172,7 @@ describe("Map", () => {
     });
 
     afterAll(() => {
-        window.mx = undefined;
+        window.mx = mxOriginal;
         window.google = undefined;
     });
 });

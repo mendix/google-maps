@@ -1,8 +1,8 @@
 declare module "google-map-react" {
 
     export interface LatLng {
-        lat: number;
-        lng: number;
+        lat: number | undefined;
+        lng: number | undefined;
     }
 
     export interface GoogleMapLoader {
@@ -10,7 +10,7 @@ declare module "google-map-react" {
     }
 
     export interface bootstrapURLKeysProps {
-        key: string
+        key: string | undefined
     }
 
     export interface GoogleMapProps {
