@@ -111,15 +111,15 @@ class MockGeocoder implements google.maps.Geocoder {
         address_components: [],
         formatted_address: "",
         geometry: {
-            bounds: null,
-            location: null,
+            bounds: new google.maps.LatLngBounds(),
+            location:  new google.maps.LatLng(3, 18),
             location_type: 0,
-            viewport: null
+            viewport: new google.maps.LatLngBounds()
         },
-        partial_match: null,
-        place_id: null,
-        postcode_localities: [ null ],
-        types: [ null ]
+        partial_match: false,
+        place_id: "",
+        postcode_localities: [],
+        types: []
     } ];
     multipleResult: google.maps.GeocoderResult[] = [ {
             address_components: [ {

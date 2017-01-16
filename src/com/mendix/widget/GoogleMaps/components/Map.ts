@@ -11,7 +11,7 @@ export interface MapProps extends Props<Map> {
 
 export interface MapState {
     isLoaded?: Boolean;
-    location?: LatLng;
+    location?: LatLng | null;
 }
 
 export class Map extends Component<MapProps, MapState> {
@@ -57,7 +57,7 @@ export class Map extends Component<MapProps, MapState> {
         this.updateAddress(this.props.address);
     }
 
-    private updateAddress(address: string) {
+    private updateAddress(address: string | undefined) {
         if (this.state.isLoaded && address) {
             this.getLocation(address, (location: LatLng) =>
                 this.setState({ location })
@@ -67,7 +67,7 @@ export class Map extends Component<MapProps, MapState> {
         }
     }
 
-    private getLocation(address: string, callback: (result: LatLng) => void) {
+    private getLocation(address: string, callback: (result: LatLng | null) => void) {
         const geocoder = new google.maps.Geocoder();
         geocoder.geocode({ address }, (results, status) => {
             if (status === google.maps.GeocoderStatus.OK) {
