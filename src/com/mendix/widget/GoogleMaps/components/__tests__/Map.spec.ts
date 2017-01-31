@@ -68,6 +68,17 @@ describe("Map", () => {
             expect(googleMap.prop("center").lat).toBe(defaultCenterLocation.lat);
             expect(googleMap.prop("center").lng).toBe(defaultCenterLocation.lng);
         });
+
+        it("should center to the coordinates if provided", () => {
+            const coordinateLocation = { lat: "21.2", lng: "1.5" };
+            const output = renderMap({ latitude: coordinateLocation.lat, longitude: coordinateLocation.lng });
+            mockGoogleMaps.setup();
+
+            output.find(GoogleMap).prop("onGoogleApiLoaded").apply();
+
+            expect(output.state("location").lat).toBe(Number(coordinateLocation.lat));
+            expect(output.state("location").lng).toBe(Number(coordinateLocation.lng));
+        });
     });
 
     describe("with a valid address", () => {
@@ -103,6 +114,17 @@ describe("Map", () => {
             expect(marker.prop("lat")).toBe(multipleAddressMockLocation.lat);
             expect(marker.prop("lng")).toBe(multipleAddressMockLocation.lng);
         });
+
+        it("should center to the coordinates if provided", () => {
+            const coordinateLocation = { lat: "21.2", lng: "1.5" };
+            const output = renderMap({ address, latitude: coordinateLocation.lat, longitude: coordinateLocation.lng });
+            mockGoogleMaps.setup();
+
+            output.find(GoogleMap).prop("onGoogleApiLoaded").apply();
+
+            expect(output.state("location").lat).toBe(Number(coordinateLocation.lat));
+            expect(output.state("location").lng).toBe(Number(coordinateLocation.lng));
+        });
     });
 
     describe("with an invalid address", () => {
@@ -127,6 +149,17 @@ describe("Map", () => {
             setUpMap(invalidAddress);
 
             expect(window.mx.ui.error).toHaveBeenCalled();
+        });
+
+        it("should center to the coordinates if provided", () => {
+            const coordinateLocation = { lat: "21.2", lng: "1.5" };
+            const output = renderMap({ address: invalidAddress, latitude: coordinateLocation.lat, longitude: coordinateLocation.lng });
+            mockGoogleMaps.setup();
+
+            output.find(GoogleMap).prop("onGoogleApiLoaded").apply();
+
+            expect(output.state("location").lat).toBe(Number(coordinateLocation.lat));
+            expect(output.state("location").lng).toBe(Number(coordinateLocation.lng));
         });
     });
 
@@ -167,6 +200,41 @@ describe("Map", () => {
             output.setProps({ address });
 
             expect(window.google.maps.Geocoder.prototype.geocode).not.toHaveBeenCalled();
+        });
+
+    });
+
+    describe("with updated the coordinates", () => {
+        it("should change marker location to new address", () => {
+            const coordinateLocation1 = { lat: "21.2", lng: "1.5" };
+            const coordinateLocation2 = { lat: "44.44", lng: "60.11" };
+            const output = renderMap({ latitude: coordinateLocation1.lat, longitude: coordinateLocation1.lng });
+            mockGoogleMaps.setup();
+
+            output.find(GoogleMap).prop("onGoogleApiLoaded").apply();
+            const marker = output.find(Marker).at(0);
+
+            expect(marker.prop("lat")).toBe(Number(coordinateLocation1.lat));
+            expect(marker.prop("lng")).toBe(Number(coordinateLocation1.lng));
+
+            output.setProps({ latitude: coordinateLocation2.lat, longitude: coordinateLocation2.lng });
+            const markerNew = output.find(Marker).at(0);
+
+            expect(markerNew.prop("lat")).toBe(Number(coordinateLocation2.lat));
+            expect(markerNew.prop("lng")).toBe(Number(coordinateLocation2.lng));
+        });
+
+        it("should not lookup the location if address is not changed", () => {
+            const coordinateLocation = { lat: "21.2", lng: "1.5" };
+            const output = renderMap({ latitude: coordinateLocation.lat, longitude: coordinateLocation.lng });
+            mockGoogleMaps.setup();
+
+            output.find(GoogleMap).prop("onGoogleApiLoaded").apply();
+            output.setProps({ latitude: coordinateLocation.lat, longitude: coordinateLocation.lng });
+            const markerNew = output.find(Marker).at(0);
+
+            expect(markerNew.prop("lat")).toBe(Number(coordinateLocation.lat));
+            expect(markerNew.prop("lng")).toBe(Number(coordinateLocation.lng));
         });
 
     });

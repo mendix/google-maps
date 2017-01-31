@@ -29,11 +29,33 @@
             <category>General</category>
             <description>The Google Maps Javascript API v3 does not require an API key to function correctly. However, Google strongly encourages you to load the Maps API using an APIs key</description>
         </property>
-        <property key="addressAttribute" type="attribute" required="true">
+        <property key="addressAttribute" type="attribute" required="false">
             <caption>Address attribute</caption>
             <category>Data source</category>
-            <description>Attribute where the address string is stored</description>
+            <description>Attribute where the address string is stored. It is not used if coordinates are specified</description>
             <attributeTypes>
+                <attributeType name="String"/>
+            </attributeTypes>
+        </property>
+        <property key="latitudeAttribute" type="attribute"  required="false">
+            <caption>Latitude attribute</caption>
+            <category>Data source</category>
+            <description>The latitude attribute.</description>
+            <attributeTypes>
+                <attributeType name="Integer"/>
+                <attributeType name="Float"/>
+                <attributeType name="Decimal"/>
+                <attributeType name="String"/>
+            </attributeTypes>
+        </property>
+        <property key="longitudeAttribute" type="attribute"  required="false">
+            <caption>Longitude attribute</caption>
+            <category>Data source</category>
+            <description>The longitude attribute.</description>
+            <attributeTypes>
+                <attributeType name="Integer"/>
+                <attributeType name="Float"/>
+                <attributeType name="Decimal"/>
                 <attributeType name="String"/>
             </attributeTypes>
         </property>

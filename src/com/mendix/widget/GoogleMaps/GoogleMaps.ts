@@ -10,6 +10,8 @@ class GoogleMaps extends WidgetBase {
     // Properties from Mendix modeler
     private apiKey: string;
     private addressAttribute: string;
+    private latitudeAttribute: string;
+    private longitudeAttribute: string;
     // Internal variables
     private contextObject: mendix.lib.MxObject;
 
@@ -40,21 +42,23 @@ class GoogleMaps extends WidgetBase {
                 callback: () => this.updateRendering(),
                 guid: this.contextObject.getGuid()
             });
-            this.subscribe({
-                attr: this.addressAttribute,
-                callback: () => this.updateRendering(),
-                guid: this.contextObject.getGuid()
-            });
+            [ this.addressAttribute, this.latitudeAttribute, this.longitudeAttribute ].forEach((attr) =>
+                this.subscribe({
+                    attr,
+                    callback: () => this.updateRendering(),
+                    guid: this.contextObject.getGuid()
+                })
+            );
+            
         }
     }
 
     private getProps(): MapProps {
-        const address = this.contextObject
-            ? this.contextObject.get(this.addressAttribute) as string
-            : undefined;
         return {
-            address,
-            apiKey: this.apiKey
+            address: this.contextObject? this.contextObject.get(this.addressAttribute) as string : undefined,
+            apiKey: this.apiKey,
+            latitude: this.contextObject? this.contextObject.get(this.latitudeAttribute) as string : undefined,
+            longitude: this.contextObject? this.contextObject.get(this.longitudeAttribute) as string : undefined
         };
     }
 }

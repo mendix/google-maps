@@ -7,6 +7,8 @@ import { Marker } from "./Marker";
 export interface MapProps extends Props<Map> {
     apiKey?: string;
     address?: string;
+    latitude?: string;
+    longitude?: string;
 }
 
 export interface MapState {
@@ -28,8 +30,15 @@ export class Map extends Component<MapProps, MapState> {
     }
 
     componentWillReceiveProps(nextProps: MapProps) {
-        if (this.props.address !== nextProps.address) {
-            this.updateAddress(nextProps.address);
+        if (nextProps.latitude && nextProps.longitude) {
+            if (this.props.latitude !== nextProps.latitude || this.props.longitude !== nextProps.longitude) {
+                const location:LatLng = { lat: Number(nextProps.latitude), lng: Number(nextProps.longitude) };
+                this.setState({ location });
+            }
+        } else {
+            if (this.props.address !== nextProps.address) {
+                this.updateAddress(nextProps.address);
+            }
         }
     }
 
@@ -54,7 +63,12 @@ export class Map extends Component<MapProps, MapState> {
 
     private handleOnGoogleApiLoaded() {
         this.setState({ isLoaded: true });
-        this.updateAddress(this.props.address);
+        if (this.props.latitude && this.props.longitude) {
+            const location: LatLng = { lat: Number(this.props.latitude), lng: Number(this.props.longitude) };
+            this.setState({ location });
+        } else {
+            this.updateAddress(this.props.address);
+        }
     }
 
     private updateAddress(address: string | undefined) {
