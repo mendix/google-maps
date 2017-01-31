@@ -32,8 +32,7 @@ export class Map extends Component<MapProps, MapState> {
     componentWillReceiveProps(nextProps: MapProps) {
         if (nextProps.latitude && nextProps.longitude) {
             if (this.props.latitude !== nextProps.latitude || this.props.longitude !== nextProps.longitude) {
-                const location:LatLng = { lat: Number(nextProps.latitude), lng: Number(nextProps.longitude) };
-                this.setState({ location });
+                this.setState({ location: { lat: Number(nextProps.latitude), lng: Number(nextProps.longitude) } });
             }
         } else {
             if (this.props.address !== nextProps.address) {
@@ -45,7 +44,7 @@ export class Map extends Component<MapProps, MapState> {
     render() {
         return DOM.div({ className: "widget-google-maps" },
             createElement(GoogleMap, this.getGoogleMapProps(),
-                this.state.location ? this.createMaker(this.state.location) : null
+                this.createMaker(this.state.location)
             )
         );
     }
@@ -53,7 +52,7 @@ export class Map extends Component<MapProps, MapState> {
     private getGoogleMapProps(): GoogleMapProps {
         return {
             bootstrapURLKeys: { key: this.props.apiKey },
-            center: this.state.location ? this.state.location : this.defaultCenterLocation,
+            center:  this.state.location || this.defaultCenterLocation,
             defaultZoom: 14,
             onGoogleApiLoaded: () => this.handleOnGoogleApiLoaded(),
             resetBoundsOnResize: true,
@@ -64,8 +63,7 @@ export class Map extends Component<MapProps, MapState> {
     private handleOnGoogleApiLoaded() {
         this.setState({ isLoaded: true });
         if (this.props.latitude && this.props.longitude) {
-            const location: LatLng = { lat: Number(this.props.latitude), lng: Number(this.props.longitude) };
-            this.setState({ location });
+            this.setState({ location: { lat: Number(this.props.latitude), lng: Number(this.props.longitude) } });
         } else {
             this.updateAddress(this.props.address);
         }
@@ -96,10 +94,14 @@ export class Map extends Component<MapProps, MapState> {
         });
     }
 
-    private createMaker(location: LatLng) {
-        return createElement(Marker, {
-            lat: location.lat,
-            lng: location.lng
-        });
+    private createMaker(location: LatLng | any) {
+        if (this.state.location) {
+            return createElement(Marker, {
+                lat: location.lat,
+                lng: location.lng
+            });
+        } else {
+            return null;
+        }
     }
 }

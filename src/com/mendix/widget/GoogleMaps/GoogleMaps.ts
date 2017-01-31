@@ -55,10 +55,10 @@ class GoogleMaps extends WidgetBase {
 
     private getProps(): MapProps {
         return {
-            address: this.contextObject? this.contextObject.get(this.addressAttribute) as string : undefined,
+            address: this.contextObject ? this.contextObject.get(this.addressAttribute) as string : undefined,
             apiKey: this.apiKey,
-            latitude: this.contextObject? this.contextObject.get(this.latitudeAttribute) as string : undefined,
-            longitude: this.contextObject? this.contextObject.get(this.longitudeAttribute) as string : undefined
+            latitude: this.contextObject ? this.contextObject.get(this.latitudeAttribute) as string : undefined,
+            longitude: this.contextObject ? this.contextObject.get(this.longitudeAttribute) as string : undefined
         };
     }
 }

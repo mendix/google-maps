@@ -26,13 +26,14 @@ describe("Map", () => {
     };
 
     beforeAll(() => {
-         mxOriginal = window.mx;
+        mxOriginal = window.mx;
         window.google = mockGoogleMaps;
         window.mx = mockMendix;
     });
 
     it("should render with the map structure", () => {
         const map = renderMap({ address });
+
         expect(map).toBeElement(
             DOM.div({ className: "widget-google-maps" },
                 createElement(GoogleMap, {
@@ -135,7 +136,7 @@ describe("Map", () => {
             expect(marker.length).toBe(0);
         });
 
-        it("should center to the default address", () => {
+        it("should center to the default address if not coordinate is provided", () => {
             const output = setUpMap(invalidAddress);
 
             const marker = output.childAt(0);
@@ -177,8 +178,8 @@ describe("Map", () => {
         });
     });
 
-    describe("with updated the address", () => {
-        it("should change marker location to new address", () => {
+    describe("with updated address", () => {
+        it("should change marker location to the new coordinate", () => {
             const output = setUpMap(address);
 
             const marker = output.find(Marker).at(0);
@@ -192,9 +193,8 @@ describe("Map", () => {
             expect(markerNew.prop("lng")).toBe(multipleAddressMockLocation.lng);
         });
 
-        it("should not lookup the location if address is not changed", () => {
+        it("should not lookup the location if the address is not changed", () => {
             const output = setUpMap(address);
-
             spyOn(window.google.maps.Geocoder.prototype, "geocode");
 
             output.setProps({ address });
@@ -204,8 +204,8 @@ describe("Map", () => {
 
     });
 
-    describe("with updated the coordinates", () => {
-        it("should change marker location to new address", () => {
+    describe("with updated coordinates", () => {
+        it("should change marker location to the new coordinate", () => {
             const coordinateLocation1 = { lat: "21.2", lng: "1.5" };
             const coordinateLocation2 = { lat: "44.44", lng: "60.11" };
             const output = renderMap({ latitude: coordinateLocation1.lat, longitude: coordinateLocation1.lng });
@@ -224,7 +224,7 @@ describe("Map", () => {
             expect(markerNew.prop("lng")).toBe(Number(coordinateLocation2.lng));
         });
 
-        it("should not lookup the location if address is not changed", () => {
+        it("should not lookup the location if the coordinate is not changed", () => {
             const coordinateLocation = { lat: "21.2", lng: "1.5" };
             const output = renderMap({ latitude: coordinateLocation.lat, longitude: coordinateLocation.lng });
             mockGoogleMaps.setup();
