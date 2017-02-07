@@ -13,13 +13,12 @@ declare module "google-map-react" {
         key: string | undefined
     }
 
-    export interface GoogleMapProps {
-        center: LatLng;
-        defaultZoom: number;
+    export interface GoogleMapProps {        
         bootstrapURLKeys?: bootstrapURLKeysProps;
-        onGoogleApiLoaded?: Function;
-        onCenterChange?:Function;
+        center?: LatLng;
+        defaultZoom?: number;        
         googleMapLoader?:Function;
+        onGoogleApiLoaded?: Function;
         resetBoundsOnResize?: boolean;
         yesIWantToUseGoogleMapApiInternals?: boolean;
     }

@@ -1,59 +1,62 @@
 import { Component, DOM, Props, createElement } from "react";
 import GoogleMap from "google-map-react";
 import { GoogleMapProps, LatLng } from "google-map-react";
-
+import { List } from "immutable";
 import { Marker } from "./Marker";
 
-export interface MapProps extends Props<Map> {
-    apiKey?: string;
+export interface LocationObject {
     address?: string;
     latitude?: string;
     longitude?: string;
 }
+export interface MapProps extends Props<Map> {
+    apiKey?: string;
+    contextGuid?: string;
+    locations: LocationObject[];
+}
 
 export interface MapState {
+    alertMessage?: string;
     isLoaded?: Boolean;
-    location?: LatLng | null;
+    locations: LocationObject[];
 }
 
 export class Map extends Component<MapProps, MapState> {
     // Location of Mendix Netherlands office
     private defaultCenterLocation: LatLng = { lat: 51.9107963, lng: 4.4789878 };
-
+    static defaultProps: MapProps = {
+        locations: []
+    };
     constructor(props: MapProps) {
         super(props);
 
         this.state = {
             isLoaded: false,
-            location: null
+            locations: props.locations
         };
     }
 
     componentWillReceiveProps(nextProps: MapProps) {
-        if (nextProps.latitude && nextProps.longitude) {
-            if (this.props.latitude !== nextProps.latitude || this.props.longitude !== nextProps.longitude) {
-                this.setState({ location: { lat: Number(nextProps.latitude), lng: Number(nextProps.longitude) } });
-            }
-        } else {
-            if (this.props.address !== nextProps.address) {
-                this.updateAddress(nextProps.address);
-            }
+        if (this.props.locations !== nextProps.locations) {
+            this.setState({ isLoaded: true, locations: nextProps.locations });
         }
     }
 
     render() {
         return DOM.div({ className: "widget-google-maps" },
             createElement(GoogleMap, this.getGoogleMapProps(),
-                this.createMaker(this.state.location)
-            )
+                this.state.locations.map((locationObject: LocationObject, index) => (
+                    this.createMaker(locationObject, index)
+                )
+            ))
         );
     }
 
     private getGoogleMapProps(): GoogleMapProps {
         return {
             bootstrapURLKeys: { key: this.props.apiKey },
-            center:  this.state.location || this.defaultCenterLocation,
-            defaultZoom: 14,
+            center: { lat: Number(this.props.locations[0].latitude), lng: Number(this.props.locations[0].longitude) },
+            defaultZoom: 7,
             onGoogleApiLoaded: () => this.handleOnGoogleApiLoaded(),
             resetBoundsOnResize: true,
             yesIWantToUseGoogleMapApiInternals: true
@@ -61,22 +64,13 @@ export class Map extends Component<MapProps, MapState> {
     }
 
     private handleOnGoogleApiLoaded() {
-        this.setState({ isLoaded: true });
-        if (this.props.latitude && this.props.longitude) {
-            this.setState({ location: { lat: Number(this.props.latitude), lng: Number(this.props.longitude) } });
-        } else {
-            this.updateAddress(this.props.address);
-        }
-    }
-
-    private updateAddress(address: string | undefined) {
-        if (this.state.isLoaded && address) {
-            this.getLocation(address, (location: LatLng) =>
-                this.setState({ location })
-            );
-        } else {
-            this.setState({ location: null });
-        }
+        this.props.locations.filter((location) => !!location.address).map((locationObject: LocationObject, index) =>
+            this.getLocation(locationObject.address as string, (location: LatLng) => {
+                locationObject.latitude = String(location.lat);
+                locationObject.longitude = String(location.lng);
+                this.setState({ isLoaded: true, locations: this.props.locations });
+            })
+        );
     }
 
     private getLocation(address: string, callback: (result: LatLng | null) => void) {
@@ -88,20 +82,23 @@ export class Map extends Component<MapProps, MapState> {
                     lng: results[0].geometry.location.lng()
                 });
             } else {
-                mx.ui.error(`Can not find address ${this.props.address}`);
+               // mx.ui.error(`Can not find address ${this.props.address}`);
                 callback(null);
             }
         });
     }
 
-    private createMaker(location: LatLng | any) {
-        if (this.state.location) {
-            return createElement(Marker, {
-                lat: location.lat,
-                lng: location.lng
-            });
-        } else {
-            return null;
+    private createMaker(locationObject: LocationObject,index: number) {
+        let element: any = undefined;
+        if (this.state.isLoaded) {
+            if (locationObject.latitude) {
+                element = createElement(Marker, {
+                    key: index,
+                    lat: Number(locationObject.latitude),
+                    lng: Number(locationObject.longitude)
+                });
+            }
         }
+        return element;
     }
 }

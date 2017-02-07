@@ -1,4 +1,4 @@
-import { DOM } from "react";
+import { DOM, StatelessComponent } from "react";
 
-export const Marker = (props: { lat: number, lng: number}) =>
+export const Marker: StatelessComponent<{ lat: number, lng: number}> = (props) =>
     DOM.div({ className: "widget-google-maps-marker" });
