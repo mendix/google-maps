@@ -84,7 +84,7 @@
       }
     ],
     "curly": false,
-    "no-unused-variable": [true, "react"]
+    "arrow-parens": false
   },
   "jsRules": {
     "trailing-comma": [ false ],

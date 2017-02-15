@@ -2,8 +2,9 @@ import { ShallowWrapper, shallow } from "enzyme";
 import GoogleMap from "google-map-react";
 import { DOM, createElement } from "react";
 
-import { Map, MapProps, MapState } from "../Map";
+import { Location, Map, MapProps, MapState } from "../Map";
 import { Marker } from "../Marker";
+import { Alert } from "../Alert";
 
 import { mockGoogleMaps } from "tests/mocks/GoogleMaps";
 import { mockMendix } from "tests/mocks/Mendix";
@@ -18,229 +19,233 @@ describe("Map", () => {
     const multipleAddressMockLocation = { lat: 34.213171, lng: -118.571022 };
     let mxOriginal: mx.mx;
 
-    // const setUpMap = (addressParam: string, APIKeyParam?: string): ShallowWrapper<MapProps, MapState> => {
-    //     const output = renderMap({ address: addressParam, apiKey: APIKeyParam });
-    //     mockGoogleMaps.setup();
-    //     output.find(GoogleMap).prop("onGoogleApiLoaded").apply();
-    //     return output;
-    // };
+    const setUpMap = (locationsParam: Location[], APIKeyParam?: string): ShallowWrapper<MapProps, any> => {
+        const output = renderMap({ locations: locationsParam, apiKey: APIKeyParam, defaultCenterAddress: address });
+        mockGoogleMaps.setup();
+        output.find(GoogleMap).prop("onGoogleApiLoaded").apply();
+        return output;
+    };
 
-    // beforeAll(() => {
-    //     mxOriginal = window.mx;
-    //     window.google = mockGoogleMaps;
-    //     window.mx = mockMendix;
-    // });
+    beforeAll(() => {
+        mxOriginal = window.mx;
+        window.google = mockGoogleMaps;
+        window.mx = mockMendix;
+    });
 
-    // it("should render with the map structure", () => {
-    //     const map = renderMap({ address });
+    it("should render with the map structure", () => {
+        const map = renderMap({ locations: [ address ], defaultCenterAddress: address });
 
-    //     expect(map).toBeElement(
-    //         DOM.div({ className: "widget-google-maps" },
-    //             createElement(GoogleMap, {
-    //                 bootstrapURLKeys: { key: undefined },
-    //                 center: defaultCenterLocation,
-    //                 defaultZoom: 14,
-    //                 onGoogleApiLoaded: jasmine.any(Function) as any,
-    //                 resetBoundsOnResize: true,
-    //                 yesIWantToUseGoogleMapApiInternals: true
-    //             })
-    //         )
-    //     );
-    // });
+        expect(map).toBeElement(
+            DOM.div({ className: "widget-google-maps" },
+                createElement(Alert, { message: undefined }),
+                createElement(GoogleMap, {
+                    bootstrapURLKeys: { key: undefined },
+                    center: defaultCenterLocation,
+                    defaultZoom: 7,
+                    onGoogleApiLoaded: jasmine.any(Function) as any,
+                    resetBoundsOnResize: true,
+                    yesIWantToUseGoogleMapApiInternals: true
+                })
+            )
+        );
+    });
 
-    // describe("with no address", () => {
-    //     it("should not look up the location", () => {
-    //         setUpMap("");
-    //         spyOn(window.google.maps.Geocoder.prototype, "geocode").and.callThrough();
+    describe("with no address", () => {
+        it("should not look up the location", () => {
+            setUpMap([ { address: "" } ]);
+            spyOn(window.google.maps.Geocoder.prototype, "geocode").and.callThrough();
 
-    //         expect(window.google.maps.Geocoder.prototype.geocode).not.toHaveBeenCalled();
-    //     });
+            expect(window.google.maps.Geocoder.prototype.geocode).not.toHaveBeenCalled();
+        });
 
-    //     it("should not display a marker", () => {
-    //         const output = setUpMap("");
+        it("should not display a marker", () => {
+            const output = setUpMap([ { address: "" } ]);
 
-    //         const marker = output.find(Marker);
-    //         expect(marker.length).toBe(0);
-    //     });
+            const marker = output.find(Marker);
+            expect(marker.length).toBe(0);
+        });
 
-    //     it("should center to the default address", () => {
-    //         const googleMap = renderMap({ address }).find(GoogleMap);
+        it("should center to the default address if no coordinates", () => {
+            const googleMap = renderMap({ locations: [ { address } ], defaultCenterAddress: address }).find(GoogleMap);
 
-    //         expect(googleMap.prop("center").lat).toBe(defaultCenterLocation.lat);
-    //         expect(googleMap.prop("center").lng).toBe(defaultCenterLocation.lng);
-    //     });
+            expect(googleMap.prop("center").lat).toBe(defaultCenterLocation.lat);
+            expect(googleMap.prop("center").lng).toBe(defaultCenterLocation.lng);
+        });
 
-    //     it("should center to the coordinates if provided", () => {
-    //         const coordinateLocation = { lat: "21.2", lng: "1.5" };
-    //         const output = renderMap({ latitude: coordinateLocation.lat, longitude: coordinateLocation.lng });
-    //         mockGoogleMaps.setup();
+        it("should center to the coordinates if provided", () => {
+            const coordinateLocation = { lat: 21.2, lng: 1.5 };
+            const output = setUpMap([ { latitude: coordinateLocation.lat, longitude: coordinateLocation.lng } ]);
 
-    //         output.find(GoogleMap).prop("onGoogleApiLoaded").apply();
+            expect(output.state("locations")[0].latitude).toBe(coordinateLocation.lat);
+            expect(output.state("locations")[0].longitude).toBe(coordinateLocation.lng);
+        });
+    });
 
-    //         expect(output.state("location").lat).toBe(Number(coordinateLocation.lat));
-    //         expect(output.state("location").lng).toBe(Number(coordinateLocation.lng));
-    //     });
-    // });
+    describe("with a valid address", () => {
+        it("should lookup the location", () => {
+            spyOn(window.google.maps.Geocoder.prototype, "geocode");
 
-    // describe("with a valid address", () => {
-    //     it("should lookup the location", () => {
-    //         spyOn(window.google.maps.Geocoder.prototype, "geocode");
+            setUpMap([ { address } ]);
 
-    //         setUpMap(address);
+            expect(window.google.maps.Geocoder.prototype.geocode).toHaveBeenCalled();
+        });
 
-    //         expect(window.google.maps.Geocoder.prototype.geocode).toHaveBeenCalled();
-    //     });
+        it("should render a marker", () => {
+            const output = setUpMap([ { address } ]);
 
-    //     it("should render a marker", () => {
-    //         const output = setUpMap(address);
+            const marker = output.find(Marker);
+            expect(marker.length).toBe(1);
+            expect(marker.prop("lat")).toBe(successMockLocation.lat);
+            expect(marker.prop("lng")).toBe(successMockLocation.lng);
+        });
 
-    //         const marker = output.find(Marker);
-    //         expect(marker.length).toBe(1);
-    //         expect(marker.prop("lat")).toBe(successMockLocation.lat);
-    //         expect(marker.prop("lng")).toBe(successMockLocation.lng);
-    //     });
+        it("should display the first marker if multiple locations are found", () => {
+            const output = setUpMap([ { address: "multipleAddress" } ] );
 
-    //     it("should center to the location of the address", () => {
-    //         const output = setUpMap(address);
+            const marker = output.find(Marker);
 
-    //         expect(output.state("location").lat).toBe(successMockLocation.lat);
-    //         expect(output.state("location").lng).toBe(successMockLocation.lng);
-    //     });
+            expect(marker.prop("lat")).toBe(multipleAddressMockLocation.lat);
+            expect(marker.prop("lng")).toBe(multipleAddressMockLocation.lng);
+        });
+    });
 
-    //     it("should display the first marker if multiple locations are found", () => {
-    //         const output = setUpMap("multipleAddress" );
+    describe("with an invalid address", () => {
+        it("should not render a marker", () => {
+            const output = setUpMap([ { address: invalidAddress } ]);
 
-    //         const marker = output.find(Marker);
+            const marker = output.find(Marker);
+            expect(marker.length).toBe(0);
+        });
 
-    //         expect(marker.prop("lat")).toBe(multipleAddressMockLocation.lat);
-    //         expect(marker.prop("lng")).toBe(multipleAddressMockLocation.lng);
-    //     });
+        it("should have no marker if no coordinate is provided", () => {
+            const output = setUpMap([ { address: invalidAddress } ]);
 
-    //     it("should center to the coordinates if provided", () => {
-    //         const coordinateLocation = { lat: "21.2", lng: "1.5" };
-    //         const output = renderMap({ address, latitude: coordinateLocation.lat, longitude: coordinateLocation.lng });
-    //         mockGoogleMaps.setup();
+            const marker = output.find(Marker);
+            expect(marker.length).toBe(0);
+        });
 
-    //         output.find(GoogleMap).prop("onGoogleApiLoaded").apply();
+        it("should display an error", () => {
+            const actionErrorMessage = `Can not find address ${invalidAddress}`;
+            spyOn(window.mx.ui, "error").and.callThrough();
 
-    //         expect(output.state("location").lat).toBe(Number(coordinateLocation.lat));
-    //         expect(output.state("location").lng).toBe(Number(coordinateLocation.lng));
-    //     });
-    // });
+            const output = setUpMap([ { address: invalidAddress } ]);
 
-    // describe("with an invalid address", () => {
-    //     it("should not render a marker", () => {
-    //         const output = setUpMap(invalidAddress);
+            expect(output.state().alertMessage).toBe(actionErrorMessage);
+            const alert = output.find(Alert);
+            expect(alert.props().message).toBe(output.state().alertMessage);
+        });
 
-    //         const marker = output.find(Marker);
-    //         expect(marker.length).toBe(0);
-    //     });
+        it("should have a marker if coordinates are provided", () => {
+            const coordinateLocation = { lat: 21.2, lng: 1.5 };
+            const output = renderMap({
+                defaultCenterAddress: address,
+                locations: [ {
+                    address: invalidAddress,
+                    latitude: coordinateLocation.lat,
+                    longitude: coordinateLocation.lng
+                } ]
+            });
+            mockGoogleMaps.setup();
 
-    //     it("should center to the default address if not coordinate is provided", () => {
-    //         const output = setUpMap(invalidAddress);
+            output.find(GoogleMap).prop("onGoogleApiLoaded").apply();
 
-    //         const marker = output.childAt(0);
-    //         expect(marker.prop("center").lat).toBe(defaultCenterLocation.lat);
-    //         expect(marker.prop("center").lng).toBe(defaultCenterLocation.lng);
-    //     });
+            expect(output.state("locations")[0].latitude).toBe(coordinateLocation.lat);
+            expect(output.state("locations")[0].longitude).toBe(coordinateLocation.lng);
+        });
+    });
 
-    //     it("should display an error", () => {
-    //         spyOn(window.mx.ui, "error").and.callThrough();
+    describe("loads", () => {
+        it("if no API key is configured", () => {
+            const googleMap = renderMap({
+                apiKey: undefined,
+                defaultCenterAddress: address,
+                locations: [ address ]
+            }).find(GoogleMap);
 
-    //         setUpMap(invalidAddress);
+            expect(googleMap.prop("bootstrapURLKeys").key).not.toContain(APIKey);
+        });
 
-    //         expect(window.mx.ui.error).toHaveBeenCalled();
-    //     });
+        it("when API key is configured", () => {
+            const googleMap = renderMap({
+                apiKey: APIKey,
+                defaultCenterAddress: address,
+                locations: [ address ]
+            }).find(GoogleMap);
 
-    //     it("should center to the coordinates if provided", () => {
-    //         const coordinateLocation = { lat: "21.2", lng: "1.5" };
-    //         const output = renderMap({ address: invalidAddress, latitude: coordinateLocation.lat, longitude: coordinateLocation.lng });
-    //         mockGoogleMaps.setup();
+            expect(googleMap.prop("bootstrapURLKeys").key).toContain(APIKey);
+        });
+    });
 
-    //         output.find(GoogleMap).prop("onGoogleApiLoaded").apply();
+    describe("with an updated address", () => {
+        it("should change marker location to the new address", () => {
+            const output = setUpMap([ { address } ]);
 
-    //         expect(output.state("location").lat).toBe(Number(coordinateLocation.lat));
-    //         expect(output.state("location").lng).toBe(Number(coordinateLocation.lng));
-    //     });
-    // });
+            const marker = output.find(Marker).at(0);
+            expect(marker.prop("lat")).toBe(successMockLocation.lat);
+            expect(marker.prop("lng")).toBe(successMockLocation.lng);
 
-    // describe("on loading", () => {
-    //     it("if no key is configured", () => {
-    //         const googleMap = renderMap({ address, apiKey: undefined }).find(GoogleMap);
+            output.setProps({ locations: [ { address: "multipleAddress" } ], defaultCenterAddress: address });
+            output.find(GoogleMap).prop("onGoogleApiLoaded").apply();
 
-    //         expect(googleMap.prop("bootstrapURLKeys").key).not.toContain(APIKey);
-    //     });
+            const markerNew = output.find(Marker);
+            expect(markerNew.prop("lat")).toBe(multipleAddressMockLocation.lat);
+            expect(markerNew.prop("lng")).toBe(multipleAddressMockLocation.lng);
+        });
 
-    //     it("when key is configured", () => {
-    //         const googleMap = renderMap({ address, apiKey: APIKey }).find(GoogleMap);
+        it("should not lookup the location if the address is not changed", () => {
+            const output = setUpMap([ { address } ]);
+            spyOn(window.google.maps.Geocoder.prototype, "geocode");
 
-    //         expect(googleMap.prop("bootstrapURLKeys").key).toContain(APIKey);
-    //     });
-    // });
+            output.setProps({ locations: [ { address } ], defaultCenterAddress: address });
 
-    // describe("with updated address", () => {
-    //     it("should change marker location to the new coordinate", () => {
-    //         const output = setUpMap(address);
+            expect(window.google.maps.Geocoder.prototype.geocode).not.toHaveBeenCalled();
+        });
 
-    //         const marker = output.find(Marker).at(0);
-    //         expect(marker.prop("lat")).toBe(successMockLocation.lat);
-    //         expect(marker.prop("lng")).toBe(successMockLocation.lng);
+    });
 
-    //         output.setProps({ address: "multipleAddress" });
+    describe("with updated coordinates", () => {
+        it("should change the marker location to the new coordinates", () => {
+            const coordinateLocation1 = { lat: 21.2, lng: 1.5 };
+            const coordinateLocation2 = { lat: 44.44, lng: 60.11 };
+            const output = setUpMap([ { latitude: coordinateLocation1.lat, longitude: coordinateLocation1.lng } ]);
 
-    //         const markerNew = output.find(Marker).at(0);
-    //         expect(markerNew.prop("lat")).toBe(multipleAddressMockLocation.lat);
-    //         expect(markerNew.prop("lng")).toBe(multipleAddressMockLocation.lng);
-    //     });
+            const marker = output.find(Marker).at(0);
+            expect(marker.prop("lat")).toBe(Number(coordinateLocation1.lat));
+            expect(marker.prop("lng")).toBe(Number(coordinateLocation1.lng));
 
-    //     it("should not lookup the location if the address is not changed", () => {
-    //         const output = setUpMap(address);
-    //         spyOn(window.google.maps.Geocoder.prototype, "geocode");
+            output.setProps({
+                defaultCenterAddress: address,
+                locations: [ { latitude: coordinateLocation2.lat, longitude: coordinateLocation2.lng } ]
+            });
+            const markerNew = output.find(Marker).at(0);
 
-    //         output.setProps({ address });
+            expect(markerNew.prop("lat")).toBe(Number(coordinateLocation2.lat));
+            expect(markerNew.prop("lng")).toBe(Number(coordinateLocation2.lng));
+        });
 
-    //         expect(window.google.maps.Geocoder.prototype.geocode).not.toHaveBeenCalled();
-    //     });
+        it("should not lookup the location if the coordinates are not changed", () => {
+            const coordinateLocation = { lat: 21.2, lng: 1.5 };
+            const output = renderMap({
+                defaultCenterAddress: address,
+                locations: [ { latitude: coordinateLocation.lat, longitude: coordinateLocation.lng } ]
+            });
+            mockGoogleMaps.setup();
 
-    // });
+            output.find(GoogleMap).prop("onGoogleApiLoaded").apply();
+            output.setProps({
+                defaultCenterAddress: address,
+                locations: [ { latitude: coordinateLocation.lat, longitude: coordinateLocation.lng } ]
+             });
+            const markerNew = output.find(Marker).at(0);
 
-    // describe("with updated coordinates", () => {
-    //     it("should change marker location to the new coordinate", () => {
-    //         const coordinateLocation1 = { lat: "21.2", lng: "1.5" };
-    //         const coordinateLocation2 = { lat: "44.44", lng: "60.11" };
-    //         const output = renderMap({ latitude: coordinateLocation1.lat, longitude: coordinateLocation1.lng });
-    //         mockGoogleMaps.setup();
+            expect(markerNew.prop("lat")).toBe(Number(coordinateLocation.lat));
+            expect(markerNew.prop("lng")).toBe(Number(coordinateLocation.lng));
+        });
 
-    //         output.find(GoogleMap).prop("onGoogleApiLoaded").apply();
-    //         const marker = output.find(Marker).at(0);
+    });
 
-    //         expect(marker.prop("lat")).toBe(Number(coordinateLocation1.lat));
-    //         expect(marker.prop("lng")).toBe(Number(coordinateLocation1.lng));
-
-    //         output.setProps({ latitude: coordinateLocation2.lat, longitude: coordinateLocation2.lng });
-    //         const markerNew = output.find(Marker).at(0);
-
-    //         expect(markerNew.prop("lat")).toBe(Number(coordinateLocation2.lat));
-    //         expect(markerNew.prop("lng")).toBe(Number(coordinateLocation2.lng));
-    //     });
-
-    //     it("should not lookup the location if the coordinate is not changed", () => {
-    //         const coordinateLocation = { lat: "21.2", lng: "1.5" };
-    //         const output = renderMap({ latitude: coordinateLocation.lat, longitude: coordinateLocation.lng });
-    //         mockGoogleMaps.setup();
-
-    //         output.find(GoogleMap).prop("onGoogleApiLoaded").apply();
-    //         output.setProps({ latitude: coordinateLocation.lat, longitude: coordinateLocation.lng });
-    //         const markerNew = output.find(Marker).at(0);
-
-    //         expect(markerNew.prop("lat")).toBe(Number(coordinateLocation.lat));
-    //         expect(markerNew.prop("lng")).toBe(Number(coordinateLocation.lng));
-    //     });
-
-    // });
-
-    // afterAll(() => {
-    //     window.mx = mxOriginal;
-    //     window.google = undefined;
-    // });
+    afterAll(() => {
+        window.mx = mxOriginal;
+        window.google = undefined;
+    });
 });
