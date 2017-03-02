@@ -44,11 +44,11 @@ class GoogleMapContainer extends Component<GoogleMapContainerProps, { alertMessa
 
     componentWillReceiveProps(nextProps: GoogleMapContainerProps) {
         this.resetSubscriptions();
-        this.fetchData();
+        this.fetchData(nextProps.contextObject);
     }
 
     componentDidMount() {
-        if (!this.state.alertMessage) this.fetchData();
+        if (!this.state.alertMessage) this.fetchData(this.props.contextObject);
     }
 
     componentWillUnmount() {
@@ -85,7 +85,7 @@ class GoogleMapContainer extends Component<GoogleMapContainerProps, { alertMessa
         if (this.props.contextObject) {
             const contextObject = this.props.contextObject;
             this.subscriptionHandles.push(window.mx.data.subscribe({
-                callback: () => this.fetchData(),
+                callback: () => this.fetchData(contextObject),
                 guid: this.props.contextObject.getGuid()
             }));
             const attributeList = [
@@ -96,20 +96,20 @@ class GoogleMapContainer extends Component<GoogleMapContainerProps, { alertMessa
             attributeList.forEach((attr) =>
                 this.subscriptionHandles.push(window.mx.data.subscribe({
                     attr,
-                    callback: () => this.fetchData(),
+                    callback: () => this.fetchData(contextObject),
                     guid: contextObject.getGuid()
                 }))
             );
         }
     }
 
-    private fetchData() {
+    private fetchData(contextObject: mendix.lib.MxObject) {
         if (this.props.dataSource === "static") {
             this.setState({ locations: this.props.staticLocations });
         } else if (this.props.dataSource === "context" && this.props.locationsEntity) {
-            this.fetchLocationsByContext(this.props.contextObject);
+            this.fetchLocationsByContext(contextObject);
         } else if (this.props.dataSource === "XPath" && this.props.locationsEntity) {
-            this.fetchLocationsByXPath(this.props.contextObject ? this.props.contextObject.getGuid() : "");
+            this.fetchLocationsByXPath(contextObject ? contextObject.getGuid() : "");
         } else if (this.props.dataSource === "microflow" && this.props.dataSourceMicroflow) {
             this.fetchLocationsByMicroflow(this.props.dataSourceMicroflow);
         }

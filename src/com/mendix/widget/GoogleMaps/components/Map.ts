@@ -41,16 +41,16 @@ export class Map extends Component<MapProps, MapState> {
     }
 
     componentWillReceiveProps(nextProps: MapProps) {
-        if (this.props.locations !== nextProps.locations) {
-            nextProps.locations.filter((location) => !!location.address).map((locationObject: Location) =>
-                this.getLocation(locationObject.address as string, (location: LatLng) => {
+        for (let i = 0; i < nextProps.locations.filter((location) => !!location.address).length; i++) {
+            if (this.props.locations[i].address !== nextProps.locations[i].address) {
+                this.getLocation(nextProps.locations[i].address as string, (location: LatLng) => {
                     if (location) {
-                        locationObject.latitude = Number(location.lat);
-                        locationObject.longitude = Number(location.lng);
+                        nextProps.locations[i].latitude = Number(location.lat);
+                        nextProps.locations[i].longitude = Number(location.lng);
                         this.setState({ locations: nextProps.locations });
                     }
-                })
-            );
+                });
+            }
         }
         this.setState({ locations: nextProps.locations });
     }

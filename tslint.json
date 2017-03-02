@@ -29,6 +29,7 @@
       "check-open-brace",
       "check-whitespace"
     ],
+    "prefer-for-of": false,
     "quotemark": [ true, "double" ],
     "semicolon": [ true, "always" ],
     "triple-equals": [ true, "allow-null-check" ],

@@ -194,9 +194,15 @@ describe("Map", () => {
 
         it("should not lookup the location if the address is not changed", () => {
             const output = setUpMap([ { address } ]);
+            const location: Location = {
+                address,
+                latitude:
+                successMockLocation.lat,
+                longitude: successMockLocation.lng
+            };
             spyOn(window.google.maps.Geocoder.prototype, "geocode");
 
-            output.setProps({ locations: [ { address } ], defaultCenterAddress: address });
+            output.setProps({ locations: [ location ], defaultCenterAddress: address });
 
             expect(window.google.maps.Geocoder.prototype.geocode).not.toHaveBeenCalled();
         });
