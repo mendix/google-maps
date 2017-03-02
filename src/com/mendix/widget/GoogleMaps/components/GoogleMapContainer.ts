@@ -74,11 +74,8 @@ class GoogleMapContainer extends Component<GoogleMapContainerProps, { alertMessa
     }
 
     private unSubscribeSubscriptions() {
-        if (this.subscriptionHandles) {
-            this.subscriptionHandles.map((handle: number) =>
-                window.mx.data.unsubscribe(handle)
-            );
-        }
+        this.subscriptionHandles.forEach(handle => window.mx.data.unsubscribe(handle));
+
         if (this.props.contextObject) {
             const contextObject = this.props.contextObject;
             this.subscriptionHandles.push(window.mx.data.subscribe({
@@ -123,14 +120,16 @@ class GoogleMapContainer extends Component<GoogleMapContainerProps, { alertMessa
         }
 
         const constraint = entityConstraint ? entityConstraint.replace("[%CurrentObject%]", contextGuid) : "";
+        const xpath = `//${this.props.locationsEntity}${constraint}`;
+
         window.mx.data.get({
             callback: mxObjects => this.setLocationsFromMxObjects(mxObjects),
             error: error =>
                 this.setState({
-                    alertMessage: `An error occurred while retrieving items: ${error}`,
+                    alertMessage: `An error occurred while retrieving items: ${error} constraint ` + xpath,
                     locations: []
                 }),
-            xpath: `//${this.props.locationsEntity}${constraint}`
+            xpath
         });
     }
 
@@ -140,7 +139,7 @@ class GoogleMapContainer extends Component<GoogleMapContainerProps, { alertMessa
                 callback: (mxObjects: mendix.lib.MxObject[]) => this.setLocationsFromMxObjects(mxObjects),
                 error: error =>
                     this.setState({
-                        alertMessage: `An error occurred while retrieving locations: ${error.message}`,
+                        alertMessage: `An error occurred while retrieving locations: ${error.message} in ` + microflow,
                         locations: []
                     }),
                 params: {
@@ -152,9 +151,9 @@ class GoogleMapContainer extends Component<GoogleMapContainerProps, { alertMessa
 
     private setLocationsFromMxObjects(mxObjects: mendix.lib.MxObject[]): void {
         const locations = mxObjects.map((mxObject) => ({
-            address: mxObject ? mxObject.get(this.props.addressAttribute) as string : undefined,
-            latitude: mxObject ? Number(mxObject.get(this.props.latitudeAttribute)) : undefined,
-            longitude: mxObject ? Number(mxObject.get(this.props.longitudeAttribute)) : undefined
+            address: mxObject.get(this.props.addressAttribute) as string,
+            latitude: Number(mxObject.get(this.props.latitudeAttribute)),
+            longitude: Number(mxObject.get(this.props.longitudeAttribute))
         }));
 
         this.setState({ locations });
