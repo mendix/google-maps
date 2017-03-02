@@ -20,14 +20,14 @@ type DataSource = "static" | "context" | "XPath" | "microflow";
 
 class GoogleMapContainer extends Component<GoogleMapContainerProps, { alertMessage?: string, locations: Location[] }> {
     private subscriptionHandles: number[];
+
     constructor(props: GoogleMapContainerProps) {
         super(props);
 
-        const alertMessage = this.validate();
+        const alertMessage = this.validateProps();
         this.subscriptionHandles = [];
         this.state = { alertMessage, locations: [] };
-        this.resetSubscriptions();
-        this.createSubscriptions();
+        this.unSubscribeSubscriptions();
     }
 
     render() {
@@ -43,7 +43,7 @@ class GoogleMapContainer extends Component<GoogleMapContainerProps, { alertMessa
     }
 
     componentWillReceiveProps(nextProps: GoogleMapContainerProps) {
-        this.resetSubscriptions();
+        this.unSubscribeSubscriptions();
         this.fetchData(nextProps.contextObject);
     }
 
@@ -52,10 +52,10 @@ class GoogleMapContainer extends Component<GoogleMapContainerProps, { alertMessa
     }
 
     componentWillUnmount() {
-        this.resetSubscriptions();
+        this.unSubscribeSubscriptions();
     }
 
-    private validate() {
+    private validateProps() {
         let message = "";
         if (this.props.dataSource === "static" && !this.props.staticLocations.length) {
             message = "At least one static location is required";
@@ -73,33 +73,26 @@ class GoogleMapContainer extends Component<GoogleMapContainerProps, { alertMessa
         return message;
     }
 
-    private resetSubscriptions() {
+    private unSubscribeSubscriptions() {
         if (this.subscriptionHandles) {
             this.subscriptionHandles.map((handle: number) =>
                 window.mx.data.unsubscribe(handle)
             );
         }
-    }
-
-    private createSubscriptions() {
         if (this.props.contextObject) {
             const contextObject = this.props.contextObject;
             this.subscriptionHandles.push(window.mx.data.subscribe({
                 callback: () => this.fetchData(contextObject),
                 guid: this.props.contextObject.getGuid()
             }));
-            const attributeList = [
+            [
                 this.props.addressAttribute,
                 this.props.latitudeAttribute,
                 this.props.longitudeAttribute
-            ];
-            attributeList.forEach((attr) =>
-                this.subscriptionHandles.push(window.mx.data.subscribe({
-                    attr,
-                    callback: () => this.fetchData(contextObject),
-                    guid: contextObject.getGuid()
-                }))
-            );
+            ].forEach((attr) => this.subscriptionHandles.push(window.mx.data.subscribe({
+                attr,
+                callback: () => this.fetchData(contextObject), guid: contextObject.getGuid()
+            })));
         }
     }
 

@@ -41,7 +41,7 @@ export class Map extends Component<MapProps, MapState> {
     }
 
     componentWillReceiveProps(nextProps: MapProps) {
-        for (let i = 0; i < nextProps.locations.filter((location) => !!location.address).length; i++) {
+        for (let i = 0; i < this.props.locations.filter((location) => !!location.address).length; i++) {
             if (this.props.locations[i].address !== nextProps.locations[i].address) {
                 this.getLocation(nextProps.locations[i].address as string, (location: LatLng) => {
                     if (location) {
