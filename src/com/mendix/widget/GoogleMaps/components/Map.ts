@@ -1,9 +1,9 @@
-import { Component, DOM, Props, createElement } from "react";
+import { Component, DOM, Props, ReactElement, createElement } from "react";
 import GoogleMap from "google-map-react";
 import { GoogleMapProps, LatLng } from "google-map-react";
 
 import { Alert } from "./Alert";
-import { Marker } from "./Marker";
+import { Marker, MarkerProps } from "./Marker";
 
 export interface Location {
     address?: string;
@@ -52,19 +52,14 @@ export class Map extends Component<MapProps, MapState> {
                 });
             }
         }
-        this.setState({ locations: nextProps.locations });
+        this.centerMap(nextProps.locations);
     }
 
     render() {
         return DOM.div({ className: "widget-google-maps" },
             createElement(Alert, { message: this.state.alertMessage }),
             createElement(GoogleMap, this.getGoogleMapProps(),
-                this.state.locations
-                    ? this.state.locations.map((locationObject: Location, index) =>
-                        (
-                            this.createMaker(locationObject, index)
-                        ))
-                    : undefined
+                this.createMakers()
             )
         );
     }
@@ -82,17 +77,16 @@ export class Map extends Component<MapProps, MapState> {
 
     private handleOnGoogleApiLoaded() {
         this.setState({ isLoaded: true });
-        this.centerMap();
+        this.centerMap(this.props.locations);
         this.plotAddresses();
     }
 
-    private centerMap() {
-        if (this.props.locations.length === 1) {
-            if (this.props.locations[0].latitude && this.props.locations[0].longitude) {
-                // tslint:disable-next-line:max-line-length
-                this.updateCenterState({ lat: this.props.locations[0].latitude, lng: this.props.locations[0].longitude });
+    private centerMap(locations: Location[]) {
+        if (locations.length === 1) {
+            if (locations[0].latitude && locations[0].longitude) {
+                this.updateCenterState({ lat: locations[0].latitude, lng: locations[0].longitude });
             } else {
-                this.getLocation(this.props.locations[0].address as string, (location: LatLng) => {
+                this.getLocation(locations[0].address as string, (location: LatLng) => {
                     this.updateCenterState(location);
                 });
             }
@@ -129,6 +123,7 @@ export class Map extends Component<MapProps, MapState> {
             const geocoder = new google.maps.Geocoder();
             geocoder.geocode({ address }, (results, status) => {
                 if (status === google.maps.GeocoderStatus.OK) {
+                    this.setState({ alertMessage: "" });
                     callback({
                         lat: results[0].geometry.location.lat(),
                         lng: results[0].geometry.location.lng()
@@ -143,17 +138,20 @@ export class Map extends Component<MapProps, MapState> {
         }
     }
 
-    private createMaker(locationObject: Location, index: number) {
-        let element: any;
-        if (this.state.isLoaded) {
-            if (locationObject.latitude && locationObject.longitude ) {
-                element = createElement(Marker, {
-                    key: index,
-                    lat: Number(locationObject.latitude),
-                    lng: Number(locationObject.longitude)
-                });
-            }
+    private createMakers(): Array<ReactElement<MarkerProps>> {
+        const markerElements: Array<ReactElement<MarkerProps>> = [];
+        if (this.state.locations) {
+            this.state.locations.map((locationObject: Location, index) => {
+                // tslint:disable-next-line:max-line-length
+                if (locationObject.latitude && locationObject.latitude !== 0 && locationObject.longitude && locationObject.longitude !== 0) {
+                    markerElements.push(createElement(Marker, {
+                        key: index,
+                        lat: Number(locationObject.latitude),
+                        lng: Number(locationObject.longitude)
+                    }));
+                }
+            });
         }
-        return element;
+        return markerElements;
     }
 }
