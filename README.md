@@ -3,6 +3,12 @@
 
 ## Features
 * Show location on a map based on an address
+* Show location on a map based on an coordinate
+* Show list of both addresses and coordinates on the map
+
+## Usage
+On display the widget will prioritize coordinate and so in the even that the coordinate is not specified, it will use address.
+The map will be centered based on default address specified. However it is only a single point in the list, the map will center to that point.
 
 ## Dependencies
 Mendix 6

@@ -87,13 +87,28 @@ export class Map extends Component<MapProps, MapState> {
     }
 
     private centerMap() {
-        this.getLocation(this.props.defaultCenterAddress as string, (location: LatLng) => {
-            if (location) {
-                this.setState({ center: location });
+        if (this.props.locations.length === 1) {
+            if (this.props.locations[0].latitude && this.props.locations[0].longitude) {
+                // tslint:disable-next-line:max-line-length
+                this.updateCenterState({ lat: this.props.locations[0].latitude, lng: this.props.locations[0].longitude });
             } else {
-                this.setState({ center: this.defaultCenterLocation });
+                this.getLocation(this.props.locations[0].address as string, (location: LatLng) => {
+                    this.updateCenterState(location);
+                });
             }
-        });
+        } else {
+            this.getLocation(this.props.defaultCenterAddress as string, (location: LatLng) => {
+                this.updateCenterState(location);
+            });
+        }
+    }
+
+    private updateCenterState(location: LatLng) {
+        if (location) {
+            this.setState({ center: location });
+        } else {
+            this.setState({ center: this.defaultCenterLocation });
+        }
     }
 
     private plotAddresses() {
