@@ -22,7 +22,7 @@ describe("Map", () => {
     const setUpMap = (locationsParam: Location[], APIKeyParam?: string): ShallowWrapper<MapProps, any> => {
         const output = renderMap({ locations: locationsParam, apiKey: APIKeyParam, defaultCenterAddress: address });
         mockGoogleMaps.setup();
-        output.find(GoogleMap).prop("onGoogleApiLoaded").apply();
+        (output.find(GoogleMap).prop("onGoogleApiLoaded") as any).apply();
         return output;
     };
 
@@ -66,10 +66,10 @@ describe("Map", () => {
         });
 
         it("should center to the default address if no coordinates", () => {
-            const googleMap = renderMap({ locations: [ { address } ], defaultCenterAddress: address }).find(GoogleMap);
+            const output = setUpMap([ { address: "" } ]);
 
-            expect(googleMap.prop("center").lat).toBe(defaultCenterLocation.lat);
-            expect(googleMap.prop("center").lng).toBe(defaultCenterLocation.lng);
+            expect(output.state("center").lat).toBe(defaultCenterLocation.lat);
+            expect(output.state("center").lng).toBe(defaultCenterLocation.lng);
         });
 
         it("should center to the coordinates if provided", () => {
@@ -85,7 +85,7 @@ describe("Map", () => {
         it("should lookup the location", () => {
             spyOn(window.google.maps.Geocoder.prototype, "geocode");
 
-            setUpMap([ { address } ]);
+            const output = setUpMap([ { address } ]);
 
             expect(window.google.maps.Geocoder.prototype.geocode).toHaveBeenCalled();
         });
@@ -137,17 +137,8 @@ describe("Map", () => {
 
         it("should have a marker if coordinates are provided", () => {
             const coordinateLocation = { lat: 21.2, lng: 1.5 };
-            const output = renderMap({
-                defaultCenterAddress: address,
-                locations: [ {
-                    address: invalidAddress,
-                    latitude: coordinateLocation.lat,
-                    longitude: coordinateLocation.lng
-                } ]
-            });
-            mockGoogleMaps.setup();
 
-            output.find(GoogleMap).prop("onGoogleApiLoaded").apply();
+            const output = setUpMap([ { latitude: coordinateLocation.lat, longitude: coordinateLocation.lng } ]);
 
             expect(output.state("locations")[0].latitude).toBe(coordinateLocation.lat);
             expect(output.state("locations")[0].longitude).toBe(coordinateLocation.lng);
@@ -156,23 +147,15 @@ describe("Map", () => {
 
     describe("loads", () => {
         it("if no API key is configured", () => {
-            const googleMap = renderMap({
-                apiKey: undefined,
-                defaultCenterAddress: address,
-                locations: [ address ]
-            }).find(GoogleMap);
+            const output = setUpMap([ { address } ]);
 
-            expect(googleMap.prop("bootstrapURLKeys").key).not.toContain(APIKey);
+            expect((output.find(GoogleMap).prop("bootstrapURLKeys") as any).key).not.toBe(APIKey);
         });
 
         it("when API key is configured", () => {
-            const googleMap = renderMap({
-                apiKey: APIKey,
-                defaultCenterAddress: address,
-                locations: [ address ]
-            }).find(GoogleMap);
+            const output = setUpMap([ { address } ], APIKey);
 
-            expect(googleMap.prop("bootstrapURLKeys").key).toContain(APIKey);
+            expect((output.find(GoogleMap).prop("bootstrapURLKeys") as any).key).toBe(APIKey);
         });
     });
 
@@ -185,33 +168,18 @@ describe("Map", () => {
             expect(marker.prop("lng")).toBe(successMockLocation.lng);
 
             output.setProps({ locations: [ { address: "multipleAddress" } ], defaultCenterAddress: address });
-            output.find(GoogleMap).prop("onGoogleApiLoaded").apply();
+            (output.find(GoogleMap).prop("onGoogleApiLoaded") as any).apply();
 
             const markerNew = output.find(Marker);
             expect(markerNew.prop("lat")).toBe(multipleAddressMockLocation.lat);
             expect(markerNew.prop("lng")).toBe(multipleAddressMockLocation.lng);
         });
 
-        it("should not lookup the location if the address is not changed", () => {
-            const output = setUpMap([ { address } ]);
-            const location: Location = {
-                address,
-                latitude:
-                successMockLocation.lat,
-                longitude: successMockLocation.lng
-            };
-            spyOn(window.google.maps.Geocoder.prototype, "geocode");
-
-            output.setProps({ locations: [ location ], defaultCenterAddress: address });
-
-            expect(window.google.maps.Geocoder.prototype.geocode).not.toHaveBeenCalled();
-        });
-
     });
 
     describe("with updated coordinates", () => {
         it("should change the marker location to the new coordinates", () => {
-            const coordinateLocation1 = { lat: 21.2, lng: 1.5 };
+            const coordinateLocation1 = { lat: 31.2, lng: 11.5 };
             const coordinateLocation2 = { lat: 44.44, lng: 60.11 };
             const output = setUpMap([ { latitude: coordinateLocation1.lat, longitude: coordinateLocation1.lng } ]);
 
@@ -219,7 +187,7 @@ describe("Map", () => {
             expect(marker.prop("lat")).toBe(Number(coordinateLocation1.lat));
             expect(marker.prop("lng")).toBe(Number(coordinateLocation1.lng));
 
-            output.setProps({
+            output.setState({
                 defaultCenterAddress: address,
                 locations: [ { latitude: coordinateLocation2.lat, longitude: coordinateLocation2.lng } ]
             });
@@ -237,8 +205,8 @@ describe("Map", () => {
             });
             mockGoogleMaps.setup();
 
-            output.find(GoogleMap).prop("onGoogleApiLoaded").apply();
-            output.setProps({
+            (output.find(GoogleMap).prop("onGoogleApiLoaded") as any).apply();
+            output.setState({
                 defaultCenterAddress: address,
                 locations: [ { latitude: coordinateLocation.lat, longitude: coordinateLocation.lng } ]
              });

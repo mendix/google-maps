@@ -19,7 +19,7 @@ export interface MapProps extends Props<Map> {
 export interface MapState {
     alertMessage?: string;
     center?: LatLng;
-    isLoaded?: Boolean;
+    isLoaded?: boolean;
     locations?: Location[];
 }
 
@@ -41,18 +41,9 @@ export class Map extends Component<MapProps, MapState> {
     }
 
     componentWillReceiveProps(nextProps: MapProps) {
-        for (let i = 0; i < this.props.locations.filter((location) => !!location.address).length; i++) {
-            if (this.props.locations[i].address !== nextProps.locations[i].address) {
-                this.getLocation(nextProps.locations[i].address as string, (location: LatLng) => {
-                    if (location) {
-                        nextProps.locations[i].latitude = Number(location.lat);
-                        nextProps.locations[i].longitude = Number(location.lng);
-                        this.setState({ locations: nextProps.locations });
-                    }
-                });
-            }
-        }
+        this.plotAddresses(nextProps.locations);
         this.centerMap(nextProps.locations);
+        this.setState({ locations: nextProps.locations });
     }
 
     render() {
@@ -78,7 +69,7 @@ export class Map extends Component<MapProps, MapState> {
     private handleOnGoogleApiLoaded() {
         this.setState({ isLoaded: true });
         this.centerMap(this.props.locations);
-        this.plotAddresses();
+        this.plotAddresses(this.props.locations);
     }
 
     private centerMap(locations: Location[]) {
@@ -105,17 +96,16 @@ export class Map extends Component<MapProps, MapState> {
         }
     }
 
-    private plotAddresses() {
-        this.props.locations.filter((location) => location.address && !location.latitude)
-            .map((locationObject: Location, index) => {
-                this.getLocation(locationObject.address as string, (location: LatLng) => {
-                    if (location) {
-                        locationObject.latitude = Number(location.lat);
-                        locationObject.longitude = Number(location.lng);
-                        this.setState({ locations: this.props.locations });
-                    }
-                });
+    private plotAddresses(locations: Location[]) {
+        for (let i = 0; i < locations.filter((location) => !!location.address).length; i++) {
+            this.getLocation(locations[i].address as string, (location: LatLng) => {
+                if (location) {
+                    locations[i].latitude = Number(location.lat);
+                    locations[i].longitude = Number(location.lng);
+                    this.setState({ locations });
+                }
             });
+        }
     }
 
     private getLocation(address: string, callback: (result: LatLng | null) => void) {
