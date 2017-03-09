@@ -62,6 +62,7 @@ describe("Map", () => {
             const output = setUpMap([ { address: "" } ]);
 
             const marker = output.find(Marker);
+
             expect(marker.length).toBe(0);
         });
 
@@ -74,6 +75,7 @@ describe("Map", () => {
 
         it("should center to the coordinates if provided", () => {
             const coordinateLocation = { lat: 21.2, lng: 1.5 };
+
             const output = setUpMap([ { latitude: coordinateLocation.lat, longitude: coordinateLocation.lng } ]);
 
             expect(output.state("locations")[0].latitude).toBe(coordinateLocation.lat);
@@ -94,6 +96,7 @@ describe("Map", () => {
             const output = setUpMap([ { address } ]);
 
             const marker = output.find(Marker);
+
             expect(marker.length).toBe(1);
             expect(marker.prop("lat")).toBe(successMockLocation.lat);
             expect(marker.prop("lng")).toBe(successMockLocation.lng);
@@ -121,6 +124,7 @@ describe("Map", () => {
             const output = setUpMap([ { address: invalidAddress } ]);
 
             const marker = output.find(Marker);
+
             expect(marker.length).toBe(0);
         });
 
@@ -131,8 +135,7 @@ describe("Map", () => {
             const output = setUpMap([ { address: invalidAddress } ]);
 
             expect(output.state().alertMessage).toBe(actionErrorMessage);
-            const alert = output.find(Alert);
-            expect(alert.props().message).toBe(output.state().alertMessage);
+            expect(output.find(Alert).props().message).toBe(output.state().alertMessage);
         });
 
         it("should have a marker if coordinates are provided", () => {
@@ -164,6 +167,7 @@ describe("Map", () => {
             const output = setUpMap([ { address } ]);
 
             const marker = output.find(Marker).at(0);
+
             expect(marker.prop("lat")).toBe(successMockLocation.lat);
             expect(marker.prop("lng")).toBe(successMockLocation.lng);
 
@@ -171,6 +175,7 @@ describe("Map", () => {
             (output.find(GoogleMap).prop("onGoogleApiLoaded") as any).apply();
 
             const markerNew = output.find(Marker);
+
             expect(markerNew.prop("lat")).toBe(multipleAddressMockLocation.lat);
             expect(markerNew.prop("lng")).toBe(multipleAddressMockLocation.lng);
         });
@@ -181,9 +186,10 @@ describe("Map", () => {
         it("should change the marker location to the new coordinates", () => {
             const coordinateLocation1 = { lat: 31.2, lng: 11.5 };
             const coordinateLocation2 = { lat: 44.44, lng: 60.11 };
-            const output = setUpMap([ { latitude: coordinateLocation1.lat, longitude: coordinateLocation1.lng } ]);
 
+            const output = setUpMap([ { latitude: coordinateLocation1.lat, longitude: coordinateLocation1.lng } ]);
             const marker = output.find(Marker).at(0);
+
             expect(marker.prop("lat")).toBe(Number(coordinateLocation1.lat));
             expect(marker.prop("lng")).toBe(Number(coordinateLocation1.lng));
 
@@ -199,12 +205,12 @@ describe("Map", () => {
 
         it("should not lookup the location if the coordinates are not changed", () => {
             const coordinateLocation = { lat: 21.2, lng: 1.5 };
+
             const output = renderMap({
                 defaultCenterAddress: address,
                 locations: [ { latitude: coordinateLocation.lat, longitude: coordinateLocation.lng } ]
             });
             mockGoogleMaps.setup();
-
             (output.find(GoogleMap).prop("onGoogleApiLoaded") as any).apply();
             output.setState({
                 defaultCenterAddress: address,

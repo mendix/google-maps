@@ -30,6 +30,7 @@ export class Map extends Component<MapProps, MapState> {
         defaultCenterAddress: "",
         locations: []
     };
+
     constructor(props: MapProps) {
         super(props);
 
@@ -108,7 +109,7 @@ export class Map extends Component<MapProps, MapState> {
         }
     }
 
-    private getLocation(address: string, callback: (result: LatLng | null) => void) {
+    private getLocation(address: string, callback: (result?: LatLng ) => void) {
         if (this.state.isLoaded) {
             const geocoder = new google.maps.Geocoder();
             geocoder.geocode({ address }, (results, status) => {
@@ -120,11 +121,11 @@ export class Map extends Component<MapProps, MapState> {
                     });
                 } else {
                     this.setState({ alertMessage: `Can not find address ${address}` });
-                    callback(null);
+                    callback();
                 }
             });
         } else {
-            callback(null);
+            callback();
         }
     }
 

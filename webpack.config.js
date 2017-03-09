@@ -3,10 +3,10 @@ const path = require("path");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
 
 module.exports = {
-    entry: "./src/com/mendix/widget/GoogleMaps/GoogleMaps.ts",
+    entry: "./src/components/GoogleMapContainer.ts",
     output: {
         path: path.resolve(__dirname, "dist/tmp"),
-        filename: "src/com/mendix/widget/GoogleMaps/GoogleMaps.js",
+        filename: "src/com/mendix/widget/custom/GoogleMaps/GoogleMaps.js",
         libraryTarget:  "umd"
     },
     resolve: {
@@ -24,7 +24,7 @@ module.exports = {
         ]
     },
     devtool: "source-map",
-    externals: [ "mxui/widget/_WidgetBase", "mendix/lang", "dojo/_base/declare" ],
+    externals: [ "react", "react-dom" ],
     plugins: [
         new CopyWebpackPlugin([
             { from: "src/**/*.js" },

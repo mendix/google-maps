@@ -4,7 +4,6 @@ import { Alert } from "./Alert";
 
 interface GoogleMapContainerProps {
     apiKey: string;
-    contextObject: mendix.lib.MxObject;
     dataSource: DataSource;
     dataSourceMicroflow: string;
     defaultCenterAddress: string;
@@ -44,11 +43,11 @@ class GoogleMapContainer extends Component<GoogleMapContainerProps, { alertMessa
 
     componentWillReceiveProps(nextProps: GoogleMapContainerProps) {
         this.unSubscribeSubscriptions();
-        this.fetchData(nextProps.contextObject);
+        this.fetchData();
     }
 
     componentDidMount() {
-        if (!this.state.alertMessage) this.fetchData(this.props.contextObject);
+        if (!this.state.alertMessage) this.fetchData();
     }
 
     componentWillUnmount() {
@@ -76,11 +75,10 @@ class GoogleMapContainer extends Component<GoogleMapContainerProps, { alertMessa
     private unSubscribeSubscriptions() {
         this.subscriptionHandles.forEach(handle => window.mx.data.unsubscribe(handle));
 
-        if (this.props.contextObject) {
-            const contextObject = this.props.contextObject;
+        if (this.context) {
             this.subscriptionHandles.push(window.mx.data.subscribe({
-                callback: () => this.fetchData(contextObject),
-                guid: this.props.contextObject.getGuid()
+                callback: () => this.fetchData(),
+                guid: this.context.getGuid()
             }));
             [
                 this.props.addressAttribute,
@@ -88,18 +86,18 @@ class GoogleMapContainer extends Component<GoogleMapContainerProps, { alertMessa
                 this.props.longitudeAttribute
             ].forEach((attr) => this.subscriptionHandles.push(window.mx.data.subscribe({
                 attr,
-                callback: () => this.fetchData(contextObject), guid: contextObject.getGuid()
+                callback: () => this.fetchData(), guid: this.context.getGuid()
             })));
         }
     }
 
-    private fetchData(contextObject: mendix.lib.MxObject) {
+    private fetchData() {
         if (this.props.dataSource === "static") {
             this.setState({ locations: this.props.staticLocations });
         } else if (this.props.dataSource === "context" && this.props.locationsEntity) {
-            this.fetchLocationsByContext(contextObject);
+            this.fetchLocationsByContext(this.context);
         } else if (this.props.dataSource === "XPath" && this.props.locationsEntity) {
-            this.fetchLocationsByXPath(contextObject ? contextObject.getGuid() : "");
+            this.fetchLocationsByXPath(this.context ? this.context.getGuid() : "");
         } else if (this.props.dataSource === "microflow" && this.props.dataSourceMicroflow) {
             this.fetchLocationsByMicroflow(this.props.dataSourceMicroflow);
         }
@@ -143,7 +141,7 @@ class GoogleMapContainer extends Component<GoogleMapContainerProps, { alertMessa
                         locations: []
                     }),
                 params: {
-                    guids: this.props.contextObject ? [ this.props.contextObject.getGuid() ] : []
+                    guids: this.context ? [ this.context.getGuid() ] : []
                 }
             });
         }
