@@ -3,6 +3,7 @@ import { Location, Map } from "./Map";
 import { Alert } from "./Alert";
 
 interface GoogleMapContainerProps {
+    mxObject: mendix.lib.MxObject;
     apiKey: string;
     dataSource: DataSource;
     dataSourceMicroflow: string;
@@ -26,7 +27,7 @@ class GoogleMapContainer extends Component<GoogleMapContainerProps, { alertMessa
         const alertMessage = this.validateProps();
         this.subscriptionHandles = [];
         this.state = { alertMessage, locations: [] };
-        this.unSubscribeSubscriptions();
+        this.unSubscribeSubscriptions(this.props.mxObject);
     }
 
     render() {
@@ -42,16 +43,16 @@ class GoogleMapContainer extends Component<GoogleMapContainerProps, { alertMessa
     }
 
     componentWillReceiveProps(nextProps: GoogleMapContainerProps) {
-        this.unSubscribeSubscriptions();
-        this.fetchData();
+        this.unSubscribeSubscriptions(nextProps.mxObject);
+        this.fetchData(nextProps.mxObject);
     }
 
     componentDidMount() {
-        if (!this.state.alertMessage) this.fetchData();
+        if (!this.state.alertMessage) this.fetchData(this.props.mxObject);
     }
 
     componentWillUnmount() {
-        this.unSubscribeSubscriptions();
+        this.unSubscribeSubscriptions(this.props.mxObject);
     }
 
     private validateProps() {
@@ -72,13 +73,13 @@ class GoogleMapContainer extends Component<GoogleMapContainerProps, { alertMessa
         return message;
     }
 
-    private unSubscribeSubscriptions() {
+    private unSubscribeSubscriptions(contextObject: mendix.lib.MxObject) {
         this.subscriptionHandles.forEach(handle => window.mx.data.unsubscribe(handle));
 
-        if (this.context) {
+        if (contextObject) {
             this.subscriptionHandles.push(window.mx.data.subscribe({
-                callback: () => this.fetchData(),
-                guid: this.context.getGuid()
+                callback: () => this.fetchData(contextObject),
+                guid: contextObject.getGuid()
             }));
             [
                 this.props.addressAttribute,
@@ -86,20 +87,20 @@ class GoogleMapContainer extends Component<GoogleMapContainerProps, { alertMessa
                 this.props.longitudeAttribute
             ].forEach((attr) => this.subscriptionHandles.push(window.mx.data.subscribe({
                 attr,
-                callback: () => this.fetchData(), guid: this.context.getGuid()
+                callback: () => this.fetchData(contextObject), guid: contextObject.getGuid()
             })));
         }
     }
 
-    private fetchData() {
+    private fetchData(contextObject: mendix.lib.MxObject) {
         if (this.props.dataSource === "static") {
             this.setState({ locations: this.props.staticLocations });
         } else if (this.props.dataSource === "context" && this.props.locationsEntity) {
-            this.fetchLocationsByContext(this.context);
+            this.fetchLocationsByContext(contextObject);
         } else if (this.props.dataSource === "XPath" && this.props.locationsEntity) {
-            this.fetchLocationsByXPath(this.context ? this.context.getGuid() : "");
+            this.fetchLocationsByXPath(contextObject ? contextObject.getGuid() : "");
         } else if (this.props.dataSource === "microflow" && this.props.dataSourceMicroflow) {
-            this.fetchLocationsByMicroflow(this.props.dataSourceMicroflow);
+            this.fetchLocationsByMicroflow(this.props.dataSourceMicroflow, contextObject);
         }
     }
 
@@ -131,7 +132,7 @@ class GoogleMapContainer extends Component<GoogleMapContainerProps, { alertMessa
         });
     }
 
-    private fetchLocationsByMicroflow(microflow: string) {
+    private fetchLocationsByMicroflow(microflow: string, contextObject: mendix.lib.MxObject) {
         if (microflow) {
             window.mx.ui.action(microflow, {
                 callback: (mxObjects: mendix.lib.MxObject[]) => this.setLocationsFromMxObjects(mxObjects),
@@ -141,7 +142,7 @@ class GoogleMapContainer extends Component<GoogleMapContainerProps, { alertMessa
                         locations: []
                     }),
                 params: {
-                    guids: this.context ? [ this.context.getGuid() ] : []
+                    guids: contextObject ? [ contextObject.getGuid() ] : []
                 }
             });
         }

@@ -5,6 +5,8 @@ import { GoogleMapProps, LatLng } from "google-map-react";
 import { Alert } from "./Alert";
 import { Marker, MarkerProps } from "./Marker";
 
+import "../ui/GoogleMaps.css";
+
 export interface Location {
     address?: string;
     latitude?: number;
