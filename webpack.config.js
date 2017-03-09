@@ -1,6 +1,7 @@
 const webpack = require("webpack");
 const path = require("path");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
+const ExtractTextPlugin = require("extract-text-webpack-plugin");
 
 module.exports = {
     entry: "./src/components/GoogleMapContainer.ts",
@@ -20,7 +21,9 @@ module.exports = {
     module: {
         loaders: [
             { test: /\.ts$/, loader: "ts-loader" },
-            { test: /\.json$/, loader: "json" }
+            { test: /\.json$/, loader: "json" },
+            { test: /\.css$/, loader: ExtractTextPlugin.extract("style-loader", "css-loader") },
+            { test: /\.(png|jpeg)$/, loader: 'url-loader', options: { limit: 8192 } }
         ]
     },
     devtool: "source-map",
@@ -33,7 +36,8 @@ module.exports = {
             { from: "src/**/*.png" }
         ], {
             copyUnmodified: true
-        })
+        }),
+        new ExtractTextPlugin("./src/com/mendix/widget/custom/GoogleMaps/ui/GoogleMaps.css")
     ],
     watch: true
 };
