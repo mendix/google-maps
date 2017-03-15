@@ -16,17 +16,17 @@
   },
   "devDependencies": {
     "@types/big.js": "0.0.31",
-    "@types/core-js": "^0.9.34",
+    "@types/core-js": "^0.9.37",
     "@types/enzyme": "^2.4.36",
-    "@types/googlemaps": "^3.26.2",
-    "@types/jasmine": "^2.5.43",
+    "@types/googlemaps": "^3.26.4",
+    "@types/jasmine": "^2.5.45",
     "@types/karma": "^0.13.33",
-    "@types/react": "^15.0.3",
+    "@types/react": "^15.0.16",
     "@types/react-dom": "^0.14.17",
     "check-dependencies": "^1.0.1",
     "copy-webpack-plugin": "^4.0.1",
     "core-js": "^2.4.1",
-    "css-loader": "^0.26.4",
+    "css-loader": "^0.27.3",
     "enzyme": "^2.7.1",
     "extract-text-webpack-plugin": "^1.0.1",
     "grunt": "1.0.1",
@@ -44,7 +44,7 @@
     "karma-chrome-launcher": "^2.0.0",
     "karma-jasmine": "^1.0.2",
     "karma-jasmine-html-reporter": "^0.2.2",
-    "karma-remap-istanbul": "^0.4.0",
+    "karma-remap-istanbul": "^0.6.0",
     "karma-sourcemap-loader": "^0.3.7",
     "karma-typescript": "^2.0.9",
     "karma-webpack": "^2.0.1",
@@ -53,7 +53,7 @@
     "react-addons-test-utils": "^15.4.2",
     "react-dom": "^15.4.2",
     "remap-istanbul": "^0.9.1",
-    "source-map-loader": "^0.1.6",
+    "source-map-loader": "^0.2.0",
     "style-loader": "^0.13.2",
     "ts-loader": "^2.0.1",
     "tslint": "^4.5.1",
@@ -64,6 +64,6 @@
     "webpack-dev-server": "^1.16.2"
   },
   "dependencies": {
-    "google-map-react": "^0.22.3"
+    "google-map-react": "^0.23.0"
   }
 }
