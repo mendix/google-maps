@@ -8,26 +8,27 @@ module.exports = {
     output: {
         path: path.resolve(__dirname, "dist/tmp"),
         filename: "src/com/mendix/widget/custom/GoogleMaps/GoogleMaps.js",
-        libraryTarget:  "umd"
+        libraryTarget: "umd"
     },
     resolve: {
-        extensions: [ "", ".ts", ".js", ".json" ],
-        alias: {
+        extensions: [ ".ts", ".js", ".json" ],
+        alias: { 
             "react-google-maps": path.resolve(__dirname, "./node_modules/react-google-maps"),
-            "tests": path.resolve(__dirname, "./tests")
+            "tests": path.resolve(__dirname, "./tests") 
         }
     },
-    errorDetails: true,
     module: {
-        loaders: [
-            { test: /\.ts$/, loader: "ts-loader" },
-            { test: /\.json$/, loader: "json" },
-            { test: /\.css$/, loader: ExtractTextPlugin.extract("style-loader", "css-loader") },
+        rules: [
+            { test: /\.ts$/, use: "ts-loader" },
+            { test: /\.css$/, loader: ExtractTextPlugin.extract({
+                fallback: "style-loader",
+                use: "css-loader"
+            }) },
             { test: /\.(png|jpeg)$/, loader: 'url-loader', options: { limit: 8192 } }
         ]
     },
     devtool: "source-map",
-    externals: [ "react", "react-dom" ],
+    externals: [ "mendix/lang", "react", "react-dom" ],
     plugins: [
         new CopyWebpackPlugin([
             { from: "src/**/*.js" },
@@ -37,7 +38,10 @@ module.exports = {
         ], {
             copyUnmodified: true
         }),
-        new ExtractTextPlugin("./src/com/mendix/widget/custom/GoogleMaps/ui/GoogleMaps.css")
+        new ExtractTextPlugin({ filename: "./src/com/mendix/widget/custom/GoogleMaps/ui/GoogleMaps.css" }),
+        new webpack.LoaderOptionsPlugin({
+            debug: true
+        })
     ],
     watch: true
 };

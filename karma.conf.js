@@ -1,26 +1,28 @@
 var webpackConfig = require("./webpack.config");
 const path = require("path");
 Object.assign(webpackConfig, {
-    debug: true,
     devtool: "inline-source-map",
-    externals: webpackConfig.externals.concat([
+    externals: [
         "react/lib/ExecutionEnvironment",
         "react/lib/ReactContext",
         "react/addons",
-        "jsdom"
-    ])
+        "jsdom",
+        "dojo/_base/declare",
+        "mxui/widget/_WidgetBase"
+    ]
 });
 
 module.exports = function(config) {
-    if(config.codeCoverage) {
+    if (config.codeCoverage) {
         Object.assign(webpackConfig, {
             module: Object.assign(webpackConfig.module, {
-                postLoaders: [ {
+                rules: webpackConfig.module.rules.concat([ {
                     test: /\.ts$/,
-                    loader: "istanbul-instrumenter",
+                    enforce: "post",
+                    loader: "istanbul-instrumenter-loader",
                     include: path.resolve(__dirname, "src"),
                     exclude: /\.(spec)\.ts$/
-                } ]
+                } ])
             })
         });
     }
@@ -29,14 +31,12 @@ module.exports = function(config) {
         basePath: "",
         frameworks: [ "jasmine" ],
         files: [
-            { pattern: "src/**/*.ts", included: false },
-            { pattern: "tests/**/*.ts", included: false },
+            { pattern: "src/**/*.ts", watched: true },
+            { pattern: "tests/**/*.ts", watched: true },
             "tests/test-index.js"
         ],
         exclude: [],
-        preprocessors: {
-            "tests/test-index.js": [ "webpack", "sourcemap" ]
-        },
+        preprocessors: { "tests/test-index.js": [ "webpack", "sourcemap" ] },
         webpack: webpackConfig,
         webpackServer: { noInfo: true },
         reporters: [ "progress", config.codeCoverage ? "coverage": "kjhtml" ],
@@ -44,15 +44,18 @@ module.exports = function(config) {
         colors: true,
         logLevel: config.LOG_INFO,
         autoWatch: true,
-        browsers: [ "Chrome" ], 
+        browsers: [ "Chrome" ],
         singleRun: false,
         concurrency: Infinity,
         coverageReporter: {
-            dir: "./dist/testresults", 
+            dir: "./dist/testresults",
             reporters: [
                 { type: "json", subdir: ".", file: "coverage.json" },
                 { type: "text" }
             ]
+        },
+        jasmineNodeOpts: {
+            defaultTimeoutInterval: 10000
         }
-    })
+    });
 };
