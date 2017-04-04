@@ -9,11 +9,15 @@ interface GoogleMapContainerProps {
     dataSourceMicroflow: string;
     defaultCenterAddress: string;
     entityConstraint: string;
+    height: number;
+    heightUnit: "percentage" | "pixels";
     locationsEntity: string;
     addressAttribute: string;
     latitudeAttribute: string;
     longitudeAttribute: string;
     staticLocations: Location[];
+    width: number;
+    widthUnit: "percentage" | "pixels";
 }
 
 type DataSource = "static" | "context" | "XPath" | "microflow";
@@ -37,7 +41,12 @@ class GoogleMapContainer extends Component<GoogleMapContainerProps, { alertMessa
             return createElement(Map, {
                 apiKey: this.props.apiKey,
                 defaultCenterAddress: this.props.defaultCenterAddress,
-                locations: this.state.locations
+                height: this.props.height,
+                heightUnit: this.props.heightUnit,
+                locations: this.state.locations,
+                width: this.props.width,
+                widthUnit: this.props.widthUnit
+
             });
         }
     }

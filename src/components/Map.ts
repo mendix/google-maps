@@ -15,7 +15,11 @@ export interface Location {
 export interface MapProps extends Props<Map> {
     apiKey?: string;
     defaultCenterAddress: string;
+    height: number;
+    heightUnit: "percentage" | "pixels";
     locations: Location[];
+    width: number;
+    widthUnit: "percentage" | "pixels";
 }
 
 export interface MapState {
@@ -28,10 +32,6 @@ export interface MapState {
 export class Map extends Component<MapProps, MapState> {
     // Location of Mendix Netherlands office
     private defaultCenterLocation: LatLng = { lat: 51.9107963, lng: 4.4789878 };
-    static defaultProps: MapProps = {
-        defaultCenterAddress: "",
-        locations: []
-    };
 
     constructor(props: MapProps) {
         super(props);
@@ -50,10 +50,17 @@ export class Map extends Component<MapProps, MapState> {
     }
 
     render() {
-        return DOM.div({ className: "widget-google-maps" },
-            createElement(Alert, { message: this.state.alertMessage }),
-            createElement(GoogleMap, this.getGoogleMapProps(),
-                this.createMakers()
+        const style = {
+            paddingBottom: this.props.heightUnit === "percentage" ? `${this.props.height}%` : this.props.height,
+            width: this.props.widthUnit === "percentage" ? `${this.props.width}%` : this.props.width
+        };
+
+        return DOM.div({ className: "widget-google-maps-wrapper", style },
+            DOM.div({ className: "widget-google-maps" },
+                createElement(Alert, { message: this.state.alertMessage }),
+                createElement(GoogleMap, this.getGoogleMapProps(),
+                    this.createMakers()
+                )
             )
         );
     }

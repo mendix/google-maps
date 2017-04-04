@@ -19,8 +19,21 @@ describe("Map", () => {
     const multipleAddressMockLocation = { lat: 34.213171, lng: -118.571022 };
     let mxOriginal: mx.mx;
 
-    const setUpMap = (locationsParam: Location[], APIKeyParam?: string): ShallowWrapper<MapProps, any> => {
-        const output = renderMap({ locations: locationsParam, apiKey: APIKeyParam, defaultCenterAddress: address });
+    const setUpMap = (
+        locationsParam: Location[], APIKeyParam?: string,
+        WidthParam?: number,
+        HeightParam?: number,
+        WidthUnitParam?: "percentage" | "pixels",
+        HeightUnitParam?: "percentage" | "pixels"): ShallowWrapper<MapProps, any> => {
+        const output = renderMap({
+            apiKey: APIKeyParam,
+            defaultCenterAddress: address,
+            height: HeightParam ? HeightParam : 75,
+            heightUnit: HeightUnitParam ? HeightUnitParam : "pixels",
+            locations: locationsParam,
+            width: WidthParam ? WidthParam : 100,
+            widthUnit: WidthUnitParam ? WidthUnitParam : "pixels"
+        });
         mockGoogleMaps.setup();
         (output.find(GoogleMap).prop("onGoogleApiLoaded") as any).apply();
         return output;
@@ -33,21 +46,23 @@ describe("Map", () => {
     });
 
     it("should render with the map structure", () => {
-        const map = renderMap({ locations: [ address ], defaultCenterAddress: address });
+        const map = setUpMap([ { address } ], undefined, 100, 75, "percentage", "percentage");
+        const style = { paddingBottom: "75%", width: "100%" };
 
         expect(map).toBeElement(
-            DOM.div({ className: "widget-google-maps" },
-                createElement(Alert, { message: undefined }),
-                createElement(GoogleMap, {
-                    bootstrapURLKeys: { key: undefined },
-                    center: defaultCenterLocation,
-                    defaultZoom: 7,
-                    onGoogleApiLoaded: jasmine.any(Function) as any,
-                    resetBoundsOnResize: true,
-                    yesIWantToUseGoogleMapApiInternals: true
-                })
-            )
-        );
+            DOM.div({ className: "widget-google-maps-wrapper", style },
+                DOM.div({ className: "widget-google-maps" },
+                    createElement(Alert, { message: undefined }),
+                    createElement(GoogleMap, {
+                        bootstrapURLKeys: { key: undefined },
+                        center: defaultCenterLocation,
+                        defaultZoom: 7,
+                        onGoogleApiLoaded: jasmine.any(Function) as any,
+                        resetBoundsOnResize: true,
+                        yesIWantToUseGoogleMapApiInternals: true
+                    })
+                )
+            ));
     });
 
     describe("with no address", () => {
@@ -205,12 +220,10 @@ describe("Map", () => {
 
         it("should not lookup the location if the coordinates are not changed", () => {
             const coordinateLocation = { lat: 21.2, lng: 1.5 };
-
-            const output = renderMap({
-                defaultCenterAddress: address,
-                locations: [ { latitude: coordinateLocation.lat, longitude: coordinateLocation.lng } ]
-            });
+            const locations = { latitude: coordinateLocation.lat, longitude: coordinateLocation.lng };
+            const output = setUpMap([ locations ], undefined, 100, 75, "pixels", "pixels");
             mockGoogleMaps.setup();
+
             (output.find(GoogleMap).prop("onGoogleApiLoaded") as any).apply();
             output.setState({
                 defaultCenterAddress: address,

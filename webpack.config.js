@@ -42,6 +42,5 @@ module.exports = {
         new webpack.LoaderOptionsPlugin({
             debug: true
         })
-    ],
-    watch: true
+    ]
 };
