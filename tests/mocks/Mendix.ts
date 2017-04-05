@@ -2,6 +2,7 @@
 class MxMock implements mx.mx {
     appUrl: string;
     baseUrl: string;
+    remoteUrl: string;
     modulePath: string
     addOnLoad(callback: Function): void { /* */ }
     login(username: string, password: string, onSuccess: Function, onError: Function): void { /* */ }
@@ -67,6 +68,8 @@ class MxUiMock implements mx.ui {
         scope?: any
     ): void { /* */ }
     showLogin(messageCode: number): void { /* */ }
+    reload(callback?: () => void): void { /* */ };
+    translate(lib: string, errorName: string): string { return "fakeTranslate";};
 }
 
 let mxMockObject =  MxMock.prototype;
