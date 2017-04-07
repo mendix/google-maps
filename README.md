@@ -18,7 +18,7 @@ Mendix 7.1
 When displaying locations, the widget will prioritize coordinates over addresses.In the event that 
 the coordinate is not specified, it will use address.
 If there are multiple locations, the map will be centered based on default address specified.
-However it is only a single point in the list, the map will center to that point.
+However if it is only a single point in the list, the map will center to that point.
 
 ## Demo project
 
@@ -50,7 +50,7 @@ Prerequisite: Install git, node package manager, webpack CLI, grunt CLI, Karma C
 
 To contribute, fork and clone.
 
-    git clone [https://github.com/FlockOfBirds/google-maps.git](https://github.com/FlockOfBirds/google-maps.git)
+    git clone https://github.com/FlockOfBirds/google-maps.git
 
 The code is in typescript. Use a typescript IDE of your choice, like Visual Studio Code or WebStorm.
 
