@@ -163,6 +163,24 @@ describe("Map", () => {
         });
     });
 
+    describe("with multiple locations", () => {
+        it("shows coordinates", () => {
+            const coordinateLocation1 = { latitude: 31.2, longitude: 11.5 };
+            const coordinateLocation2 = { latitude: 44.44, longitude: 60.11 };
+
+            const output = setUpMap([ coordinateLocation1, coordinateLocation2 ]);
+            const marker1 = output.find(Marker).at(0);
+
+            expect(marker1.prop("lat")).toBe(Number(coordinateLocation1.latitude));
+            expect(marker1.prop("lng")).toBe(Number(coordinateLocation1.longitude));
+
+            const marker2 = output.find(Marker).at(1);
+
+            expect(marker2.prop("lat")).toBe(Number(coordinateLocation2.latitude));
+            expect(marker2.prop("lng")).toBe(Number(coordinateLocation2.longitude));
+        });
+    });
+
     describe("loads", () => {
         it("if no API key is configured", () => {
             const output = setUpMap([ { address } ]);
