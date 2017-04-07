@@ -18,4 +18,4 @@ describe("Alert", () => {
 
         expect(alert).toBeElement(null);
     });
-})
+});

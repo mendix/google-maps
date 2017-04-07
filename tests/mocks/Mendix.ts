@@ -4,8 +4,8 @@ class MxMock implements mx.mx {
     baseUrl: string;
     remoteUrl: string;
     modulePath: string
-    addOnLoad(callback: Function): void { /* */ }
-    login(username: string, password: string, onSuccess: Function, onError: Function): void { /* */ }
+    addOnLoad(callback: ()=>{}): void { /* */ }
+    login(username: string, password: string, onSuccess: ()=>{}, onError: ()=>{}): void { /* */ }
     logout(): void { /* */ }
     data: mx.data;
     meta: mx.meta;
@@ -35,12 +35,12 @@ class MxUiMock implements mx.ui {
             async?: boolean,
             callback?: (result: mendix.lib.MxObject | mendix.lib.MxObject[] | boolean | number | string) => void,
             error?: (e: Error) => void,
-            onValidation?: Function,
+            onValidation?: ()=>{},
         },
         scope?: any
     ): void { /* */ }
     back(): void { /* */ }
-    confirmation(args: { content: string, proceed: string, cancel: string, handler: Function }): void { /* */ }
+    confirmation(args: { content: string, proceed: string, cancel: string, handler: ()=>{} }): void { /* */ }
     error(msg: string, modal?: boolean): void { /* */ }
     exception(msg: string): void { /* */ }
     getTemplate(mxid: string, content: string): DocumentFragment {

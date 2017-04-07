@@ -199,7 +199,7 @@ class MockGeocoder implements google.maps.Geocoder {
         }
     ];
     geocode(request: google.maps.GeocoderRequest, callback: (results: google.maps.GeocoderResult[],
-        status: google.maps.GeocoderStatus) => void): void {
+                                                             status: google.maps.GeocoderStatus) => void): void {
         if (request.address === "multipleAddress") {
             callback(this.multipleResult, google.maps.GeocoderStatus.OK);
         } else if (request.address === "invalidAddress") {
