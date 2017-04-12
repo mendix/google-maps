@@ -36,7 +36,7 @@ class GoogleMapContainer extends Component<GoogleMapContainerProps, { alertMessa
 
     render() {
         if (this.state.alertMessage) {
-            return createElement(Alert as any, { message: this.state.alertMessage });
+            return createElement(Alert, { message: this.state.alertMessage });
         } else {
             return createElement(Map, {
                 apiKey: this.props.apiKey,
@@ -67,16 +67,16 @@ class GoogleMapContainer extends Component<GoogleMapContainerProps, { alertMessa
     private validateProps() {
         let message = "";
         if (this.props.dataSource === "static" && !this.props.staticLocations.length) {
-            message = "At least one static location is required";
+            message = "At least one static location is required for 'Data source 'Static'";
         }
         if (this.props.dataSource === "XPath" && !this.props.locationsEntity) {
-            message = "The locations entity is required";
+            message = "The 'Locations entity' is required for 'Data source' 'XPath'";
         }
-        if (this.props.dataSource === "context" && !this.props.locationsEntity) {
-            message = "The locations entity is required";
-        }
+        // if (this.props.dataSource === "context" && !this.props.locationsEntity) {
+        //     message = "The locations entity is required";
+        // }
         if (this.props.dataSource === "microflow" && !this.props.dataSourceMicroflow) {
-            message = "A data source microflow is required";
+            message = "A 'Microflow' is required for 'Data source' 'Microflow'";
         }
 
         return message;
@@ -94,7 +94,7 @@ class GoogleMapContainer extends Component<GoogleMapContainerProps, { alertMessa
                 this.props.addressAttribute,
                 this.props.latitudeAttribute,
                 this.props.longitudeAttribute
-            ].forEach((attr) => this.subscriptionHandles.push(window.mx.data.subscribe({
+            ].forEach(attr => this.subscriptionHandles.push(window.mx.data.subscribe({
                 attr,
                 callback: () => this.fetchData(contextObject), guid: contextObject.getGuid()
             })));
@@ -103,15 +103,17 @@ class GoogleMapContainer extends Component<GoogleMapContainerProps, { alertMessa
 
     private unSubscribe() {
         this.subscriptionHandles.forEach(window.mx.data.unsubscribe);
+        this.subscriptionHandles = [];
     }
 
     private fetchData(contextObject: mendix.lib.MxObject) {
         if (this.props.dataSource === "static") {
             this.setState({ locations: this.props.staticLocations });
-        } else if (this.props.dataSource === "context" && this.props.locationsEntity) {
+        } else if (this.props.dataSource === "context") {
             this.fetchLocationsByContext(contextObject);
         } else if (this.props.dataSource === "XPath" && this.props.locationsEntity) {
-            this.fetchLocationsByXPath(contextObject ? contextObject.getGuid() : "");
+            const guid = contextObject ? contextObject.getGuid() : "";
+            this.fetchLocationsByXPath(guid);
         } else if (this.props.dataSource === "microflow" && this.props.dataSourceMicroflow) {
             this.fetchLocationsByMicroflow(this.props.dataSourceMicroflow, contextObject);
         }
@@ -138,7 +140,7 @@ class GoogleMapContainer extends Component<GoogleMapContainerProps, { alertMessa
             callback: mxObjects => this.setLocationsFromMxObjects(mxObjects),
             error: error =>
                 this.setState({
-                    alertMessage: `An error occurred while retrieving items: ${error} constraint ` + xpath,
+                    alertMessage: `An error occurred while retrieving locations: ${error} constraint ` + xpath,
                     locations: []
                 }),
             xpath
@@ -149,11 +151,10 @@ class GoogleMapContainer extends Component<GoogleMapContainerProps, { alertMessa
         if (microflow) {
             window.mx.ui.action(microflow, {
                 callback: (mxObjects: mendix.lib.MxObject[]) => this.setLocationsFromMxObjects(mxObjects),
-                error: error =>
-                    this.setState({
-                        alertMessage: `An error occurred while retrieving locations: ${error.message} in ` + microflow,
-                        locations: []
-                    }),
+                error: error => this.setState({
+                    alertMessage: `An error occurred while retrieving locations: ${error.message} in ` + microflow,
+                    locations: []
+                }),
                 params: {
                     guids: contextObject ? [ contextObject.getGuid() ] : []
                 }
@@ -161,8 +162,8 @@ class GoogleMapContainer extends Component<GoogleMapContainerProps, { alertMessa
         }
     }
 
-    private setLocationsFromMxObjects(mxObjects: mendix.lib.MxObject[]): void {
-        const locations = mxObjects.map((mxObject) => ({
+    private setLocationsFromMxObjects(mxObjects: mendix.lib.MxObject[]) {
+        const locations = mxObjects.map(mxObject => ({
             address: mxObject.get(this.props.addressAttribute) as string,
             latitude: Number(mxObject.get(this.props.latitudeAttribute)),
             longitude: Number(mxObject.get(this.props.longitudeAttribute))
@@ -172,4 +173,4 @@ class GoogleMapContainer extends Component<GoogleMapContainerProps, { alertMessa
     }
 }
 
-export { GoogleMapContainer as default, GoogleMapContainerProps, DataSource };
+export { GoogleMapContainer as default, GoogleMapContainerProps, GoogleMapContainer, DataSource };

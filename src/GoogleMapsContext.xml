@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<widget id="com.mendix.widget.custom.GoogleMaps.GoogleMaps" needsEntityContext="true" xmlns="http://www.mendix.com/widget/1.0/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mendix.com/widget/1.0/ ../../../../xsd/widget.xsd">
-    <name>Google Maps</name>
+<widget id="com.mendix.widget.custom.GoogleMaps.GoogleMapsContext" offlineCapable="true" needsEntityContext="true" xmlns="http://www.mendix.com/widget/1.0/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mendix.com/widget/1.0/ ../../../../xsd/widget.xsd">
+    <name>Google Maps context</name>
     <description>Show address on Google Maps</description>
     <icon>
         iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyBJREFUeNpkk01sVFUYhp/7f+evDNOZtFHBgUFCA1qrCQ3aqESMYqJpohIXLgSTLnRlTGSBO5WVxI2auChloQGjwRIjjS4gkRiVEMAumpISuGA7bacz2GmnM/feufceTy9YRb/kTc7P973nfb9zjnJk5Mve7nx+9Mp8UPx+qg2GSclaYf+T96G4LabfO0R6oYKVMrCTNqZtogAr9aZTry4P6l25ztG9T+wqZsYX6XskwWosVRs83FOgsN6mNvwJzXPfkS9tRVHVGKtRvzJZPP/p8VG9kMsWM8kkZ65fp6o24812EOKGZYaeewA8QfmLMdY9M8u/wy4USHdYRT2dSqLrGk3X5+qSh6HJse8T1NoxQdQOcMs1PMe5i0CZLaOGAXrLj+KF3T2dnDo5QSqTptH22dZtxesTR48RCJj6+RpJSyNhqdiWjmlohC0f/bMfHZ7u7+XVgU38NDHLyC8OWZn47tAeDo18wG/2OPZLXRQkX2dCkLEiEk4brRnRCqSSvoMnRXc2x1t7NvF4TxfZ1O2TPx47yueTx9lZEuQTEbYGli7QZQ8V5baNq5MueiRnjVSG10+M41cXqR97bc1n1Bb4kUI+KfhvKKgI6V5tNV38+gqe9BNFgnGnFie8vfcAB3cOceH3gAszOrJfd0EVBmEoFdm+x5uP3UNfaTsP3p+Li91bf2DnNvDGU/voSKQ5fOYj7rVVOqx/lGiGhbws9Pf3beXF3SXmz3/FxDdHpEePSL6D5EP72fjsO7zS/zwXnctcWzyLmY3WCBIYeJJANdRIWphj6dcPKT26gc0DvWzetR11+gSVi1/Hydu6t9BoCFyXNYi2iS8fmb7qW7PT6KaL6k2hCBVNKs3mAurLMzHBstsglIe7nrKmQJgmbfl11JVmC182pGPgMDMLGeZuVJm7WaUa7aCr/0Cc/O2lHxBilUDEMESSwNVotSL0cqXi3CzPFTdueYHOHS//77qGTw/Tk82SX59HvSMglD2anq/iuTj6Qu3PwdNnz42uy6SLfxd5oY+zeINTl8eorNyS9lTSpkLGUDDUOxZCHInBvwQYAKY4VALn8wykAAAAAElFTkSuQmCC
@@ -16,13 +16,13 @@
             <category>General</category>
             <description>The default address property</description>
         </property>
-        <property key="dataSource" type="enumeration" defaultValue="XPath">
+        <property key="dataSource" type="enumeration" defaultValue="context">
             <caption>Data source</caption>
             <category>Data source</category>
-            <description>Where should the locations be retrieved from?</description>
+            <description/>
             <enumerationValues>
-                <enumerationValue key="XPath">XPath</enumerationValue>
-                <enumerationValue key="microflow">Microflow</enumerationValue>
+                <enumerationValue key="static">Static</enumerationValue>
+                <enumerationValue key="context">Context</enumerationValue>
             </enumerationValues>
         </property>
         <property key="staticLocations" type="object" isList="true" required="false">
@@ -47,12 +47,7 @@
                 </property>
             </properties>
         </property>
-        <property key="locationsEntity" type="entity" required="false">
-            <caption>Locations entity</caption>
-            <category>Data source</category>
-            <description>The entity from which the locations will be retrieved for the XPath and microflow options</description>
-        </property>
-        <property key="addressAttribute" type="attribute" entityProperty="locationsEntity" required="false">
+        <property key="addressAttribute" type="attribute" required="false">
             <caption>Address</caption>
             <category>Data source</category>
             <description>Attribute where the address string is stored. It is not used if coordinates are specified</description>
@@ -60,7 +55,7 @@
                 <attributeType name="String"/>
             </attributeTypes>
         </property>
-        <property key="latitudeAttribute" type="attribute" entityProperty="locationsEntity" required="false">
+        <property key="latitudeAttribute" type="attribute" required="false">
             <caption>Latitude</caption>
             <category>Data source</category>
             <description>The latitude attribute.</description>
@@ -71,7 +66,7 @@
                 <attributeType name="String"/>
             </attributeTypes>
         </property>
-        <property key="longitudeAttribute" type="attribute" entityProperty="locationsEntity" required="false">
+        <property key="longitudeAttribute" type="attribute" required="false">
             <caption>Longitude</caption>
             <category>Data source</category>
             <description>The longitude attribute.</description>
@@ -81,17 +76,6 @@
                 <attributeType name="Decimal"/>
                 <attributeType name="String"/>
             </attributeTypes>
-        </property>
-        <property key="entityConstraint" type="entityConstraint" entityProperty="locationsEntity" required="false">
-            <caption>XPath</caption>
-            <category>Data source</category>
-            <description>Constraint on the locations entity</description>
-        </property>
-        <property key="dataSourceMicroflow" type="microflow" required="false">
-            <caption>Microflow</caption>
-            <category>Data source</category>
-            <description>Returns the locations to display</description>
-            <returnType type="Object" entityProperty="locationsEntity" isList="true"/>
         </property>
          <property key="width" type="integer" defaultValue="100">
             <caption>Map width</caption>
