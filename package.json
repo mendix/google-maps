@@ -1,5 +1,5 @@
 {
-  "name": "googlemaps",
+  "name": "google-maps",
   "widgetName": "GoogleMaps",
   "version": "1.0.0",
   "description": "Show locations on Google Maps",
@@ -30,7 +30,7 @@
     "core-js": "^2.4.1",
     "css-loader": "^0.28.0",
     "enzyme": "^2.7.1",
-    "extract-text-webpack-plugin": "^2.0.0-rc.2",
+    "extract-text-webpack-plugin": "^2.1.0",
     "grunt": "1.0.1",
     "grunt-check-dependencies": "^1.0.0",
     "grunt-contrib-clean": "^1.0.0",

@@ -7,3 +7,5 @@ export interface MarkerProps {
 
 export const Marker: StatelessComponent<MarkerProps> = (props) =>
     DOM.div({ className: "widget-google-maps-marker" });
+
+Marker.displayName = "Marker";

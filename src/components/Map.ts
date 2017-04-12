@@ -45,15 +45,14 @@ export class Map extends Component<MapProps, MapState> {
     }
 
     componentWillReceiveProps(nextProps: MapProps) {
-        this.plotAddresses(nextProps.locations);
+        this.resolveAddresses(nextProps.locations);
         this.centerMap(nextProps.locations);
         this.setState({ locations: nextProps.locations });
     }
 
     render() {
         // tslint:disable-next-line:max-line-length
-        return DOM.div({ className: "widget-google-maps-wrapper", ref: node => this.mapWrapper = node, style: this.getStyle()
-        },
+        return DOM.div({ className: "widget-google-maps-wrapper", ref: node => this.mapWrapper = node, style: this.getStyle() },
             DOM.div({ className: "widget-google-maps" },
                 createElement(Alert, { message: this.state.alertMessage }),
                 createElement(GoogleMap, this.getGoogleMapProps(),
@@ -99,7 +98,7 @@ export class Map extends Component<MapProps, MapState> {
     private handleOnGoogleApiLoaded() {
         this.setState({ isLoaded: true });
         this.centerMap(this.props.locations);
-        this.plotAddresses(this.props.locations);
+        this.resolveAddresses(this.props.locations);
     }
 
     private centerMap(locations: Location[]) {
@@ -118,7 +117,7 @@ export class Map extends Component<MapProps, MapState> {
         }
     }
 
-    private updateCenterState(location: LatLng) {
+    private updateCenterState(location?: LatLng) {
         if (location) {
             this.setState({ center: location });
         } else {
@@ -126,16 +125,18 @@ export class Map extends Component<MapProps, MapState> {
         }
     }
 
-    private plotAddresses(locations: Location[]) {
-        for (let i = 0; i < locations.filter((location) => !!location.address).length; i++) {
-            this.getLocation(locations[i].address as string, (location: LatLng) => {
-                if (location) {
-                    locations[i].latitude = Number(location.lat);
-                    locations[i].longitude = Number(location.lng);
-                    this.setState({ locations });
-                }
-            });
-        }
+    private resolveAddresses(locations: Location[]) {
+        locations.forEach(location => {
+            if (location.address && !location.latitude && !location.longitude) {
+                this.getLocation(location.address, locationLookup => {
+                    if (locationLookup) {
+                        location.latitude = Number(locationLookup.lat);
+                        location.longitude = Number(locationLookup.lng);
+                        this.setState({ locations });
+                    }
+                });
+            }
+        });
     }
 
     private getLocation(address: string, callback: (result?: LatLng ) => void) {
@@ -161,7 +162,7 @@ export class Map extends Component<MapProps, MapState> {
     private createMakers(): Array<ReactElement<MarkerProps>> {
         const markerElements: Array<ReactElement<MarkerProps>> = [];
         if (this.state.locations) {
-            this.state.locations.map((locationObject: Location, index) => {
+            this.state.locations.map((locationObject, index) => {
                 // tslint:disable-next-line:max-line-length
                 if (locationObject.latitude && locationObject.latitude !== 0 && locationObject.longitude && locationObject.longitude !== 0) {
                     markerElements.push(createElement(Marker, {
