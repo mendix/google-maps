@@ -45,9 +45,9 @@ export class Map extends Component<MapProps, MapState> {
     }
 
     componentWillReceiveProps(nextProps: MapProps) {
-        this.resolveAddresses(nextProps.locations);
-        this.centerMap(nextProps.locations);
         this.setState({ locations: nextProps.locations });
+        this.centerMap(nextProps.locations );
+        this.resolveAddresses(nextProps.locations);
     }
 
     render() {
@@ -103,26 +103,25 @@ export class Map extends Component<MapProps, MapState> {
 
     private centerMap(locations: Location[]) {
         if (locations.length === 1) {
-            if (locations[0].latitude && locations[0].longitude) {
-                this.updateCenterState({ lat: locations[0].latitude, lng: locations[0].longitude });
+            const firstLocation = locations[0];
+            if (firstLocation.latitude && firstLocation.longitude) {
+                this.setState({ center: { lat: firstLocation.latitude, lng: firstLocation.longitude } });
             } else {
-                this.getLocation(locations[0].address as string, (location: LatLng) => {
-                    this.updateCenterState(location);
-                });
+                this.updateCenterStateByAddress(firstLocation.address as string);
             }
         } else {
-            this.getLocation(this.props.defaultCenterAddress as string, (location: LatLng) => {
-                this.updateCenterState(location);
-            });
+            this.updateCenterStateByAddress(this.props.defaultCenterAddress);
         }
     }
 
-    private updateCenterState(location?: LatLng) {
-        if (location) {
-            this.setState({ center: location });
-        } else {
-            this.setState({ center: this.defaultCenterLocation });
-        }
+    private updateCenterStateByAddress(address: string) {
+        this.getLocation(address, (location: LatLng ) => {
+            if (location) {
+                this.setState({ center: location });
+            } else {
+                this.setState({ center: this.defaultCenterLocation });
+            }
+        });
     }
 
     private resolveAddresses(locations: Location[]) {
