@@ -18,6 +18,7 @@ interface GoogleMapContainerProps {
     staticLocations: StaticLocation[];
     width: number;
     widthUnit: "percentage" | "pixels";
+    zoomLevel: number;
 }
 
 interface StaticLocation {
@@ -51,8 +52,8 @@ class GoogleMapContainer extends Component<GoogleMapContainerProps, { alertMessa
                 heightUnit: this.props.heightUnit,
                 locations: this.state.locations,
                 width: this.props.width,
-                widthUnit: this.props.widthUnit
-
+                widthUnit: this.props.widthUnit,
+                zoomLevel: this.props.zoomLevel
             });
         }
     }

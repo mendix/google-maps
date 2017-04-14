@@ -20,6 +20,7 @@ export interface MapProps extends Props<Map> {
     locations: Location[];
     width: number;
     widthUnit: "percentage" | "pixels";
+    zoomLevel: number;
 }
 
 export interface MapState {
@@ -60,7 +61,7 @@ export class Map extends Component<MapProps, MapState> {
                     {
                         bootstrapURLKeys: { key: this.props.apiKey },
                         center,
-                        defaultZoom: 7,
+                        defaultZoom: this.props.zoomLevel,
                         onGoogleApiLoaded: () => this.handleOnGoogleApiLoaded(),
                         resetBoundsOnResize: true,
                         yesIWantToUseGoogleMapApiInternals: true

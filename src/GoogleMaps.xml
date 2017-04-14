@@ -65,6 +65,11 @@
             <description>Returns the list of locations to display</description>
             <returnType type="Object" entityProperty="locationsEntity" isList="true"/>
         </property>
+         <property key="zoomLevel" type="integer" defaultValue="10">
+            <caption>Zoom level</caption>
+            <category>Appearance</category>
+            <description>1: World, 5: Landmass/continent, 10: City, 15: Streets, 20: Buildings</description>
+        </property>
         <property key="widthUnit" type="enumeration" defaultValue="percentage">
             <caption>Width unit</caption>
             <category>Appearance</category>

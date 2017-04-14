@@ -21,18 +21,20 @@ describe("Map", () => {
 
     const setUpMap = (
         locationsParam: Location[], APIKeyParam?: string,
-        WidthParam?: number,
-        HeightParam?: number,
-        WidthUnitParam?: "percentage" | "pixels",
-        HeightUnitParam?: "percentageOfWidth" | "percentageOfParent" | "pixels"): ShallowWrapper<MapProps, any> => {
+        widthParam?: number,
+        heightParam?: number,
+        widthUnitParam?: "percentage" | "pixels",
+        heightUnitParam?: "percentageOfWidth" | "percentageOfParent" | "pixels",
+        defaultCenterParam?: string): ShallowWrapper<MapProps, any> => {
         const output = renderMap({
             apiKey: APIKeyParam,
-            defaultCenterAddress: address,
-            height: HeightParam ? HeightParam : 75,
-            heightUnit: HeightUnitParam ? HeightUnitParam : "pixels",
+            defaultCenterAddress: defaultCenterParam !== undefined ? defaultCenterParam : address,
+            height: heightParam ? heightParam : 75,
+            heightUnit: heightUnitParam ? heightUnitParam : "pixels",
             locations: locationsParam,
-            width: WidthParam ? WidthParam : 100,
-            widthUnit: WidthUnitParam ? WidthUnitParam : "pixels"
+            width: widthParam ? widthParam : 100,
+            widthUnit: widthUnitParam ? widthUnitParam : "pixels",
+            zoomLevel: 7
         });
         mockGoogleMaps.setup();
         (output.find(GoogleMap).prop("onGoogleApiLoaded") as any).apply();
@@ -82,7 +84,7 @@ describe("Map", () => {
         });
 
         it("should center to the default address if no coordinates", () => {
-            const output = setUpMap([ { address: "" } ]);
+            const output = setUpMap([ { address: "" } ], undefined, 100, 75, "pixels", "pixels", "");
 
             expect(output.state("center").lat).toBe(defaultCenterLocation.lat);
             expect(output.state("center").lng).toBe(defaultCenterLocation.lng);
