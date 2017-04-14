@@ -11,86 +11,58 @@
             <category>General</category>
             <description>The Google Maps Javascript API v3 does not require an API key to function correctly. However, Google strongly encourages you to load the Maps API using an APIs key</description>
         </property>
-        <property key="defaultCenterAddress" type="string" required="true">
+        <property key="defaultCenterAddress" type="string" required="false">
             <caption>Default center address</caption>
             <category>General</category>
-            <description>The default address property</description>
+            <description>Fallback map center location when no locations are available</description>
         </property>
         <property key="dataSource" type="enumeration" defaultValue="XPath">
             <caption>Data source</caption>
             <category>Data source</category>
-            <description>Where should the locations be retrieved from?</description>
+            <description>Source of the locations</description>
             <enumerationValues>
                 <enumerationValue key="XPath">XPath</enumerationValue>
                 <enumerationValue key="microflow">Microflow</enumerationValue>
             </enumerationValues>
         </property>
-        <property key="staticLocations" type="object" isList="true" required="false">
-            <caption>Static locations</caption>
-            <category>Data source</category>
-            <description/>
-            <properties>
-                <property key="address" type="string" required="false">
-                    <caption>Address</caption>
-                    <category>Location</category>
-                    <description>Attribute where the address string is stored. It is not used if coordinates are specified</description>
-                </property>
-                <property key="latitude" type="string"  required="false">
-                    <caption>Latitude</caption>
-                    <category>Location</category>
-                    <description>The latitude attribute.</description>
-                </property>
-                <property key="longitude" type="string"  required="false">
-                    <caption>Longitude</caption>
-                    <category>Location</category>
-                    <description>The longitude attribute.</description>
-                </property>
-            </properties>
-        </property>
-        <property key="locationsEntity" type="entity" required="false">
+        <property key="locationsEntity" type="entity">
             <caption>Locations entity</caption>
             <category>Data source</category>
-            <description>The entity from which the locations will be retrieved for the XPath and microflow options</description>
+            <description>The entity of the locations</description>
         </property>
         <property key="addressAttribute" type="attribute" entityProperty="locationsEntity" required="false">
             <caption>Address</caption>
             <category>Data source</category>
-            <description>Attribute where the address string is stored. It is not used if coordinates are specified</description>
+            <description>Attribute where the address is stored. It is not used if valid coordinates are specified</description>
             <attributeTypes>
                 <attributeType name="String"/>
             </attributeTypes>
         </property>
         <property key="latitudeAttribute" type="attribute" entityProperty="locationsEntity" required="false">
-            <caption>Latitude</caption>
+            <caption>Latitude attribute</caption>
             <category>Data source</category>
-            <description>The latitude attribute.</description>
+            <description>The latitude attribute on the location entity</description>
             <attributeTypes>
-                <attributeType name="Integer"/>
-                <attributeType name="Float"/>
                 <attributeType name="Decimal"/>
-                <attributeType name="String"/>
             </attributeTypes>
         </property>
         <property key="longitudeAttribute" type="attribute" entityProperty="locationsEntity" required="false">
-            <caption>Longitude</caption>
+            <caption>Longitude attribute</caption>
             <category>Data source</category>
-            <description>The longitude attribute.</description>
+            <description>The longitude attribute on the location entity</description>
             <attributeTypes>
-                <attributeType name="Integer"/>
-                <attributeType name="Float"/>
                 <attributeType name="Decimal"/>
-                <attributeType name="String"/>
             </attributeTypes>
         </property>
         <property key="entityConstraint" type="entityConstraint" entityProperty="locationsEntity" required="false">
-            <caption>XPath</caption>
+            <caption>XPath constraint</caption>
             <category>Data source</category>
-            <description>Constraint on the locations entity</description>
+            <description>Constraint the locations that will be displayed, could use relation to '[%CurrentObject%]'</description>
         </property>
         <property key="dataSourceMicroflow" type="microflow" required="false">
             <caption>Microflow</caption>
             <category>Data source</category>
-            <description>Returns the locations to display</description>
+            <description>Returns the list of locations to display</description>
             <returnType type="Object" entityProperty="locationsEntity" isList="true"/>
         </property>
         <property key="widthUnit" type="enumeration" defaultValue="percentage">
@@ -105,13 +77,13 @@
          <property key="width" type="integer" defaultValue="100">
             <caption>Map width</caption>
             <category>Appearance</category>
-            <description>Width of the map</description>
+            <description/>
         </property>
         <property key="heightUnit" type="enumeration" defaultValue="percentageOfWidth">
             <caption>Height unit</caption>
             <category>Appearance</category>
             <description>'Percentage of width' is the aspect ratio, 'Pixels' is absolute, 
-Warning 'Percentage of parent' only work when parent has a absolute height, else is not displayed</description>
+Warning the 'Percentage of parent' only works when the parent has an absolute height, else it will not display</description>
             <enumerationValues>
                 <enumerationValue key="percentageOfWidth">Percentage of width</enumerationValue>
                 <enumerationValue key="pixels">Pixels</enumerationValue>
@@ -121,7 +93,7 @@ Warning 'Percentage of parent' only work when parent has a absolute height, else
         <property key="height" type="integer" defaultValue="75">
             <caption>Map height</caption>
             <category>Appearance</category>
-            <description>Height of the map</description>
+            <description/>
         </property>
     </properties>
 </widget>

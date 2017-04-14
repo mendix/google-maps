@@ -46,16 +46,25 @@ export class Map extends Component<MapProps, MapState> {
 
     componentWillReceiveProps(nextProps: MapProps) {
         this.setState({ locations: nextProps.locations });
-        this.centerMap(nextProps.locations );
-        this.resolveAddresses(nextProps.locations);
+        this.resolveAddresses(nextProps.locations, nextProps.defaultCenterAddress);
     }
 
     render() {
+        let center = this.calculateCenter(this.props.locations);
+        center = center ? center : this.state.center;
         // tslint:disable-next-line:max-line-length
         return DOM.div({ className: "widget-google-maps-wrapper", ref: node => this.mapWrapper = node, style: this.getStyle() },
             DOM.div({ className: "widget-google-maps" },
                 createElement(Alert, { message: this.state.alertMessage }),
-                createElement(GoogleMap, this.getGoogleMapProps(),
+                createElement(GoogleMap,
+                    {
+                        bootstrapURLKeys: { key: this.props.apiKey },
+                        center,
+                        defaultZoom: 7,
+                        onGoogleApiLoaded: () => this.handleOnGoogleApiLoaded(),
+                        resetBoundsOnResize: true,
+                        yesIWantToUseGoogleMapApiInternals: true
+                    },
                     this.createMakers()
                 )
             )
@@ -84,49 +93,55 @@ export class Map extends Component<MapProps, MapState> {
         return style;
     }
 
-    private getGoogleMapProps(): GoogleMapProps {
+    private handleOnGoogleApiLoaded() {
+        this.setState({ isLoaded: true });
+        this.resolveAddresses(this.props.locations, this.props.defaultCenterAddress);
+    }
+
+    private calculateCenter(locations: Location[]): LatLng| undefined {
+        let x = 0;
+        let y = 0;
+        let z = 0;
+        let count = 0;
+        locations.forEach(location => {
+            const { latitude: lat, longitude: lng } = location;
+            if (this.validLocation(location) && typeof lat === "number" && typeof lng === "number") {
+                count++;
+                const latitude = lat * Math.PI / 180;
+                const longitude = lng * Math.PI / 180;
+
+                x += Math.cos(latitude) * Math.cos(longitude);
+                y += Math.cos(latitude) * Math.sin(longitude);
+                z += Math.sin(latitude);
+            }
+        });
+        if (!count) {
+            return;
+        }
+        x = x / count;
+        y = y / count;
+        z = z / count;
+
+        const centralLongitude = Math.atan2(y, x);
+        const centralSquareRoot = Math.sqrt(x * x + y * y);
+        const centralLatitude = Math.atan2(z, centralSquareRoot);
         return {
-            bootstrapURLKeys: { key: this.props.apiKey },
-            center: this.state.center,
-            defaultZoom: 7,
-            onGoogleApiLoaded: () => this.handleOnGoogleApiLoaded(),
-            resetBoundsOnResize: true,
-            yesIWantToUseGoogleMapApiInternals: true
+            lat: centralLatitude * 180 / Math.PI,
+            lng: centralLongitude * 180 / Math.PI
         };
     }
 
-    private handleOnGoogleApiLoaded() {
-        this.setState({ isLoaded: true });
-        this.centerMap(this.props.locations);
-        this.resolveAddresses(this.props.locations);
-    }
-
-    private centerMap(locations: Location[]) {
-        if (locations.length === 1) {
-            const firstLocation = locations[0];
-            if (firstLocation.latitude && firstLocation.longitude) {
-                this.setState({ center: { lat: firstLocation.latitude, lng: firstLocation.longitude } });
-            } else {
-                this.updateCenterStateByAddress(firstLocation.address as string);
-            }
-        } else {
-            this.updateCenterStateByAddress(this.props.defaultCenterAddress);
+    private resolveAddresses(locations: Location[], centerAddress?: string) {
+        if (centerAddress) {
+            this.getLocation(centerAddress, location => {
+                if (location) {
+                    this.setState({ center: location });
+                }
+            });
         }
-    }
 
-    private updateCenterStateByAddress(address: string) {
-        this.getLocation(address, (location: LatLng ) => {
-            if (location) {
-                this.setState({ center: location });
-            } else {
-                this.setState({ center: this.defaultCenterLocation });
-            }
-        });
-    }
-
-    private resolveAddresses(locations: Location[]) {
         locations.forEach(location => {
-            if (location.address && !location.latitude && !location.longitude) {
+            if (!this.validLocation(location) && location.address) {
                 this.getLocation(location.address, locationLookup => {
                     if (locationLookup) {
                         location.latitude = Number(locationLookup.lat);
@@ -136,6 +151,14 @@ export class Map extends Component<MapProps, MapState> {
                 });
             }
         });
+    }
+
+    private validLocation(location: Location): boolean {
+        const { latitude: lat, longitude: lng } = location;
+        return typeof lat === "number" && typeof lng === "number"
+            && lat <= 90 && lat >= -90
+            && lng <= 180 && lng >= -180
+            && !(lat === 0 && lng === 0 );
     }
 
     private getLocation(address: string, callback: (result?: LatLng ) => void) {
@@ -162,12 +185,12 @@ export class Map extends Component<MapProps, MapState> {
         const markerElements: Array<ReactElement<MarkerProps>> = [];
         if (this.state.locations) {
             this.state.locations.map((locationObject, index) => {
-                // tslint:disable-next-line:max-line-length
-                if (locationObject.latitude && locationObject.latitude !== 0 && locationObject.longitude && locationObject.longitude !== 0) {
+                const { latitude: lat, longitude: lng } = locationObject;
+                if (this.validLocation(locationObject) && typeof lat === "number" && typeof lng === "number") {
                     markerElements.push(createElement(Marker, {
                         key: index,
-                        lat: Number(locationObject.latitude),
-                        lng: Number(locationObject.longitude)
+                        lat,
+                        lng
                     }));
                 }
             });

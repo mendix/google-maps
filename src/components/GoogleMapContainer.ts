@@ -15,9 +15,15 @@ interface GoogleMapContainerProps {
     addressAttribute: string;
     latitudeAttribute: string;
     longitudeAttribute: string;
-    staticLocations: Location[];
+    staticLocations: StaticLocation[];
     width: number;
     widthUnit: "percentage" | "pixels";
+}
+
+interface StaticLocation {
+    address: string;
+    latitude: string;
+    longitude: string;
 }
 
 type DataSource = "static" | "context" | "XPath" | "microflow";
@@ -69,14 +75,25 @@ class GoogleMapContainer extends Component<GoogleMapContainerProps, { alertMessa
         if (this.props.dataSource === "static" && !this.props.staticLocations.length) {
             message = "At least one static location is required for 'Data source 'Static'";
         }
+        if (this.props.dataSource === "static") {
+            const invalidLocations = this.props.staticLocations.filter(location =>
+                !location.address && !(location.latitude && location.longitude)
+            );
+            if (invalidLocations.length > 0) {
+                message = "The 'Address' or 'Latitude' and 'Longitude' "
+                    + "is required for this 'Static' data source";
+            }
+        }
         if (this.props.dataSource === "XPath" && !this.props.locationsEntity) {
             message = "The 'Locations entity' is required for 'Data source' 'XPath'";
         }
-        // if (this.props.dataSource === "context" && !this.props.locationsEntity) {
-        //     message = "The locations entity is required";
-        // }
         if (this.props.dataSource === "microflow" && !this.props.dataSourceMicroflow) {
             message = "A 'Microflow' is required for 'Data source' 'Microflow'";
+        }
+        if (this.props.dataSource !== "static" && (!this.props.addressAttribute ||
+            (!this.props.longitudeAttribute && !this.props.latitudeAttribute))) {
+            message = "The 'Address attribute' or 'Latitude Attribute' and 'Longitude attribute' "
+                + "is required for this data source";
         }
 
         return message;
@@ -108,7 +125,7 @@ class GoogleMapContainer extends Component<GoogleMapContainerProps, { alertMessa
 
     private fetchData(contextObject: mendix.lib.MxObject) {
         if (this.props.dataSource === "static") {
-            this.setState({ locations: this.props.staticLocations });
+            this.setState({ locations: this.parseLocations(this.props.staticLocations) });
         } else if (this.props.dataSource === "context") {
             this.fetchLocationsByContext(contextObject);
         } else if (this.props.dataSource === "XPath" && this.props.locationsEntity) {
@@ -117,6 +134,15 @@ class GoogleMapContainer extends Component<GoogleMapContainerProps, { alertMessa
         } else if (this.props.dataSource === "microflow" && this.props.dataSourceMicroflow) {
             this.fetchLocationsByMicroflow(this.props.dataSourceMicroflow, contextObject);
         }
+    }
+
+    // Mendix does not support negative and decimal number as static inputs, so they are strings.
+    private parseLocations(locations: StaticLocation[]): Location[] {
+        return locations.map(location => ({
+            address: location.address,
+            latitude: location.latitude.trim() !== "" ? Number(location.latitude) : undefined,
+            longitude: location.longitude.trim() !== "" ? Number(location.longitude) : undefined
+        }));
     }
 
     private fetchLocationsByContext(contextObject?: mendix.lib.MxObject) {
@@ -163,11 +189,15 @@ class GoogleMapContainer extends Component<GoogleMapContainerProps, { alertMessa
     }
 
     private setLocationsFromMxObjects(mxObjects: mendix.lib.MxObject[]) {
-        const locations = mxObjects.map(mxObject => ({
-            address: mxObject.get(this.props.addressAttribute) as string,
-            latitude: Number(mxObject.get(this.props.latitudeAttribute)),
-            longitude: Number(mxObject.get(this.props.longitudeAttribute))
-        }));
+        const locations = mxObjects.map(mxObject => {
+            const lat = mxObject.get(this.props.latitudeAttribute);
+            const lon = mxObject.get(this.props.longitudeAttribute);
+            return {
+                address: mxObject.get(this.props.addressAttribute) as string,
+                latitude: lat ? Number(lat) : undefined,
+                longitude: lon ? Number(lon) : undefined
+            };
+        });
 
         this.setState({ locations });
     }
