@@ -1,6 +1,6 @@
 import { Component, DOM, Props, ReactElement, createElement } from "react";
 import GoogleMap from "google-map-react";
-import { GoogleMapProps, LatLng } from "google-map-react";
+import { GoogleMapLoader, GoogleMapProps, LatLng } from "google-map-react";
 
 import { Alert } from "./Alert";
 import { Marker, MarkerProps } from "./Marker";
@@ -34,6 +34,7 @@ export class Map extends Component<MapProps, MapState> {
     // Location of Mendix Netherlands office
     private defaultCenterLocation: LatLng = { lat: 51.9107963, lng: 4.4789878 };
     private mapWrapper: HTMLElement;
+    private googleMapReact: GoogleMapLoader;
 
     constructor(props: MapProps) {
         super(props);
@@ -62,7 +63,7 @@ export class Map extends Component<MapProps, MapState> {
                         bootstrapURLKeys: { key: this.props.apiKey },
                         center,
                         defaultZoom: this.props.zoomLevel,
-                        onGoogleApiLoaded: () => this.handleOnGoogleApiLoaded(),
+                        onGoogleApiLoaded: (googleMapReact: GoogleMapLoader) => this.handleOnGoogleApiLoaded(googleMapReact),
                         resetBoundsOnResize: true,
                         yesIWantToUseGoogleMapApiInternals: true
                     },
@@ -94,9 +95,12 @@ export class Map extends Component<MapProps, MapState> {
         return style;
     }
 
-    private handleOnGoogleApiLoaded() {
+    private handleOnGoogleApiLoaded(googleMapReact: GoogleMapLoader) {
+        this.googleMapReact = googleMapReact;
+
         this.setState({ isLoaded: true });
         this.resolveAddresses(this.props.locations, this.props.defaultCenterAddress);
+        this.updateBounds(this.props.locations);
     }
 
     private calculateCenter(locations: Location[]): LatLng| undefined {
@@ -130,6 +134,21 @@ export class Map extends Component<MapProps, MapState> {
             lat: centralLatitude * 180 / Math.PI,
             lng: centralLongitude * 180 / Math.PI
         };
+    }
+
+    private updateBounds(locations: Location[]) {
+        const bounds = new google.maps.LatLngBounds();
+
+        locations.forEach(location => {
+            const { latitude: lat, longitude: lng } = location;
+            if (this.validLocation(location) && typeof lat === "number" && typeof lng === "number") {
+                bounds.extend(new google.maps.LatLng(lat, lng));
+
+            }
+        });
+        this.googleMapReact.map.fitBounds(bounds);
+        const zoom = this.googleMapReact.map.getZoom();
+        this.googleMapReact.map.setZoom(zoom > 6 ? 6 : zoom);
     }
 
     private resolveAddresses(locations: Location[], centerAddress?: string) {
