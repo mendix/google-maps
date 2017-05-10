@@ -119,7 +119,7 @@ export class Map extends Component<MapProps, MapState> {
         if (this.mapLoader) {
             this.bounds = new google.maps.LatLngBounds();
         }
-        if (locations.length) {
+        if (locations && locations.length) {
             locations.forEach(location => {
                 if (!this.validLocation(location) && location.address) {
                     this.getLocation(location.address, locationLookup => {

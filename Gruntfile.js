@@ -21,8 +21,8 @@ module.exports = function(grunt) {
 
         watch: {
             updateWidgetFiles: {
-                "files": [ "./dist/tmp/src/**/*" ],
-                "tasks": [ "webpack:develop", "compress:dist", "copy:distDeployment", "copy:mpk" ],
+                files: [ "./dist/tmp/src/**/*" ],
+                tasks: [ "webpack:develop", "file_append", "compress:dist", "copy:distDeployment", "copy:mpk" ],
                 options: {
                     debounceDelay: 250,
                     livereload: true
@@ -76,7 +76,18 @@ module.exports = function(grunt) {
                 } ]
             }
         },
-
+        file_append: {
+            addSourceURL: {
+                files: [ {
+                    append: "\n\n//# sourceURL=GoogleMaps.webmodeler.js\n",
+                    input: "dist/tmp/src/GoogleMaps.webmodeler.js"
+                },
+                {
+                    append: "\n\n//# sourceURL=GoogleMapsContext.webmodeler.js\n",
+                    input: "dist/tmp/src/GoogleMapsContext.webmodeler.js"
+                } ]
+            }
+        },
         webpack: {
             develop: webpackConfig,
             release: webpackConfigRelease
@@ -99,6 +110,7 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks("grunt-contrib-compress");
     grunt.loadNpmTasks("grunt-contrib-clean");
     grunt.loadNpmTasks("grunt-contrib-watch");
+    grunt.loadNpmTasks("grunt-file-append");
     grunt.loadNpmTasks("grunt-contrib-copy");
     grunt.loadNpmTasks("grunt-check-dependencies");
     grunt.loadNpmTasks("grunt-webpack");
@@ -107,7 +119,7 @@ module.exports = function(grunt) {
     grunt.registerTask(
         "clean build",
         "Compiles all the assets and copies the files to the build directory.",
-        [ "checkDependencies", "clean:build", "webpack:develop", "compress:dist", "copy:mpk" ]
+        [ "checkDependencies", "clean:build", "webpack:develop", "file_append", "compress:dist", "copy:mpk" ]
     );
     grunt.registerTask(
         "release",

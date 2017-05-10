@@ -44,7 +44,7 @@ const widgetConfig = {
     ]
 };
 
-const previewConfig = {
+const googleMapsConfig = {
     entry: "./src/GoogleMaps.webmodeler.ts",
     output: {
         path: path.resolve(__dirname, "dist/tmp"),
@@ -57,7 +57,8 @@ const previewConfig = {
     module: {
         rules: [
             { test: /\.ts$/, use: "ts-loader" },
-            { test: /\.css$/, loader: "style-loader!css-loader" }
+            { test: /\.css$/, loader: "raw-loader" },
+            { test: /\.(png|jpeg)$/, loader: "url-loader", options: { limit: 8192 } }
         ]
     },
     devtool: "inline-source-map",
@@ -67,4 +68,28 @@ const previewConfig = {
     ]
 };
 
-module.exports = [ widgetConfig, previewConfig ];
+const googleMapsContextConfig = {
+    entry: "./src/GoogleMaps.webmodeler.ts",
+    output: {
+        path: path.resolve(__dirname, "dist/tmp"),
+        filename: "src/GoogleMapsContext.webmodeler.js",
+        libraryTarget: "commonjs"
+    },
+    resolve: {
+        extensions: [ ".ts", ".js" ]
+    },
+    module: {
+        rules: [
+            { test: /\.ts$/, use: "ts-loader" },
+            { test: /\.css$/, loader: "raw-loader" },
+            { test: /\.(png|jpeg)$/, loader: "url-loader", options: { limit: 8192 } }
+        ]
+    },
+    devtool: "inline-source-map",
+    externals: [ "react", "react-dom" ],
+    plugins: [
+        new webpack.LoaderOptionsPlugin({ debug: true })
+    ]
+};
+
+module.exports = [ widgetConfig, googleMapsConfig, googleMapsContextConfig ];
