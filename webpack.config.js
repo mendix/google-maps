@@ -36,7 +36,7 @@ const widgetConfig = {
     plugins: [
         new CleanWebpackPlugin("dist/tmp"),
         new CopyWebpackPlugin([
-            { from: "src/**/*.xml", copyUnmodified:true },
+            { from: "src/**/*.xml" },
             { from: "src/**/*.png" }
         ], { copyUnmodified: true }),
         new ExtractTextPlugin({ filename: "./src/com/mendix/widget/custom/GoogleMaps/ui/[name].css" }),
@@ -44,7 +44,7 @@ const widgetConfig = {
     ]
 };
 
-const googleMapsConfig = {
+const previewConfig = {
     entry: "./src/GoogleMaps.webmodeler.ts",
     output: {
         path: path.resolve(__dirname, "dist/tmp"),
@@ -68,7 +68,7 @@ const googleMapsConfig = {
     ]
 };
 
-const googleMapsContextConfig = {
+const previewContextConfig = {
     entry: "./src/GoogleMaps.webmodeler.ts",
     output: {
         path: path.resolve(__dirname, "dist/tmp"),
@@ -92,4 +92,4 @@ const googleMapsContextConfig = {
     ]
 };
 
-module.exports = [ widgetConfig, googleMapsConfig, googleMapsContextConfig ];
+module.exports = [ widgetConfig, previewConfig, previewContextConfig ];

@@ -176,12 +176,12 @@ export class Map extends Component<MapProps, MapState> {
         const markerElements: Array<ReactElement<MarkerProps>> = [];
         if (this.state.locations && this.state.locations.length) {
             this.state.locations.map((locationObject, index) => {
-                const { latitude: lat, longitude: lng } = locationObject;
+                const { latitude, longitude } = locationObject;
                 if (this.validLocation(locationObject)) {
                     markerElements.push(createElement(Marker, {
                         key: index,
-                        lat: lat as number,
-                        lng: lng as number
+                        lat: latitude as number,
+                        lng: longitude as number
                     }));
                 }
             });

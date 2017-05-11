@@ -7,7 +7,7 @@ import * as css from "./ui/GoogleMaps.css";
 export class preview extends Component<GoogleMapContainerProps, {}> {
 
     componentWillMount() {
-        this.addPreviewStyle( "widget-googlemaps");
+        this.addPreviewStyle("widget-googlemaps");
     }
 
     render() {
