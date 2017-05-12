@@ -23,6 +23,7 @@ the coordinate is not specified, it will use address.
 If there are multiple locations, the map will be centered based on default address specified.
 However if it is only a single point in the list, the map will center to that point.
 When the zoom level is zero (0), then the map will use the bounds zoom.
+When the default center is not specified, the map will use the bounds center
 
 ## Demo project
 
