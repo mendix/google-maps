@@ -22,6 +22,7 @@ When displaying locations, the widget will prioritize coordinates over addresses
 the coordinate is not specified, it will use address.
 If there are multiple locations, the map will be centered based on default address specified.
 However if it is only a single point in the list, the map will center to that point.
+When the zoom level is zero (0), then the map will use the bounds zoom.
 
 ## Demo project
 

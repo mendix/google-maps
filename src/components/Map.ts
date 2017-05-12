@@ -1,6 +1,5 @@
 import { Component, DOM, Props, ReactElement, createElement } from "react";
-import GoogleMap from "google-map-react";
-import { GoogleMapProps, LatLng } from "google-map-react";
+import GoogleMap, { GoogleMapLoader, LatLng } from "google-map-react";
 
 import { Alert } from "./Alert";
 import { Marker, MarkerProps } from "./Marker";
@@ -34,6 +33,8 @@ export class Map extends Component<MapProps, MapState> {
     // Location of Mendix Netherlands office
     private defaultCenterLocation: LatLng = { lat: 51.9107963, lng: 4.4789878 };
     private mapWrapper: HTMLElement;
+    private mapLoader?: GoogleMapLoader;
+    private bounds: google.maps.LatLngBounds;
 
     constructor(props: MapProps) {
         super(props);
@@ -43,26 +44,24 @@ export class Map extends Component<MapProps, MapState> {
             isLoaded: false,
             locations: props.locations
         };
-    }
-
-    componentWillReceiveProps(nextProps: MapProps) {
-        this.setState({ locations: nextProps.locations });
-        this.resolveAddresses(nextProps.locations, nextProps.defaultCenterAddress);
+        this.handleOnGoogleApiLoaded = this.handleOnGoogleApiLoaded.bind(this);
     }
 
     render() {
-        let center = this.calculateCenter(this.props.locations);
-        center = center ? center : this.state.center;
-        // tslint:disable-next-line:max-line-length
-        return DOM.div({ className: "widget-google-maps-wrapper", ref: node => this.mapWrapper = node, style: this.getStyle() },
+        return DOM.div(
+            {
+                className: "widget-google-maps-wrapper",
+                ref: node => this.mapWrapper = node,
+                style: this.getStyle()
+            },
             DOM.div({ className: "widget-google-maps" },
                 createElement(Alert, { message: this.state.alertMessage }),
                 createElement(GoogleMap,
                     {
                         bootstrapURLKeys: { key: this.props.apiKey },
-                        center,
+                        center: this.state.center,
                         defaultZoom: this.props.zoomLevel,
-                        onGoogleApiLoaded: () => this.handleOnGoogleApiLoaded(),
+                        onGoogleApiLoaded: this.handleOnGoogleApiLoaded,
                         resetBoundsOnResize: true,
                         yesIWantToUseGoogleMapApiInternals: true
                     },
@@ -80,6 +79,11 @@ export class Map extends Component<MapProps, MapState> {
         }
     }
 
+    componentWillReceiveProps(nextProps: MapProps) {
+        this.setState({ locations: nextProps.locations });
+        this.resolveAddresses(nextProps.locations, nextProps.defaultCenterAddress);
+    }
+
     private getStyle(): object {
         const style: { paddingBottom?: string; width: string, height?: string } = {
             width: this.props.widthUnit === "percentage" ? `${this.props.width}%` : `${this.props.width}`
@@ -94,64 +98,57 @@ export class Map extends Component<MapProps, MapState> {
         return style;
     }
 
-    private handleOnGoogleApiLoaded() {
+    private handleOnGoogleApiLoaded(mapLoader: GoogleMapLoader) {
+        this.mapLoader = mapLoader;
+
         this.setState({ isLoaded: true });
         this.resolveAddresses(this.props.locations, this.props.defaultCenterAddress);
     }
 
-    private calculateCenter(locations: Location[]): LatLng| undefined {
-        let x = 0;
-        let y = 0;
-        let z = 0;
-        let count = 0;
-        locations.forEach(location => {
-            const { latitude: lat, longitude: lng } = location;
-            if (this.validLocation(location) && typeof lat === "number" && typeof lng === "number") {
-                count++;
-                const latitude = lat * Math.PI / 180;
-                const longitude = lng * Math.PI / 180;
-
-                x += Math.cos(latitude) * Math.cos(longitude);
-                y += Math.cos(latitude) * Math.sin(longitude);
-                z += Math.sin(latitude);
-            }
-        });
-        if (!count) {
-            return;
+    private updateBounds(location: Location) {
+        if (this.mapLoader) {
+            this.bounds.extend(new google.maps.LatLng(location.latitude as number, location.longitude as number));
+            this.mapLoader.map.fitBounds(this.bounds);
+            this.mapLoader.map.setZoom(this.setZoom(this.mapLoader.map.getZoom()));
+            this.setState({ center: { lat: this.bounds.getCenter().lat(), lng: this.bounds.getCenter().lng() } });
         }
-        x = x / count;
-        y = y / count;
-        z = z / count;
+    }
 
-        const centralLongitude = Math.atan2(y, x);
-        const centralSquareRoot = Math.sqrt(x * x + y * y);
-        const centralLatitude = Math.atan2(z, centralSquareRoot);
-        return {
-            lat: centralLatitude * 180 / Math.PI,
-            lng: centralLongitude * 180 / Math.PI
-        };
+    private setZoom(zoom: number): number {
+        return zoom > 6
+            ? this.props.zoomLevel > 0
+                ? this.props.zoomLevel
+                : 6
+            : zoom;
     }
 
     private resolveAddresses(locations: Location[], centerAddress?: string) {
-        if (centerAddress) {
+        if (this.mapLoader) {
+            this.bounds = new google.maps.LatLngBounds();
+        }
+        if (locations && locations.length) {
+            locations.forEach(location => {
+                if (!this.validLocation(location) && location.address) {
+                    this.getLocation(location.address, locationLookup => {
+                        if (locationLookup) {
+                            location.latitude = Number(locationLookup.lat);
+                            location.longitude = Number(locationLookup.lng);
+                            this.setState({ locations });
+                            this.updateBounds(location);
+                        }
+                    });
+                } else {
+                    this.setState({ locations });
+                    this.updateBounds(location);
+                }
+            });
+        } else if (centerAddress) {
             this.getLocation(centerAddress, location => {
                 if (location) {
                     this.setState({ center: location });
                 }
             });
         }
-
-        locations.forEach(location => {
-            if (!this.validLocation(location) && location.address) {
-                this.getLocation(location.address, locationLookup => {
-                    if (locationLookup) {
-                        location.latitude = Number(locationLookup.lat);
-                        location.longitude = Number(locationLookup.lng);
-                        this.setState({ locations });
-                    }
-                });
-            }
-        });
     }
 
     private validLocation(location: Location): boolean {
@@ -184,14 +181,14 @@ export class Map extends Component<MapProps, MapState> {
 
     private createMakers(): Array<ReactElement<MarkerProps>> {
         const markerElements: Array<ReactElement<MarkerProps>> = [];
-        if (this.state.locations) {
+        if (this.state.locations && this.state.locations.length) {
             this.state.locations.map((locationObject, index) => {
-                const { latitude: lat, longitude: lng } = locationObject;
-                if (this.validLocation(locationObject) && typeof lat === "number" && typeof lng === "number") {
+                const { latitude, longitude } = locationObject;
+                if (this.validLocation(locationObject)) {
                     markerElements.push(createElement(Marker, {
                         key: index,
-                        lat,
-                        lng
+                        lat: latitude as number,
+                        lng: longitude as number
                     }));
                 }
             });
