@@ -109,10 +109,17 @@ export class Map extends Component<MapProps, MapState> {
         if (this.mapLoader) {
             this.bounds.extend(new google.maps.LatLng(location.latitude as number, location.longitude as number));
             this.mapLoader.map.fitBounds(this.bounds);
-            const zoom = this.mapLoader.map.getZoom();
-            this.mapLoader.map.setZoom(zoom > 6 ? 6 : zoom);
+            this.mapLoader.map.setZoom(this.setZoom(this.mapLoader.map.getZoom()));
             this.setState({ center: { lat: this.bounds.getCenter().lat(), lng: this.bounds.getCenter().lng() } });
         }
+    }
+
+    private setZoom(zoom: number): number {
+        return zoom > 6
+            ? this.props.zoomLevel > 0
+                ? this.props.zoomLevel
+                : 6
+            : zoom;
     }
 
     private resolveAddresses(locations: Location[], centerAddress?: string) {
