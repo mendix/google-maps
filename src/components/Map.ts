@@ -110,7 +110,9 @@ export class Map extends Component<MapProps, MapState> {
             this.bounds.extend(new google.maps.LatLng(location.latitude as number, location.longitude as number));
             this.mapLoader.map.fitBounds(this.bounds);
             this.mapLoader.map.setZoom(this.setZoom(this.mapLoader.map.getZoom()));
-            this.setState({ center: { lat: this.bounds.getCenter().lat(), lng: this.bounds.getCenter().lng() } });
+            if (!this.props.defaultCenterAddress) {
+                this.setState({ center: { lat: this.bounds.getCenter().lat(), lng: this.bounds.getCenter().lng() } });
+            }
         }
     }
 
@@ -142,7 +144,8 @@ export class Map extends Component<MapProps, MapState> {
                     this.updateBounds(location);
                 }
             });
-        } else if (centerAddress) {
+        }
+        if (centerAddress) {
             this.getLocation(centerAddress, location => {
                 if (location) {
                     this.setState({ center: location });
