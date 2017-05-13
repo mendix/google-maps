@@ -2,7 +2,7 @@ import { ShallowWrapper, shallow } from "enzyme";
 import GoogleMap from "google-map-react";
 import { DOM, createElement } from "react";
 
-import { Location, Map, MapProps, MapState } from "../Map";
+import { Location, Map, MapProps } from "../Map";
 import { Marker } from "../Marker";
 import { Alert } from "../Alert";
 
@@ -104,7 +104,7 @@ describe("Map", () => {
         it("should lookup the location", () => {
             spyOn(window.google.maps.Geocoder.prototype, "geocode");
 
-            const output = setUpMap([ { address } ]);
+            setUpMap([ { address } ]);
 
             expect(window.google.maps.Geocoder.prototype.geocode).toHaveBeenCalled();
         });
