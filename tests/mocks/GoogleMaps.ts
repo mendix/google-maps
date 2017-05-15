@@ -17,10 +17,10 @@ class MockGoogle {
 
 // tslint:disable-next-line:max-classes-per-file
 class MapsMock implements google.maps.Map {
-    controls: google.maps.MVCArray[];
+    controls: Array<google.maps.MVCArray<Node>>;
     data: google.maps.Data;
     mapTypes: google.maps.MapTypeRegistry;
-    overlayMapTypes: google.maps.MVCArray;
+    overlayMapTypes: google.maps.MVCArray<google.maps.MapType>;
 
     constructor(mapDiv: Element, opts?: google.maps.MapOptions) {
         console.log("Google Maps mock is used.");
