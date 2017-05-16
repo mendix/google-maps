@@ -82,6 +82,7 @@ export class Map extends Component<MapProps, MapState> {
     componentWillReceiveProps(nextProps: MapProps) {
         this.setState({ locations: nextProps.locations });
         this.resolveAddresses(nextProps.locations, nextProps.defaultCenterAddress);
+        this.setZoom(nextProps);
     }
 
     private getStyle(): object {
@@ -103,25 +104,32 @@ export class Map extends Component<MapProps, MapState> {
 
         this.setState({ isLoaded: true });
         this.resolveAddresses(this.props.locations, this.props.defaultCenterAddress);
+        this.setZoom(this.props);
     }
 
     private updateBounds(location: Location) {
         if (this.mapLoader) {
             this.bounds.extend(new google.maps.LatLng(location.latitude as number, location.longitude as number));
             this.mapLoader.map.fitBounds(this.bounds);
-            this.mapLoader.map.setZoom(this.setZoom(this.mapLoader.map.getZoom()));
             if (!this.props.defaultCenterAddress) {
                 this.setState({ center: { lat: this.bounds.getCenter().lat(), lng: this.bounds.getCenter().lng() } });
             }
         }
     }
 
-    private setZoom(zoom: number): number {
-        return zoom > 6
-            ? this.props.zoomLevel > 0
-                ? this.props.zoomLevel
-                : 6
-            : zoom;
+    private setZoom(props: MapProps): void {
+        if (this.mapLoader) {
+            let zoom = this.mapLoader.map.getZoom();
+            if (props.zoomLevel > 0) {
+                zoom = props.zoomLevel;
+            } else {
+                const defaultBoundZoom = 6;
+                if (zoom && (zoom > defaultBoundZoom) || !zoom) {
+                    zoom = defaultBoundZoom;
+                }
+            }
+            this.mapLoader.map.setZoom(zoom);
+        }
     }
 
     private resolveAddresses(locations: Location[], centerAddress?: string) {

@@ -91,8 +91,8 @@ class GoogleMapContainer extends Component<GoogleMapContainerProps, { alertMessa
         if (props.dataSource === "microflow" && !props.dataSourceMicroflow) {
             message = "A 'Microflow' is required for 'Data source' 'Microflow'";
         }
-        if (props.dataSource !== "static" && !(props.addressAttribute ||
-            (props.longitudeAttribute && props.latitudeAttribute))) {
+        if (props.dataSource !== "static" && (!props.addressAttribute ||
+            !(props.longitudeAttribute && props.latitudeAttribute))) {
             message = "The 'Address attribute' or 'Latitude Attribute' and 'Longitude attribute' "
                 + "is required for this data source";
         }
@@ -126,7 +126,7 @@ class GoogleMapContainer extends Component<GoogleMapContainerProps, { alertMessa
 
     private fetchData(contextObject: mendix.lib.MxObject) {
         if (this.props.dataSource === "static") {
-            this.setState({ locations: this.parseLocations(this.props.staticLocations) });
+            this.setState({ locations: this.parseStaticLocations(this.props.staticLocations) });
         } else if (this.props.dataSource === "context") {
             this.fetchLocationsByContext(contextObject);
         } else if (this.props.dataSource === "XPath" && this.props.locationsEntity) {
@@ -138,7 +138,7 @@ class GoogleMapContainer extends Component<GoogleMapContainerProps, { alertMessa
     }
 
     // Mendix does not support negative and decimal number as static inputs, so they are strings.
-    private parseLocations(locations: StaticLocation[]): Location[] {
+    private parseStaticLocations(locations: StaticLocation[]): Location[] {
         return locations.map(location => ({
             address: location.address,
             latitude: location.latitude.trim() !== "" ? Number(location.latitude) : undefined,
