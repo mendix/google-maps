@@ -15,7 +15,7 @@ from Google applies, especially for geocoding. We even advise geocoding your loc
 Mendix application and store them for later use as coordinates on the widget.
 
 ## Dependencies
-Mendix 7.1
+Mendix 7.2
 
 ## How it Works
 When displaying locations, the widget will prioritize coordinates over addresses.In the event that 
@@ -29,10 +29,10 @@ When the default center is not specified, the map will use the bounds center
 
 [https://googlemaps101.mxapps.io/](https://googlemaps101.mxapps.io/)
 
-<img src="./assets/usage.png" width="900px" height="500px" />
+<img src="https://raw.githubusercontent.com/mendixlabs/badge/v1.1.1/assets/usage.png" width="900px" height="500px" />
 
 ## Usage
-<img src="./assets/setup.png" width="900px" height="600px" />
+<img src="https://raw.githubusercontent.com/mendixlabs/badge/v1.1.1/assets/setup.png" width="900px" height="600px" />
 
  ### Data source: Static
  - On the `Data source` option of the `Data source` tab, select the `static` option if its not already selected by default.
