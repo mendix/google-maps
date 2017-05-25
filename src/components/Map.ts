@@ -62,6 +62,7 @@ export class Map extends Component<MapProps, MapState> {
                         center: this.state.center,
                         defaultZoom: this.props.zoomLevel,
                         onGoogleApiLoaded: this.handleOnGoogleApiLoaded,
+                        options: { minZoom: 1, minZoomOverride: true, maxZoom: 20 },
                         resetBoundsOnResize: true,
                         yesIWantToUseGoogleMapApiInternals: true
                     },
@@ -81,8 +82,7 @@ export class Map extends Component<MapProps, MapState> {
 
     componentWillReceiveProps(nextProps: MapProps) {
         this.setState({ locations: nextProps.locations });
-        this.resolveAddresses(nextProps.locations, nextProps.defaultCenterAddress);
-        this.setZoom(nextProps);
+        this.resolveAddresses(nextProps);
     }
 
     private getStyle(): object {
@@ -101,16 +101,26 @@ export class Map extends Component<MapProps, MapState> {
 
     private handleOnGoogleApiLoaded(mapLoader: GoogleMapLoader) {
         this.mapLoader = mapLoader;
-
+        this.initializeDefaultCenter();
         this.setState({ isLoaded: true });
-        this.resolveAddresses(this.props.locations, this.props.defaultCenterAddress);
-        this.setZoom(this.props);
+        this.resolveAddresses(this.props);
     }
 
-    private updateBounds(location: Location) {
+    private initializeDefaultCenter(): void {
+        if (this.props.defaultCenterAddress) {
+            this.getLocation(this.props.defaultCenterAddress, location => {
+                if (location) {
+                    this.setState({ center: location });
+                }
+            });
+        }
+    }
+
+    private updateBounds(props: MapProps, location: Location) {
         if (this.mapLoader) {
             this.bounds.extend(new google.maps.LatLng(location.latitude as number, location.longitude as number));
             this.mapLoader.map.fitBounds(this.bounds);
+            this.setZoom(props);
             if (!this.props.defaultCenterAddress) {
                 this.setState({ center: { lat: this.bounds.getCenter().lat(), lng: this.bounds.getCenter().lng() } });
             }
@@ -132,31 +142,24 @@ export class Map extends Component<MapProps, MapState> {
         }
     }
 
-    private resolveAddresses(locations: Location[], centerAddress?: string) {
+    private resolveAddresses(props: MapProps) {
         if (this.mapLoader) {
             this.bounds = new google.maps.LatLngBounds();
         }
-        if (locations && locations.length) {
-            locations.forEach(location => {
+        this.setZoom(props);
+        if (props.locations && props.locations.length) {
+            props.locations.forEach(location => {
                 if (!this.validLocation(location) && location.address) {
                     this.getLocation(location.address, locationLookup => {
                         if (locationLookup) {
                             location.latitude = Number(locationLookup.lat);
                             location.longitude = Number(locationLookup.lng);
-                            this.setState({ locations });
-                            this.updateBounds(location);
+                            this.setState({ locations: props.locations });
+                            this.updateBounds(props, location);
                         }
                     });
-                } else {
-                    this.setState({ locations });
-                    this.updateBounds(location);
-                }
-            });
-        }
-        if (centerAddress) {
-            this.getLocation(centerAddress, location => {
-                if (location) {
-                    this.setState({ center: location });
+                } else if (this.validLocation(location)) {
+                    this.updateBounds(props, location);
                 }
             });
         }

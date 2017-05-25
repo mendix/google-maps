@@ -9,23 +9,28 @@ declare module "google-map-react" {
         map: google.maps.Map;
     }
 
-    export interface bootstrapURLKeysProps {
-        key: string | undefined
+    export interface BootstrapURLKeysProps {
+        key: string | undefined;
+    }
+
+    export interface MapLoaderProps {
+        minZoom: number,
+        minZoomOverride: boolean,
+        maxZoom?: number
     }
 
     export interface GoogleMapProps {
-        bootstrapURLKeys?: bootstrapURLKeysProps;
+        bootstrapURLKeys?: BootstrapURLKeysProps;
         center?: LatLng;
         defaultZoom?: number;
-        googleMapLoader?:Function;
-        onGoogleApiLoaded?: Function;
+        googleMapLoader?: () => void;
+        onGoogleApiLoaded?: (mapLoader: GoogleMapLoader) => void;
+        options?: MapLoaderProps;
         resetBoundsOnResize?: boolean;
         yesIWantToUseGoogleMapApiInternals?: boolean;
     }
 
-    export interface GoogleMapComponent extends React.ComponentClass<GoogleMapProps> {}
-
-    export const GoogleMap: GoogleMapComponent;
+    export const GoogleMap: React.ComponentClass<GoogleMapProps>;
 
     export { GoogleMap as default };
 }
