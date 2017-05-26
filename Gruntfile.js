@@ -1,18 +1,18 @@
 "use strict";
 const webpack = require("webpack");
 const webpackConfig = require("./webpack.config");
-const webpackConfigRelease = [ {}, {} ];
-const pluginsWidget = webpackConfig[0].plugins.slice(0);
-pluginsWidget.push(new webpack.optimize.UglifyJsPlugin());
-Object.assign(webpackConfigRelease[0], webpackConfig[0], {
-    devtool: false,
-    plugins: pluginsWidget
-});
-const pluginsPreview = webpackConfig[1].plugins.slice(0);
-pluginsPreview.push(new webpack.optimize.UglifyJsPlugin());
-Object.assign(webpackConfigRelease[1], webpackConfig[1], {
-    devtool: false,
-    plugins: pluginsPreview
+const webpackConfigRelease = [];
+
+webpackConfig.forEach(function (currentWebpackConfig) {
+    const webpackLoaderOptionsPlugin = currentWebpackConfig.plugins.slice(0);
+    const configRelease = {};
+
+    webpackLoaderOptionsPlugin.push(new webpack.optimize.UglifyJsPlugin());
+    Object.assign(configRelease, currentWebpackConfig, {
+        devtool: false,
+        plugins: webpackLoaderOptionsPlugin
+    });
+    webpackConfigRelease.push(configRelease)
 });
 
 module.exports = function(grunt) {
@@ -124,7 +124,7 @@ module.exports = function(grunt) {
     grunt.registerTask(
         "release",
         "Compiles all the assets and copies the files to the dist directory. Minified without source mapping",
-        [ "checkDependencies", "clean:build", "webpack:release", "compress:dist", "copy:mpk" ]
+        [ "checkDependencies", "clean:build", "webpack:release",  "file_append", "compress:dist", "copy:mpk" ]
     );
     grunt.registerTask("build", [ "clean build" ]);
 };

@@ -35,7 +35,7 @@ class GoogleMapContainer extends Component<GoogleMapContainerProps, { alertMessa
     constructor(props: GoogleMapContainerProps) {
         super(props);
 
-        const alertMessage = this.validateProps();
+        const alertMessage = GoogleMapContainer.validateProps(props);
         this.subscriptionHandles = [];
         this.state = { alertMessage, locations: [] };
         this.subscribe(this.props.mxObject);
@@ -71,13 +71,13 @@ class GoogleMapContainer extends Component<GoogleMapContainerProps, { alertMessa
         this.unSubscribe();
     }
 
-    private validateProps() {
+    public static validateProps(props: GoogleMapContainerProps) {
         let message = "";
-        if (this.props.dataSource === "static" && !this.props.staticLocations.length) {
+        if (props.dataSource === "static" && !props.staticLocations.length) {
             message = "At least one static location is required for 'Data source 'Static'";
         }
-        if (this.props.dataSource === "static") {
-            const invalidLocations = this.props.staticLocations.filter(location =>
+        if (props.dataSource === "static") {
+            const invalidLocations = props.staticLocations.filter(location =>
                 !location.address && !(location.latitude && location.longitude)
             );
             if (invalidLocations.length > 0) {
@@ -85,14 +85,14 @@ class GoogleMapContainer extends Component<GoogleMapContainerProps, { alertMessa
                     + "is required for this 'Static' data source";
             }
         }
-        if (this.props.dataSource === "XPath" && !this.props.locationsEntity) {
+        if (props.dataSource === "XPath" && !props.locationsEntity) {
             message = "The 'Locations entity' is required for 'Data source' 'XPath'";
         }
-        if (this.props.dataSource === "microflow" && !this.props.dataSourceMicroflow) {
+        if (props.dataSource === "microflow" && !props.dataSourceMicroflow) {
             message = "A 'Microflow' is required for 'Data source' 'Microflow'";
         }
-        if (this.props.dataSource !== "static" && (!this.props.addressAttribute ||
-            (!this.props.longitudeAttribute && !this.props.latitudeAttribute))) {
+        if (props.dataSource !== "static" && (!props.addressAttribute ||
+            !(props.longitudeAttribute && props.latitudeAttribute))) {
             message = "The 'Address attribute' or 'Latitude Attribute' and 'Longitude attribute' "
                 + "is required for this data source";
         }
@@ -126,7 +126,7 @@ class GoogleMapContainer extends Component<GoogleMapContainerProps, { alertMessa
 
     private fetchData(contextObject: mendix.lib.MxObject) {
         if (this.props.dataSource === "static") {
-            this.setState({ locations: this.parseLocations(this.props.staticLocations) });
+            this.setState({ locations: this.parseStaticLocations(this.props.staticLocations) });
         } else if (this.props.dataSource === "context") {
             this.fetchLocationsByContext(contextObject);
         } else if (this.props.dataSource === "XPath" && this.props.locationsEntity) {
@@ -138,7 +138,7 @@ class GoogleMapContainer extends Component<GoogleMapContainerProps, { alertMessa
     }
 
     // Mendix does not support negative and decimal number as static inputs, so they are strings.
-    private parseLocations(locations: StaticLocation[]): Location[] {
+    private parseStaticLocations(locations: StaticLocation[]): Location[] {
         return locations.map(location => ({
             address: location.address,
             latitude: location.latitude.trim() !== "" ? Number(location.latitude) : undefined,

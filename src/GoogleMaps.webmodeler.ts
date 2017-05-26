@@ -1,6 +1,8 @@
-import { Component, createElement } from "react";
+import { Component, DOM, ReactElement, createElement } from "react";
 import { Map, MapProps } from "./components/Map";
-import { GoogleMapContainerProps } from "./components/GoogleMapContainer";
+import { Overlay } from "./components/Overlay";
+import { Alert } from "./components/Alert";
+import GoogleMapContainer, { GoogleMapContainerProps } from "./components/GoogleMapContainer";
 
 import * as css from "./ui/GoogleMaps.css";
 
@@ -11,7 +13,17 @@ export class preview extends Component<GoogleMapContainerProps, {}> {
     }
 
     render() {
-        return createElement(Map, this.transformProps(this.props));
+        const warnings = GoogleMapContainer.validateProps(this.props);
+        let reactElement: ReactElement<{}>;
+        if (!warnings) {
+            reactElement = createElement(Map, this.transformProps(this.props));
+        } else {
+            reactElement = DOM.div({},
+                createElement(Alert, { message: warnings }),
+                createElement(Map, this.transformProps(this.props))
+            );
+        }
+        return createElement(Overlay, {}, reactElement);
     }
 
     private transformProps(props: GoogleMapContainerProps): MapProps {

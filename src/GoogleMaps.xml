@@ -31,7 +31,7 @@
             <description>The entity of the locations</description>
         </property>
         <property key="addressAttribute" type="attribute" entityProperty="locationsEntity" required="false">
-            <caption>Address</caption>
+            <caption>Address attribute</caption>
             <category>Data source</category>
             <description>Attribute where the address is stored. It is not used if valid coordinates are specified</description>
             <attributeTypes>

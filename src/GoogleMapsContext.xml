@@ -48,7 +48,7 @@
             </properties>
         </property>
         <property key="addressAttribute" type="attribute" required="false">
-            <caption>Address</caption>
+            <caption>Address attribute</caption>
             <category>Data source</category>
             <description>Attribute where the address string is stored. It is not used if coordinates are specified</description>
             <attributeTypes>
