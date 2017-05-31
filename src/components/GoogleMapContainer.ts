@@ -11,6 +11,12 @@ interface GoogleMapContainerProps {
     entityConstraint: string;
     height: number;
     heightUnit: "percentageOfWidth" | "percentageOfParent" | "pixels";
+    optionDrag: boolean;
+    optionMapControl: boolean;
+    optionScaleControl: boolean;
+    optionScroll: boolean;
+    optionStreetView: boolean;
+    optionZoomControl: boolean;
     locationsEntity: string;
     addressAttribute: string;
     latitudeAttribute: string;
@@ -51,6 +57,12 @@ class GoogleMapContainer extends Component<GoogleMapContainerProps, { alertMessa
                 height: this.props.height,
                 heightUnit: this.props.heightUnit,
                 locations: this.state.locations,
+                optionDrag: this.props.optionDrag,
+                optionMapControl: this.props.optionMapControl,
+                optionScaleControl: this.props.optionScaleControl,
+                optionScroll: this.props.optionScroll,
+                optionStreetView: this.props.optionStreetView,
+                optionZoomControl: this.props.optionZoomControl,
                 width: this.props.width,
                 widthUnit: this.props.widthUnit,
                 zoomLevel: this.props.zoomLevel

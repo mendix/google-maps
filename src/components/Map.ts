@@ -17,6 +17,12 @@ export interface MapProps extends Props<Map> {
     height: number;
     heightUnit: "percentageOfWidth" | "percentageOfParent" | "pixels";
     locations: Location[];
+    optionDrag: boolean;
+    optionMapControl: boolean;
+    optionScaleControl: boolean;
+    optionScroll: boolean;
+    optionStreetView: boolean;
+    optionZoomControl: boolean;
     width: number;
     widthUnit: "percentage" | "pixels";
     zoomLevel: number;
@@ -62,7 +68,16 @@ export class Map extends Component<MapProps, MapState> {
                         center: this.state.center,
                         defaultZoom: this.props.zoomLevel,
                         onGoogleApiLoaded: this.handleOnGoogleApiLoaded,
-                        options: { minZoom: 1, minZoomOverride: true, maxZoom: 20 },
+                        options: {
+                            draggable: this.props.optionDrag,
+                            mapTypeControl: this.props.optionMapControl,
+                            maxZoom: 20,
+                            minZoom: 1,
+                            minZoomOverride: true,
+                            scrollwheel: this.props.optionScroll,
+                            streetViewControl: this.props.optionStreetView,
+                            zoomControl: this.props.optionZoomControl
+                        },
                         resetBoundsOnResize: true,
                         yesIWantToUseGoogleMapApiInternals: true
                     },

@@ -32,6 +32,12 @@ describe("Map", () => {
             height: heightParam ? heightParam : 75,
             heightUnit: heightUnitParam ? heightUnitParam : "pixels",
             locations: locationsParam,
+            optionDrag: true,
+            optionMapControl: true,
+            optionScaleControl: true,
+            optionScroll: true,
+            optionStreetView: true,
+            optionZoomControl: true,
             width: widthParam ? widthParam : 100,
             widthUnit: widthUnitParam ? widthUnitParam : "pixels",
             zoomLevel: 7
