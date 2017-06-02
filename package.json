@@ -6,7 +6,7 @@
   "copyright": "Mendix BV",
   "scripts": {
     "pretest": "tsc",
-    "test": "karma start --browsers Firefox --single-run --codeCoverage && node tests/remap.js",
+    "test": "karma start --single-run --codeCoverage && node tests/remap.js",
     "emit": "tsc",
     "lint": "tslint -c tslint.json '**/*.ts' '**/*.tsx' --exclude '**/node_modules/**'"
   },
@@ -35,7 +35,6 @@
     "check-dependencies": "^1.0.1",
     "clean-webpack-plugin": "^0.1.16",
     "copy-webpack-plugin": "^4.0.1",
-    "core-js": "^2.4.1",
     "css-loader": "^0.28.0",
     "enzyme": "^2.7.1",
     "extract-text-webpack-plugin": "^2.1.0",
@@ -69,8 +68,8 @@
     "source-map-loader": "^0.2.0",
     "style-loader": "^0.16.1",
     "ts-loader": "^2.0.1",
-    "tslint": "^5.0.0",
-    "tslint-eslint-rules": "^4.0.0",
+    "tslint": "^5.4.2",
+    "tslint-eslint-rules": "^4.1.1",
     "typescript": "^2.2.1",
     "url-loader": "^0.5.8",
     "webpack": "^2.3.1",
