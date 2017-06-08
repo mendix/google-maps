@@ -34,7 +34,6 @@ describe("Map", () => {
             locations: locationsParam,
             optionDrag: true,
             optionMapControl: true,
-            optionScaleControl: true,
             optionScroll: true,
             optionStreetView: true,
             optionZoomControl: true,

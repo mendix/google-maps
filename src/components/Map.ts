@@ -19,7 +19,6 @@ export interface MapProps extends Props<Map> {
     locations: Location[];
     optionDrag: boolean;
     optionMapControl: boolean;
-    optionScaleControl: boolean;
     optionScroll: boolean;
     optionStreetView: boolean;
     optionZoomControl: boolean;
@@ -116,19 +115,8 @@ export class Map extends Component<MapProps, MapState> {
 
     private handleOnGoogleApiLoaded(mapLoader: GoogleMapLoader) {
         this.mapLoader = mapLoader;
-        this.initializeDefaultCenter();
         this.setState({ isLoaded: true });
         this.resolveAddresses(this.props);
-    }
-
-    private initializeDefaultCenter(): void {
-        if (this.props.defaultCenterAddress) {
-            this.getLocation(this.props.defaultCenterAddress, location => {
-                if (location) {
-                    this.setState({ center: location });
-                }
-            });
-        }
     }
 
     private updateBounds(props: MapProps, location: Location) {
@@ -136,7 +124,7 @@ export class Map extends Component<MapProps, MapState> {
             this.bounds.extend(new google.maps.LatLng(location.latitude as number, location.longitude as number));
             this.mapLoader.map.fitBounds(this.bounds);
             this.setZoom(props);
-            if (!this.props.defaultCenterAddress) {
+            if (!props.defaultCenterAddress) {
                 this.setState({ center: { lat: this.bounds.getCenter().lat(), lng: this.bounds.getCenter().lng() } });
             }
         }
@@ -176,6 +164,11 @@ export class Map extends Component<MapProps, MapState> {
                 } else if (this.validLocation(location)) {
                     this.updateBounds(props, location);
                 }
+            });
+        }
+        if (props.defaultCenterAddress) {
+            this.getLocation(props.defaultCenterAddress, location => {
+                location ? this.setState({ center: location }) : this.setState({ center: this.defaultCenterLocation });
             });
         }
     }

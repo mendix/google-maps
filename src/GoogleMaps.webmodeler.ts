@@ -32,7 +32,6 @@ export class preview extends Component<GoogleMapContainerProps, {}> {
             locations: [ { latitude: 51.9107963, longitude:  4.4789878 } ],
             optionDrag: props.optionDrag,
             optionMapControl: props.optionMapControl,
-            optionScaleControl: props.optionScaleControl,
             optionScroll: props.optionScroll,
             optionStreetView: props.optionStreetView,
             optionZoomControl: props.optionZoomControl,

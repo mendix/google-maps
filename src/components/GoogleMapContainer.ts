@@ -13,7 +13,6 @@ interface GoogleMapContainerProps {
     heightUnit: "percentageOfWidth" | "percentageOfParent" | "pixels";
     optionDrag: boolean;
     optionMapControl: boolean;
-    optionScaleControl: boolean;
     optionScroll: boolean;
     optionStreetView: boolean;
     optionZoomControl: boolean;
@@ -59,7 +58,6 @@ class GoogleMapContainer extends Component<GoogleMapContainerProps, { alertMessa
                 locations: this.state.locations,
                 optionDrag: this.props.optionDrag,
                 optionMapControl: this.props.optionMapControl,
-                optionScaleControl: this.props.optionScaleControl,
                 optionScroll: this.props.optionScroll,
                 optionStreetView: this.props.optionStreetView,
                 optionZoomControl: this.props.optionZoomControl,

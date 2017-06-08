@@ -107,17 +107,12 @@ Warning the 'Percentage of parent' only works when the parent has an absolute he
             <description>Using draggable property you can prevent the map from being dragged. By default, dragging is enabled.</description>
         </property>
         <property key="optionMapControl" type="boolean" defaultValue="true">
-            <caption>Type</caption>
+            <caption>Map type</caption>
             <category>Map controls</category>
             <description>This enables or disables the map type (Map, Satellite) control, positioned at top right corner on the map. The default value is true.</description>
         </property>
-        <property key="optionScaleControl" type="boolean" defaultValue="true">
-            <caption>Scale Control</caption>
-            <category>Map controls</category>
-            <description>It provides a map scale. By default, this control is not visible.</description>
-        </property>
         <property key="optionScroll" type="boolean" defaultValue="true">
-            <caption>Scroll</caption>
+            <caption>Scroll to zoom</caption>
             <category>Map controls</category>
             <description>Allows zooming the map using the mouse scroll wheel</description>
         </property>
