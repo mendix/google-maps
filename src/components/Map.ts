@@ -167,9 +167,8 @@ export class Map extends Component<MapProps, MapState> {
             });
         }
         if (props.defaultCenterAddress) {
-            this.getLocation(props.defaultCenterAddress, location => {
-                location ? this.setState({ center: location }) : this.setState({ center: this.defaultCenterLocation });
-            });
+            this.getLocation(props.defaultCenterAddress, location =>
+                location ? this.setState({ center: location }) : this.setState({ center: this.defaultCenterLocation }));
         }
     }
 

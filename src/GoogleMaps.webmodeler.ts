@@ -24,12 +24,15 @@ export class preview extends Component<GoogleMapContainerProps, {}> {
     }
 
     private transformProps(props: GoogleMapContainerProps): MapProps {
+        const locations = props.dataSource === "static"
+            ? GoogleMapContainer.parseStaticLocations(props.staticLocations)
+            : [];
         return {
             apiKey: props.apiKey,
             defaultCenterAddress: props.defaultCenterAddress,
             height: props.height,
             heightUnit: props.heightUnit,
-            locations: [ { latitude: 51.9107963, longitude:  4.4789878 } ],
+            locations,
             optionDrag: props.optionDrag,
             optionMapControl: props.optionMapControl,
             optionScroll: props.optionScroll,

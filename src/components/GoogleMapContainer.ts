@@ -110,6 +110,15 @@ class GoogleMapContainer extends Component<GoogleMapContainerProps, { alertMessa
         return message;
     }
 
+    // Mendix does not support negative and decimal number as static inputs, so they are strings.
+    public static parseStaticLocations(locations: StaticLocation[]): Location[] {
+        return locations.map(location => ({
+            address: location.address,
+            latitude: location.latitude.trim() !== "" ? Number(location.latitude) : undefined,
+            longitude: location.longitude.trim() !== "" ? Number(location.longitude) : undefined
+        }));
+    }
+
     private subscribe(contextObject: mendix.lib.MxObject) {
         this.unSubscribe();
 
@@ -136,7 +145,7 @@ class GoogleMapContainer extends Component<GoogleMapContainerProps, { alertMessa
 
     private fetchData(contextObject: mendix.lib.MxObject) {
         if (this.props.dataSource === "static") {
-            this.setState({ locations: this.parseStaticLocations(this.props.staticLocations) });
+            this.setState({ locations: GoogleMapContainer.parseStaticLocations(this.props.staticLocations) });
         } else if (this.props.dataSource === "context") {
             this.fetchLocationsByContext(contextObject);
         } else if (this.props.dataSource === "XPath" && this.props.locationsEntity) {
@@ -145,15 +154,6 @@ class GoogleMapContainer extends Component<GoogleMapContainerProps, { alertMessa
         } else if (this.props.dataSource === "microflow" && this.props.dataSourceMicroflow) {
             this.fetchLocationsByMicroflow(this.props.dataSourceMicroflow, contextObject);
         }
-    }
-
-    // Mendix does not support negative and decimal number as static inputs, so they are strings.
-    private parseStaticLocations(locations: StaticLocation[]): Location[] {
-        return locations.map(location => ({
-            address: location.address,
-            latitude: location.latitude.trim() !== "" ? Number(location.latitude) : undefined,
-            longitude: location.longitude.trim() !== "" ? Number(location.longitude) : undefined
-        }));
     }
 
     private fetchLocationsByContext(contextObject?: mendix.lib.MxObject) {
