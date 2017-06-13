@@ -101,7 +101,7 @@ class GoogleMapContainer extends Component<GoogleMapContainerProps, { alertMessa
         if (props.dataSource === "microflow" && !props.dataSourceMicroflow) {
             message = "A 'Microflow' is required for 'Data source' 'Microflow'";
         }
-        if (props.dataSource !== "static" && (!props.addressAttribute ||
+        if (props.dataSource !== "static" && (!props.addressAttribute &&
             !(props.longitudeAttribute && props.latitudeAttribute))) {
             message = "The 'Address attribute' or 'Latitude Attribute' and 'Longitude attribute' "
                 + "is required for this data source";
