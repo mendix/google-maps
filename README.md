@@ -15,7 +15,7 @@ from Google applies, especially for geocoding. We even advise geocoding your loc
 Mendix application and store them for later use as coordinates on the widget.
 
 ## Dependencies
-Mendix 7.2
+Mendix 7.3
 
 ## How it Works
 When displaying locations, the widget will prioritize coordinates over addresses.In the event that 

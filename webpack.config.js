@@ -27,8 +27,7 @@ const widgetConfig = {
             { test: /\.css$/, loader: ExtractTextPlugin.extract({
                 fallback: "style-loader",
                 use: "css-loader"
-            }) },
-            { test: /\.(png|jpeg)$/, loader: "url-loader", options: { limit: 8192 } }
+            }) }
         ]
     },
     devtool: "source-map",
@@ -37,7 +36,6 @@ const widgetConfig = {
         new CleanWebpackPlugin("dist/tmp"),
         new CopyWebpackPlugin([
             { from: "src/**/*.xml" },
-            { from: "src/**/*.png" }
         ], { copyUnmodified: true }),
         new ExtractTextPlugin({ filename: "./src/com/mendix/widget/custom/GoogleMaps/ui/[name].css" }),
         new webpack.LoaderOptionsPlugin({ debug: true })
@@ -52,13 +50,12 @@ const previewConfig = {
         libraryTarget: "commonjs"
     },
     resolve: {
-        extensions: [ ".ts", ".js" ]
+        extensions: [ ".ts", ".js" ],
     },
     module: {
         rules: [
             { test: /\.ts$/, use: "ts-loader" },
-            { test: /\.css$/, loader: "raw-loader" },
-            { test: /\.(png|jpeg)$/, loader: "url-loader", options: { limit: 8192 } }
+            { test: /\.css$/, loader: "raw-loader" }
         ]
     },
     devtool: "inline-source-map",
@@ -76,13 +73,12 @@ const previewContextConfig = {
         libraryTarget: "commonjs"
     },
     resolve: {
-        extensions: [ ".ts", ".js" ]
+        extensions: [ ".ts", ".js" ],
     },
     module: {
         rules: [
             { test: /\.ts$/, use: "ts-loader" },
-            { test: /\.css$/, loader: "raw-loader" },
-            { test: /\.(png|jpeg)$/, loader: "url-loader", options: { limit: 8192 } }
+            { test: /\.css$/, loader: "raw-loader" }
         ]
     },
     devtool: "inline-source-map",

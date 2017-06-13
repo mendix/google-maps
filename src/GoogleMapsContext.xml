@@ -106,5 +106,31 @@ Warning the 'Percentage of parent' only works when the parent has an absolute he
             <category>Appearance</category>
             <description/>
         </property>
+        <!-- Map CONTROLS -->
+        <property key="optionDrag" type="boolean" defaultValue="true">
+            <caption>Drag</caption>
+            <category>Map controls</category>
+            <description>Using draggable property you can prevent the map from being dragged. By default, dragging is enabled.</description>
+        </property>
+        <property key="optionMapControl" type="boolean" defaultValue="true">
+            <caption>Map type</caption>
+            <category>Map controls</category>
+            <description>This enables or disables the map type (Map, Satellite) control, positioned at top right corner on the map. The default value is true.</description>
+        </property>
+        <property key="optionScroll" type="boolean" defaultValue="true">
+            <caption>Scroll to zoom</caption>
+            <category>Map controls</category>
+            <description>Allows zooming the map using the mouse scroll wheel</description>
+        </property>
+        <property key="optionStreetView" type="boolean" defaultValue="true">
+            <caption>Street View</caption>
+            <category>Map controls</category>
+            <description>Enables the Street View Pegman control which control is part of the default UI.</description>
+        </property>
+        <property key="optionZoomControl" type="boolean" defaultValue="true">
+            <caption>Zoom Control</caption>
+            <category>Map controls</category>
+            <description>Enable/disable Zoom control</description>
+        </property>
     </properties>
 </widget>

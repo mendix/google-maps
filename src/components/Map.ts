@@ -17,6 +17,11 @@ export interface MapProps extends Props<Map> {
     height: number;
     heightUnit: "percentageOfWidth" | "percentageOfParent" | "pixels";
     locations: Location[];
+    optionDrag: boolean;
+    optionMapControl: boolean;
+    optionScroll: boolean;
+    optionStreetView: boolean;
+    optionZoomControl: boolean;
     width: number;
     widthUnit: "percentage" | "pixels";
     zoomLevel: number;
@@ -62,7 +67,16 @@ export class Map extends Component<MapProps, MapState> {
                         center: this.state.center,
                         defaultZoom: this.props.zoomLevel,
                         onGoogleApiLoaded: this.handleOnGoogleApiLoaded,
-                        options: { minZoom: 1, minZoomOverride: true, maxZoom: 20 },
+                        options: {
+                            draggable: this.props.optionDrag,
+                            mapTypeControl: this.props.optionMapControl,
+                            maxZoom: 20,
+                            minZoom: 1,
+                            minZoomOverride: true,
+                            scrollwheel: this.props.optionScroll,
+                            streetViewControl: this.props.optionStreetView,
+                            zoomControl: this.props.optionZoomControl
+                        },
                         resetBoundsOnResize: true,
                         yesIWantToUseGoogleMapApiInternals: true
                     },
@@ -101,19 +115,8 @@ export class Map extends Component<MapProps, MapState> {
 
     private handleOnGoogleApiLoaded(mapLoader: GoogleMapLoader) {
         this.mapLoader = mapLoader;
-        this.initializeDefaultCenter();
         this.setState({ isLoaded: true });
         this.resolveAddresses(this.props);
-    }
-
-    private initializeDefaultCenter(): void {
-        if (this.props.defaultCenterAddress) {
-            this.getLocation(this.props.defaultCenterAddress, location => {
-                if (location) {
-                    this.setState({ center: location });
-                }
-            });
-        }
     }
 
     private updateBounds(props: MapProps, location: Location) {
@@ -121,7 +124,7 @@ export class Map extends Component<MapProps, MapState> {
             this.bounds.extend(new google.maps.LatLng(location.latitude as number, location.longitude as number));
             this.mapLoader.map.fitBounds(this.bounds);
             this.setZoom(props);
-            if (!this.props.defaultCenterAddress) {
+            if (!props.defaultCenterAddress) {
                 this.setState({ center: { lat: this.bounds.getCenter().lat(), lng: this.bounds.getCenter().lng() } });
             }
         }
@@ -162,6 +165,10 @@ export class Map extends Component<MapProps, MapState> {
                     this.updateBounds(props, location);
                 }
             });
+        }
+        if (props.defaultCenterAddress) {
+            this.getLocation(props.defaultCenterAddress, location =>
+                location ? this.setState({ center: location }) : this.setState({ center: this.defaultCenterLocation }));
         }
     }
 

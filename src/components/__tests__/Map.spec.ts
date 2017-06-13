@@ -28,10 +28,15 @@ describe("Map", () => {
         defaultCenterParam?: string): ShallowWrapper<MapProps, any> => {
         const output = renderMap({
             apiKey: APIKeyParam,
-            defaultCenterAddress: defaultCenterParam !== undefined ? defaultCenterParam : address,
+            defaultCenterAddress: defaultCenterParam !== undefined ? defaultCenterParam : "",
             height: heightParam ? heightParam : 75,
             heightUnit: heightUnitParam ? heightUnitParam : "pixels",
             locations: locationsParam,
+            optionDrag: true,
+            optionMapControl: true,
+            optionScroll: true,
+            optionStreetView: true,
+            optionZoomControl: true,
             width: widthParam ? widthParam : 100,
             widthUnit: widthUnitParam ? widthUnitParam : "pixels",
             zoomLevel: 7

@@ -14,9 +14,14 @@ declare module "google-map-react" {
     }
 
     export interface MapLoaderProps {
-        minZoom: number,
-        minZoomOverride: boolean,
-        maxZoom?: number
+        minZoom: number;
+        minZoomOverride?: boolean;
+        maxZoom?: number;
+        scrollwheel?: boolean;
+        streetViewControl?: boolean;
+        mapTypeControl?: boolean;
+        draggable?: boolean;
+        zoomControl?: boolean;
     }
 
     export interface GoogleMapProps {
