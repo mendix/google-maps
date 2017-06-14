@@ -65,7 +65,7 @@ To set up the development environment, run:
 
 Create a folder named dist in the project root.
 
-Create a Mendix test project in the dist folder and rename its root folder to MxTestProject. Changes to the widget code shall be automatically pushed to this test project. Or get the test project from [https://github.com/mendixlabs/google-maps/releases/download/v1.1.1/TestGoogleMaps.mpk](https://github.com/mendixlabs/google-maps/releases/download/v1.1.1/TestGoogleMaps.mpk)
+Create a Mendix test project in the dist folder and rename its root folder to MxTestProject. Changes to the widget code shall be automatically pushed to this test project. Or get the test project from [https://github.com/mendixlabs/google-maps/releases/download/v1.2.1/TestGoogleMaps.mpk](https://github.com/mendixlabs/google-maps/releases/download/v1.2.1/TestGoogleMaps.mpk)
 
     dist/MxTestProject
 
