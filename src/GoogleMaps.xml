@@ -17,7 +17,7 @@
             <description>Fallback map center location when no locations are available</description>
         </property>
         <property key="dataSource" type="enumeration" defaultValue="XPath">
-            <caption>Data source</caption>
+            <caption>Database</caption>
             <category>Data source</category>
             <description>Source of the locations</description>
             <enumerationValues>
