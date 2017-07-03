@@ -17,11 +17,11 @@
             <description>Fallback map center location when no locations are available</description>
         </property>
         <property key="dataSource" type="enumeration" defaultValue="XPath">
-            <caption>Database</caption>
+            <caption>Data source</caption>
             <category>Data source</category>
             <description>Source of the locations</description>
             <enumerationValues>
-                <enumerationValue key="XPath">XPath</enumerationValue>
+                <enumerationValue key="XPath">Database</enumerationValue>
                 <enumerationValue key="microflow">Microflow</enumerationValue>
             </enumerationValues>
         </property>

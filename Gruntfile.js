@@ -17,7 +17,8 @@ module.exports = function(grunt) {
                 files: [ "./src/**/*" ],
                 tasks: [ "webpack:develop", "file_append", "compress:dist", "copy:distDeployment", "copy:mpk" ],
                 options: {
-                    debounceDelay: 250
+                    debounceDelay: 250,
+                    livereload: true
                 }
             }
         },
@@ -62,6 +63,9 @@ module.exports = function(grunt) {
                 files: [ {
                     append: `\n\n//# sourceURL=${pkg.widgetName}.webmodeler.js\n`,
                     input: `dist/tmp/src/${pkg.widgetName}.webmodeler.js`
+                }, {
+                    append: `\n\n//# sourceURL=${pkg.widgetName}Context.webmodeler.js\n`,
+                    input: `dist/tmp/src/${pkg.widgetName}Context.webmodeler.js`
                 } ]
             }
         },

@@ -89,15 +89,8 @@ export class Map extends Component<MapProps, MapState> {
     }
 
     componentDidMount() {
-        const wrapperElement = this.mapWrapper.parentElement;
-        if (this.props.heightUnit === "percentageOfParent" && wrapperElement) {
-            wrapperElement.style.height = "100%";
-            wrapperElement.style.width = "100%";
-        }
-        const iFrame = document.getElementsByClassName("t-page-editor-iframe")[0] as HTMLIFrameElement;
-        if (iFrame.contentWindow) {
-            iFrame.contentWindow.addEventListener("resize", this.onResizeIframe);
-        }
+        this.adjustStyle();
+        this.setUpEvents();
     }
 
     componentWillReceiveProps(nextProps: MapProps) {
@@ -107,6 +100,24 @@ export class Map extends Component<MapProps, MapState> {
 
     componentWillUnmount() {
         window.removeEventListener("resize", this.onResizeIframe);
+    }
+
+    private adjustStyle() {
+        const wrapperElement = this.mapWrapper.parentElement;
+        if (this.props.heightUnit === "percentageOfParent" && wrapperElement) {
+            wrapperElement.style.height = "100%";
+            wrapperElement.style.width = "100%";
+        }
+    }
+
+    private setUpEvents() {
+        // A workaround for attaching the resize event to the Iframe window because the google-map-react
+        // library does not support it. This fix will be done in the web modeler preview class when the
+        // google-map-react library starts supporting listening to Iframe events.
+        const iFrame = document.getElementsByClassName("t-page-editor-iframe")[0] as HTMLIFrameElement;
+        if (iFrame.contentWindow) {
+            iFrame.contentWindow.addEventListener("resize", this.onResizeIframe);
+        }
     }
 
     private onResizeIframe(event: CustomEvent) {
