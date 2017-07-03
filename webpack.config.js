@@ -2,7 +2,6 @@ const webpack = require("webpack");
 const path = require("path");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
 const ExtractTextPlugin = require("extract-text-webpack-plugin");
-const CleanWebpackPlugin = require("clean-webpack-plugin");
 
 const widgetConfig = {
     entry: {
@@ -33,7 +32,6 @@ const widgetConfig = {
     devtool: "source-map",
     externals: [ "mendix/lang", "react", "react-dom" ],
     plugins: [
-        new CleanWebpackPlugin("dist/tmp"),
         new CopyWebpackPlugin([
             { from: "src/**/*.xml" },
         ], { copyUnmodified: true }),
