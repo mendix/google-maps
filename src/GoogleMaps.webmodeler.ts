@@ -56,31 +56,27 @@ export function getVisibleProperties(valueMap: GoogleMapContainerProps, visibili
         visibilityMap.locationsEntity = false;
         visibilityMap.latitudeAttribute = false;
         visibilityMap.longitudeAttribute = false;
-        visibilityMap.staticLocations = true;
     } else if (valueMap.dataSource === "XPath") {
-        visibilityMap.addressAttribute = false;
+        visibilityMap.addressAttribute = true;
         visibilityMap.dataSourceMicroflow = false;
         visibilityMap.entityConstraint = true;
-        visibilityMap.locationsEntity = false;
-        visibilityMap.latitudeAttribute = false;
-        visibilityMap.longitudeAttribute = false;
-        visibilityMap.staticLocations = false;
+        visibilityMap.locationsEntity = true;
+        visibilityMap.latitudeAttribute = true;
+        visibilityMap.longitudeAttribute = true;
     } else if (valueMap.dataSource === "context") {
         visibilityMap.addressAttribute = true;
         visibilityMap.dataSourceMicroflow = false;
         visibilityMap.entityConstraint = false;
+        visibilityMap.locationsEntity = false;
+        visibilityMap.latitudeAttribute = true;
+        visibilityMap.longitudeAttribute = true;
+    } else if (valueMap.dataSource === "microflow") {
+        visibilityMap.addressAttribute = true;
+        visibilityMap.dataSourceMicroflow = true;
+        visibilityMap.entityConstraint = false;
         visibilityMap.locationsEntity = true;
         visibilityMap.latitudeAttribute = true;
         visibilityMap.longitudeAttribute = true;
-        visibilityMap.staticLocations = false;
-    } else {
-        visibilityMap.addressAttribute = false;
-        visibilityMap.dataSourceMicroflow = true;
-        visibilityMap.entityConstraint = false;
-        visibilityMap.locationsEntity = false;
-        visibilityMap.latitudeAttribute = false;
-        visibilityMap.longitudeAttribute = false;
-        visibilityMap.staticLocations = false;
     }
 
     return visibilityMap;
