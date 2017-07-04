@@ -29,10 +29,10 @@ When the default center is not specified, the map will use the bounds center
 
 [https://googlemaps101.mxapps.io/](https://googlemaps101.mxapps.io/)
 
-<img src="https://raw.githubusercontent.com/mendixlabs/google-maps/v1.1.1/assets/usage.png" width="900px" height="500px" />
+<img src="https://raw.githubusercontent.com/mendixlabs/google-maps/v1.2.2/assets/usage.png" />
 
 ## Usage
-<img src="https://raw.githubusercontent.com/mendixlabs/google-maps/v1.1.1/assets/setup.png" width="900px" height="600px" />
+<img src="https://raw.githubusercontent.com/mendixlabs/google-maps/v1.2.2/assets/setup.png" />
 
  ### Data source: Static
  - On the `Data source` option of the `Data source` tab, select the `static` option if its not already selected by default.
@@ -65,7 +65,7 @@ To set up the development environment, run:
 
 Create a folder named dist in the project root.
 
-Create a Mendix test project in the dist folder and rename its root folder to MxTestProject. Changes to the widget code shall be automatically pushed to this test project. Or get the test project from [https://github.com/mendixlabs/google-maps/releases/download/v1.2.1/TestGoogleMaps.mpk](https://github.com/mendixlabs/google-maps/releases/download/v1.2.1/TestGoogleMaps.mpk)
+Create a Mendix test project in the dist folder and rename its root folder to MxTestProject. Changes to the widget code shall be automatically pushed to this test project. Or get the test project from [https://github.com/mendixlabs/google-maps/releases/download/v1.2.2/TestGoogleMaps.mpk](https://github.com/mendixlabs/google-maps/releases/download/v1.2.2/TestGoogleMaps.mpk)
 
     dist/MxTestProject
 
