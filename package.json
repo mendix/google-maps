@@ -1,7 +1,7 @@
 {
   "name": "google-maps",
   "widgetName": "GoogleMaps",
-  "version": "1.2.1",
+  "version": "1.2.2",
   "description": "Show locations on Google Maps",
   "copyright": "Mendix BV",
   "scripts": {
@@ -73,7 +73,8 @@
     "typescript": "^2.2.1",
     "url-loader": "^0.5.8",
     "webpack": "^2.3.1",
-    "webpack-dev-server": "^2.2.0"
+    "webpack-dev-server": "^2.2.0",
+    "webpack-merge": "^4.1.0"
   },
   "dependencies": {
     "google-map-react": "^0.24.0"

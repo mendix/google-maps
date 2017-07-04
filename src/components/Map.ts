@@ -50,6 +50,7 @@ export class Map extends Component<MapProps, MapState> {
             locations: props.locations
         };
         this.handleOnGoogleApiLoaded = this.handleOnGoogleApiLoaded.bind(this);
+        this.onResizeIframe = this.onResizeIframe.bind(this);
     }
 
     render() {
@@ -73,6 +74,7 @@ export class Map extends Component<MapProps, MapState> {
                             maxZoom: 20,
                             minZoom: 1,
                             minZoomOverride: true,
+                            resetBoundsOnResize: true,
                             scrollwheel: this.props.optionScroll,
                             streetViewControl: this.props.optionStreetView,
                             zoomControl: this.props.optionZoomControl
@@ -87,6 +89,20 @@ export class Map extends Component<MapProps, MapState> {
     }
 
     componentDidMount() {
+        this.adjustStyle();
+        this.setUpEvents();
+    }
+
+    componentWillReceiveProps(nextProps: MapProps) {
+        this.setState({ locations: nextProps.locations });
+        this.resolveAddresses(nextProps);
+    }
+
+    componentWillUnmount() {
+        window.removeEventListener("resize", this.onResizeIframe);
+    }
+
+    private adjustStyle() {
         const wrapperElement = this.mapWrapper.parentElement;
         if (this.props.heightUnit === "percentageOfParent" && wrapperElement) {
             wrapperElement.style.height = "100%";
@@ -94,9 +110,23 @@ export class Map extends Component<MapProps, MapState> {
         }
     }
 
-    componentWillReceiveProps(nextProps: MapProps) {
-        this.setState({ locations: nextProps.locations });
-        this.resolveAddresses(nextProps);
+    private setUpEvents() {
+        // A workaround for attaching the resize event to the Iframe window because the google-map-react
+        // library does not support it. This fix will be done in the web modeler preview class when the
+        // google-map-react library starts supporting listening to Iframe events.
+        const iFrame = document.getElementsByClassName("t-page-editor-iframe")[0] as HTMLIFrameElement;
+        if (iFrame.contentWindow) {
+            iFrame.contentWindow.addEventListener("resize", this.onResizeIframe);
+        }
+    }
+
+    private onResizeIframe(event: CustomEvent) {
+        if (this.mapLoader) {
+            const originalCenter = this.mapLoader.map.getCenter();
+            this.mapLoader.maps.event.trigger(this.mapLoader.map, "resize");
+            this.mapLoader.map.setCenter(originalCenter);
+            window.dispatchEvent(new Event("resize"));
+        }
     }
 
     private getStyle(): object {
@@ -177,10 +207,10 @@ export class Map extends Component<MapProps, MapState> {
         return typeof lat === "number" && typeof lng === "number"
             && lat <= 90 && lat >= -90
             && lng <= 180 && lng >= -180
-            && !(lat === 0 && lng === 0 );
+            && !(lat === 0 && lng === 0);
     }
 
-    private getLocation(address: string, callback: (result?: LatLng ) => void) {
+    private getLocation(address: string, callback: (result?: LatLng) => void) {
         if (this.state.isLoaded) {
             const geocoder = new google.maps.Geocoder();
             geocoder.geocode({ address }, (results, status) => {

@@ -21,7 +21,7 @@
             <category>Data source</category>
             <description>Source of the locations</description>
             <enumerationValues>
-                <enumerationValue key="XPath">XPath</enumerationValue>
+                <enumerationValue key="XPath">Database</enumerationValue>
                 <enumerationValue key="microflow">Microflow</enumerationValue>
             </enumerationValues>
         </property>

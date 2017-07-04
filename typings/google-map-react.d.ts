@@ -7,6 +7,11 @@ declare module "google-map-react" {
 
     export interface GoogleMapLoader {
         map: google.maps.Map;
+        maps: {
+            event: {
+                trigger: (instance: any, eventName: string, ...args: any[]) => void;
+            }
+        };
     }
 
     export interface BootstrapURLKeysProps {

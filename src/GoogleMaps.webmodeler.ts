@@ -5,6 +5,9 @@ import { Alert } from "./components/Alert";
 import GoogleMapContainer, { GoogleMapContainerProps } from "./components/GoogleMapContainer";
 
 declare function require(name: string): string;
+type VisibilityMap = {
+    [P in keyof GoogleMapContainerProps]: boolean;
+};
 
 // tslint:disable-next-line class-name
 export class preview extends Component<GoogleMapContainerProps, {}> {
@@ -43,6 +46,40 @@ export class preview extends Component<GoogleMapContainerProps, {}> {
             zoomLevel: props.zoomLevel
         };
     }
+}
+
+export function getVisibleProperties(valueMap: GoogleMapContainerProps, visibilityMap: VisibilityMap) {
+    if (valueMap.dataSource === "static") {
+        visibilityMap.addressAttribute = false;
+        visibilityMap.dataSourceMicroflow = false;
+        visibilityMap.entityConstraint = false;
+        visibilityMap.locationsEntity = false;
+        visibilityMap.latitudeAttribute = false;
+        visibilityMap.longitudeAttribute = false;
+    } else if (valueMap.dataSource === "XPath") {
+        visibilityMap.addressAttribute = true;
+        visibilityMap.dataSourceMicroflow = false;
+        visibilityMap.entityConstraint = true;
+        visibilityMap.locationsEntity = true;
+        visibilityMap.latitudeAttribute = true;
+        visibilityMap.longitudeAttribute = true;
+    } else if (valueMap.dataSource === "context") {
+        visibilityMap.addressAttribute = true;
+        visibilityMap.dataSourceMicroflow = false;
+        visibilityMap.entityConstraint = false;
+        visibilityMap.locationsEntity = false;
+        visibilityMap.latitudeAttribute = true;
+        visibilityMap.longitudeAttribute = true;
+    } else if (valueMap.dataSource === "microflow") {
+        visibilityMap.addressAttribute = true;
+        visibilityMap.dataSourceMicroflow = true;
+        visibilityMap.entityConstraint = false;
+        visibilityMap.locationsEntity = true;
+        visibilityMap.latitudeAttribute = true;
+        visibilityMap.longitudeAttribute = true;
+    }
+
+    return visibilityMap;
 }
 
 export function getPreviewCss() {
