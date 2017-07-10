@@ -3,15 +3,15 @@ class MockGoogle {
     maps: MapsMock;
 
     setup(): void {
-        const googleMockObject = MockGoogle.prototype as any;
-        googleMockObject.maps = MapsMock.prototype;
-        googleMockObject.maps.Geocoder = MockGeocoder;
-        googleMockObject.maps.Map = MapsMock;
-        googleMockObject.maps.LatLngBounds = LatLngBoundsMock;
-        googleMockObject.maps.LatLng = LatLngMock;
-        googleMockObject.maps.Marker = MarkerMock;
-        googleMockObject.maps.event = EventMock;
-        googleMockObject.maps.GeocoderStatus = GeocoderStatus;
+        const mockGoogleObject = MockGoogle.prototype as any;
+        mockGoogleObject.maps = MapsMock.prototype;
+        mockGoogleObject.maps.Geocoder = MockGeocoder;
+        mockGoogleObject.maps.Map = MapsMock;
+        mockGoogleObject.maps.LatLngBounds = LatLngBoundsMock;
+        mockGoogleObject.maps.LatLng = LatLngMock;
+        mockGoogleObject.maps.Marker = MarkerMock;
+        mockGoogleObject.maps.event = EventMock;
+        mockGoogleObject.maps.GeocoderStatus = GeocoderStatus;
     }
 }
 
@@ -385,7 +385,11 @@ class MarkerMock implements google.maps.Marker {
     }
 
     getAttribution(): google.maps.Attribution {
-        return 0;
+        return {
+            iosDeepLinkId: "fakeIosDeepLinkId",
+            source: "fakeSource",
+            webUrl: "fakeWebUrl"
+        };
     }
 
     getClickable(): boolean {
@@ -400,12 +404,18 @@ class MarkerMock implements google.maps.Marker {
         return true;
     }
 
-    getIcon(): string | google.maps.Icon | symbol {
+    getIcon(): string | google.maps.Icon | google.maps.Symbol {
         return "Fake";
     }
 
     getLabel(): google.maps.MarkerLabel {
-        return true;
+        return {
+            color: "fakeColor",
+            fontFamily: "fakeFontFamily",
+            fontSize: "fakeFontSize",
+            fontWeight: "fakeFontWeight",
+            text: "fakeText"
+        };
     }
 
     getMap(): google.maps.Map | google.maps.StreetViewPanorama {
@@ -417,7 +427,11 @@ class MarkerMock implements google.maps.Marker {
     }
 
     getPlace(): google.maps.Place {
-        return true;
+        return {
+            location: LatLngMock.prototype,
+            placeId: "fakePlaceId",
+            query: "fakeQuery"
+        };
     }
 
     getPosition(): google.maps.LatLng {
@@ -425,7 +439,10 @@ class MarkerMock implements google.maps.Marker {
     }
 
     getShape(): google.maps.MarkerShape {
-        return true;
+        return {
+            coords: [ 10, 118 ],
+            type: "fakeType"
+        };
     }
 
     getTitle(): string {
