@@ -6,6 +6,9 @@ import { Marker, MarkerProps } from "./Marker";
 
 import "../ui/GoogleMaps.css";
 
+export type widthUnitType = "percentage" | "pixels";
+export type heightUnitType = "percentageOfWidth" | "percentageOfParent" | "pixels";
+
 export interface Location {
     address?: string;
     latitude?: number;
@@ -15,7 +18,7 @@ export interface MapProps extends Props<Map> {
     apiKey?: string;
     defaultCenterAddress: string;
     height: number;
-    heightUnit: "percentageOfWidth" | "percentageOfParent" | "pixels";
+    heightUnit: heightUnitType;
     locations: Location[];
     optionDrag: boolean;
     optionMapControl: boolean;
@@ -23,7 +26,7 @@ export interface MapProps extends Props<Map> {
     optionStreetView: boolean;
     optionZoomControl: boolean;
     width: number;
-    widthUnit: "percentage" | "pixels";
+    widthUnit: widthUnitType;
     zoomLevel: number;
 }
 
@@ -37,7 +40,7 @@ export interface MapState {
 export class Map extends Component<MapProps, MapState> {
     // Location of Mendix Netherlands office
     private defaultCenterLocation: LatLng = { lat: 51.9107963, lng: 4.4789878 };
-    private mapWrapper: HTMLElement;
+    private mapWrapper: HTMLElement | null;
     private mapLoader?: GoogleMapLoader;
     private bounds: google.maps.LatLngBounds;
 
@@ -99,14 +102,18 @@ export class Map extends Component<MapProps, MapState> {
     }
 
     componentWillUnmount() {
-        window.removeEventListener("resize", this.onResizeIframe);
+        if (this.getIframe()) {
+            window.removeEventListener("resize", this.onResizeIframe);
+        }
     }
 
     private adjustStyle() {
-        const wrapperElement = this.mapWrapper.parentElement;
-        if (this.props.heightUnit === "percentageOfParent" && wrapperElement) {
-            wrapperElement.style.height = "100%";
-            wrapperElement.style.width = "100%";
+        if (this.mapWrapper) {
+            const wrapperElement = this.mapWrapper.parentElement;
+            if (this.props.heightUnit === "percentageOfParent" && wrapperElement) {
+                wrapperElement.style.height = "100%";
+                wrapperElement.style.width = "100%";
+            }
         }
     }
 
@@ -114,10 +121,14 @@ export class Map extends Component<MapProps, MapState> {
         // A workaround for attaching the resize event to the Iframe window because the google-map-react
         // library does not support it. This fix will be done in the web modeler preview class when the
         // google-map-react library starts supporting listening to Iframe events.
-        const iFrame = document.getElementsByClassName("t-page-editor-iframe")[0] as HTMLIFrameElement;
-        if (iFrame.contentWindow) {
+        const iFrame = this.getIframe();
+        if (iFrame) {
             iFrame.contentWindow.addEventListener("resize", this.onResizeIframe);
         }
+    }
+
+    private getIframe(): HTMLIFrameElement {
+        return document.getElementsByClassName("t-page-editor-iframe")[0] as HTMLIFrameElement;
     }
 
     private onResizeIframe(event: CustomEvent) {
