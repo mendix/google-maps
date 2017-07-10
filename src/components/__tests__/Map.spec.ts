@@ -2,7 +2,7 @@ import { ShallowWrapper, shallow } from "enzyme";
 import GoogleMap from "google-map-react";
 import { DOM, createElement } from "react";
 
-import { Location, Map, MapProps } from "../Map";
+import { Location, Map, MapProps, heightUnitType, widthUnitType } from "../Map";
 import { Marker } from "../Marker";
 import { Alert } from "../Alert";
 
@@ -23,8 +23,8 @@ describe("Map", () => {
         locationsParam: Location[], APIKeyParam?: string,
         widthParam?: number,
         heightParam?: number,
-        widthUnitParam?: "percentage" | "pixels",
-        heightUnitParam?: "percentageOfWidth" | "percentageOfParent" | "pixels",
+        widthUnitParam?: widthUnitType,
+        heightUnitParam?: heightUnitType,
         defaultCenterParam?: string): ShallowWrapper<MapProps, any> => {
         const output = renderMap({
             apiKey: APIKeyParam,
@@ -55,6 +55,66 @@ describe("Map", () => {
     it("should render with the map structure", () => {
         const map = setUpMap([ { address } ], undefined, 100, 75, "percentage", "percentageOfWidth");
         const style = { paddingBottom: "75%", width: "100%" };
+
+        expect(map).toBeElement(
+            DOM.div({ className: "widget-google-maps-wrapper", style },
+                DOM.div({ className: "widget-google-maps" },
+                    createElement(Alert, { message: undefined }),
+                    createElement(GoogleMap, {
+                        bootstrapURLKeys: { key: undefined },
+                        center: defaultCenterLocation,
+                        defaultZoom: 7,
+                        onGoogleApiLoaded: jasmine.any(Function) as any,
+                        resetBoundsOnResize: true,
+                        yesIWantToUseGoogleMapApiInternals: true
+                    })
+                )
+            ));
+    });
+
+    it("should render a structure correctly with pixels", () => {
+        const map = setUpMap([ { address } ], undefined, 100, 75, "pixels", "pixels");
+        const style = { paddingBottom: "75", width: "100" };
+
+        expect(map).toBeElement(
+            DOM.div({ className: "widget-google-maps-wrapper", style },
+                DOM.div({ className: "widget-google-maps" },
+                    createElement(Alert, { message: undefined }),
+                    createElement(GoogleMap, {
+                        bootstrapURLKeys: { key: undefined },
+                        center: defaultCenterLocation,
+                        defaultZoom: 7,
+                        onGoogleApiLoaded: jasmine.any(Function) as any,
+                        resetBoundsOnResize: true,
+                        yesIWantToUseGoogleMapApiInternals: true
+                    })
+                )
+            ));
+    });
+
+    it("should render a structure correctly with percentage", () => {
+        const map = setUpMap([ { address } ], undefined, 20, 30, "percentage", "pixels");
+        const style = { width: "20%", paddingBottom: "30" };
+
+        expect(map).toBeElement(
+            DOM.div({ className: "widget-google-maps-wrapper", style },
+                DOM.div({ className: "widget-google-maps" },
+                    createElement(Alert, { message: undefined }),
+                    createElement(GoogleMap, {
+                        bootstrapURLKeys: { key: undefined },
+                        center: defaultCenterLocation,
+                        defaultZoom: 7,
+                        onGoogleApiLoaded: jasmine.any(Function) as any,
+                        resetBoundsOnResize: true,
+                        yesIWantToUseGoogleMapApiInternals: true
+                    })
+                )
+            ));
+    });
+
+    it("should render a structure correctly with percentage of parent", () => {
+        const map = setUpMap([ { address } ], undefined, 20, 30, "percentage", "percentageOfParent");
+        const style = { width: "20%", height: "30%" };
 
         expect(map).toBeElement(
             DOM.div({ className: "widget-google-maps-wrapper", style },

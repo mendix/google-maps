@@ -1,5 +1,5 @@
 import { Component, createElement } from "react";
-import { Location, Map } from "./Map";
+import { Location, Map, heightUnitType, widthUnitType } from "./Map";
 import { Alert } from "./Alert";
 
 interface GoogleMapContainerProps {
@@ -10,7 +10,7 @@ interface GoogleMapContainerProps {
     defaultCenterAddress: string;
     entityConstraint: string;
     height: number;
-    heightUnit: "percentageOfWidth" | "percentageOfParent" | "pixels";
+    heightUnit: heightUnitType;
     optionDrag: boolean;
     optionMapControl: boolean;
     optionScroll: boolean;
@@ -22,7 +22,7 @@ interface GoogleMapContainerProps {
     longitudeAttribute: string;
     staticLocations: StaticLocation[];
     width: number;
-    widthUnit: "percentage" | "pixels";
+    widthUnit: widthUnitType;
     zoomLevel: number;
 }
 

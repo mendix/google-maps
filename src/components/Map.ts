@@ -6,6 +6,9 @@ import { Marker, MarkerProps } from "./Marker";
 
 import "../ui/GoogleMaps.css";
 
+export type widthUnitType = "percentage" | "pixels";
+export type heightUnitType = "percentageOfWidth" | "percentageOfParent" | "pixels";
+
 export interface Location {
     address?: string;
     latitude?: number;
@@ -15,7 +18,7 @@ export interface MapProps extends Props<Map> {
     apiKey?: string;
     defaultCenterAddress: string;
     height: number;
-    heightUnit: "percentageOfWidth" | "percentageOfParent" | "pixels";
+    heightUnit: heightUnitType;
     locations: Location[];
     optionDrag: boolean;
     optionMapControl: boolean;
@@ -23,7 +26,7 @@ export interface MapProps extends Props<Map> {
     optionStreetView: boolean;
     optionZoomControl: boolean;
     width: number;
-    widthUnit: "percentage" | "pixels";
+    widthUnit: widthUnitType;
     zoomLevel: number;
 }
 
