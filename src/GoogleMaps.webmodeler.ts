@@ -1,4 +1,4 @@
-import { Component, DOM, ReactElement, createElement } from "react";
+import { Component, ReactElement, createElement } from "react";
 import { Map, MapProps } from "./components/Map";
 import { Overlay } from "./components/Overlay";
 import { Alert } from "./components/Alert";
@@ -18,7 +18,7 @@ export class preview extends Component<GoogleMapContainerProps, {}> {
         if (!warnings) {
             reactElement = createElement(Map, this.transformProps(this.props));
         } else {
-            reactElement = DOM.div({},
+            reactElement = createElement("div", {},
                 createElement(Alert, { message: warnings }),
                 createElement(Map, this.transformProps(this.props))
             );

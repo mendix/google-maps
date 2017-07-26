@@ -1,6 +1,6 @@
 import { ShallowWrapper, shallow } from "enzyme";
 import GoogleMap from "google-map-react";
-import { DOM, createElement } from "react";
+import { createElement } from "react";
 
 import { Location, Map, MapProps, heightUnitType, widthUnitType } from "../Map";
 import { Marker } from "../Marker";
@@ -57,8 +57,8 @@ describe("Map", () => {
         const style = { paddingBottom: "75%", width: "100%" };
 
         expect(map).toBeElement(
-            DOM.div({ className: "widget-google-maps-wrapper", style },
-                DOM.div({ className: "widget-google-maps" },
+            createElement("div", { className: "widget-google-maps-wrapper", style },
+                createElement("div", { className: "widget-google-maps" },
                     createElement(Alert, { message: undefined }),
                     createElement(GoogleMap, {
                         bootstrapURLKeys: { key: undefined },
@@ -77,8 +77,8 @@ describe("Map", () => {
         const style = { paddingBottom: "75", width: "100" };
 
         expect(map).toBeElement(
-            DOM.div({ className: "widget-google-maps-wrapper", style },
-                DOM.div({ className: "widget-google-maps" },
+            createElement("div", { className: "widget-google-maps-wrapper", style },
+                createElement("div", { className: "widget-google-maps" },
                     createElement(Alert, { message: undefined }),
                     createElement(GoogleMap, {
                         bootstrapURLKeys: { key: undefined },
@@ -97,8 +97,8 @@ describe("Map", () => {
         const style = { width: "20%", paddingBottom: "30" };
 
         expect(map).toBeElement(
-            DOM.div({ className: "widget-google-maps-wrapper", style },
-                DOM.div({ className: "widget-google-maps" },
+            createElement("div", { className: "widget-google-maps-wrapper", style },
+                createElement("div", { className: "widget-google-maps" },
                     createElement(Alert, { message: undefined }),
                     createElement(GoogleMap, {
                         bootstrapURLKeys: { key: undefined },
@@ -117,8 +117,8 @@ describe("Map", () => {
         const style = { width: "20%", height: "30%" };
 
         expect(map).toBeElement(
-            DOM.div({ className: "widget-google-maps-wrapper", style },
-                DOM.div({ className: "widget-google-maps" },
+            createElement("div", { className: "widget-google-maps-wrapper", style },
+                createElement("div", { className: "widget-google-maps" },
                     createElement(Alert, { message: undefined }),
                     createElement(GoogleMap, {
                         bootstrapURLKeys: { key: undefined },
