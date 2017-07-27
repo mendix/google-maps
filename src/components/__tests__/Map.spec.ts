@@ -59,7 +59,7 @@ describe("Map", () => {
         expect(map).toBeElement(
             createElement("div", { className: "widget-google-maps-wrapper", style },
                 createElement("div", { className: "widget-google-maps" },
-                    createElement(Alert, { message: undefined }),
+                    createElement(Alert as any, { message: undefined }),
                     createElement(GoogleMap, {
                         bootstrapURLKeys: { key: undefined },
                         center: defaultCenterLocation,
@@ -79,7 +79,7 @@ describe("Map", () => {
         expect(map).toBeElement(
             createElement("div", { className: "widget-google-maps-wrapper", style },
                 createElement("div", { className: "widget-google-maps" },
-                    createElement(Alert, { message: undefined }),
+                    createElement(Alert as any, { message: undefined }),
                     createElement(GoogleMap, {
                         bootstrapURLKeys: { key: undefined },
                         center: defaultCenterLocation,
@@ -99,7 +99,7 @@ describe("Map", () => {
         expect(map).toBeElement(
             createElement("div", { className: "widget-google-maps-wrapper", style },
                 createElement("div", { className: "widget-google-maps" },
-                    createElement(Alert, { message: undefined }),
+                    createElement(Alert as any, { message: undefined }),
                     createElement(GoogleMap, {
                         bootstrapURLKeys: { key: undefined },
                         center: defaultCenterLocation,
@@ -119,7 +119,7 @@ describe("Map", () => {
         expect(map).toBeElement(
             createElement("div", { className: "widget-google-maps-wrapper", style },
                 createElement("div", { className: "widget-google-maps" },
-                    createElement(Alert, { message: undefined }),
+                    createElement(Alert as any, { message: undefined }),
                     createElement(GoogleMap, {
                         bootstrapURLKeys: { key: undefined },
                         center: defaultCenterLocation,
