@@ -41,6 +41,7 @@ export class preview extends Component<GoogleMapContainerProps, {}> {
             optionScroll: props.optionScroll,
             optionStreetView: props.optionStreetView,
             optionZoomControl: props.optionZoomControl,
+            styleArray: props.styleArray,
             width: props.width,
             widthUnit: props.widthUnit,
             zoomLevel: props.zoomLevel

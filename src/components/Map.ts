@@ -25,6 +25,7 @@ export interface MapProps extends Props<Map> {
     optionScroll: boolean;
     optionStreetView: boolean;
     optionZoomControl: boolean;
+    styleArray: string;
     width: number;
     widthUnit: widthUnitType;
     zoomLevel: number;
@@ -80,6 +81,7 @@ export class Map extends Component<MapProps, MapState> {
                             resetBoundsOnResize: true,
                             scrollwheel: this.props.optionScroll,
                             streetViewControl: this.props.optionStreetView,
+                            styles: this.props.styleArray !== "" ? JSON.parse(this.props.styleArray) : "",
                             zoomControl: this.props.optionZoomControl
                         },
                         resetBoundsOnResize: true,
