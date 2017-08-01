@@ -21,6 +21,7 @@ interface GoogleMapContainerProps {
     latitudeAttribute: string;
     longitudeAttribute: string;
     staticLocations: StaticLocation[];
+    styleArray: string;
     width: number;
     widthUnit: widthUnitType;
     zoomLevel: number;
@@ -61,6 +62,7 @@ class GoogleMapContainer extends Component<GoogleMapContainerProps, { alertMessa
                 optionScroll: this.props.optionScroll,
                 optionStreetView: this.props.optionStreetView,
                 optionZoomControl: this.props.optionZoomControl,
+                styleArray: this.props.styleArray,
                 width: this.props.width,
                 widthUnit: this.props.widthUnit,
                 zoomLevel: this.props.zoomLevel

@@ -131,5 +131,11 @@
             <category>Map controls</category>
             <description>Enable/disable Zoom control</description>
         </property>
+        <property key="styleArray" type="string" multiline="true" required="false">
+            <caption>Style Array</caption>
+            <category>Customisation</category>
+            <description>Use this to add custom styles to your maps.</description>
+        </property>
+        
     </properties>
 </widget>
