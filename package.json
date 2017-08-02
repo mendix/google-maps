@@ -25,12 +25,13 @@
   },
   "devDependencies": {
     "@types/big.js": "0.0.31",
+    "@types/classnames": "^2.2.0",
     "@types/core-js": "0.9.36",
     "@types/enzyme": "^2.7.4",
     "@types/googlemaps": "^3.26.4",
     "@types/jasmine": "^2.5.45",
     "@types/karma": "^0.13.33",
-    "@types/react": "^15.0.16",
+    "@types/react": "^16.0.0",
     "@types/react-dom": "^15.5.1",
     "check-dependencies": "^1.0.1",
     "clean-webpack-plugin": "^0.1.16",
@@ -47,7 +48,7 @@
     "grunt-file-append": "0.0.7",
     "grunt-newer": "^1.1.1",
     "grunt-webpack": "^3.0.2",
-    "istanbul-instrumenter-loader": "^2.0.0",
+    "istanbul-instrumenter-loader": "^3.0.0",
     "jasmine": "^2.5.2",
     "json-loader": "^0.5.4",
     "karma": "^1.4.0",
@@ -77,6 +78,7 @@
     "webpack-merge": "^4.1.0"
   },
   "dependencies": {
+    "classnames": "^2.2.5",
     "google-map-react": "^0.24.0",
     "prop-types": "^15.5.10"
   }
