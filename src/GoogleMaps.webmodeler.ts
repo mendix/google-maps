@@ -18,7 +18,11 @@ export class preview extends Component<GoogleMapContainerProps, {}> {
             reactElement = createElement(Map, this.transformProps(this.props));
         } else {
             reactElement = createElement("div", {},
-                createElement(Alert, { bootstrapStyle: "danger", message: warnings }),
+                createElement(Alert, {
+                    bootstrapStyle: "danger",
+                    className: "widget-google-maps-alert",
+                    message: warnings
+                }),
                 createElement(Map, this.transformProps(this.props))
             );
         }

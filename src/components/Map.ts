@@ -64,7 +64,11 @@ export class Map extends Component<MapProps, MapState> {
                 style: this.getStyle()
             },
             createElement("div", { className: "widget-google-maps" },
-                createElement(Alert as any, { message: this.state.alertMessage }),
+                createElement(Alert, {
+                    bootstrapStyle: "danger",
+                    className: "widget-google-maps-alert",
+                    message: this.state.alertMessage
+                }),
                 createElement(GoogleMap,
                     {
                         bootstrapURLKeys: { key: this.props.apiKey },
