@@ -1,3 +1,8 @@
+[![Build Status](https://travis-ci.org/mendixlabs/google-maps.svg?branch=master)](https://travis-ci.org/mendixlabs/google-maps)
+[![Dependency Status](https://david-dm.org/mendixlabs/google-maps.svg)](https://david-dm.org/mendixlabs/google-maps)
+[![Dev Dependency Status](https://david-dm.org/mendixlabs/google-maps.svg#info=devDependencies)](https://david-dm.org/mendixlabs/google-maps#info=devDependencies)
+[![codecov](https://codecov.io/gh/mendixlabs/google-maps/branch/master/graph/badge.svg)](https://codecov.io/gh/mendixlabs/google-maps)
+
 # Google Maps
 * Show locations on google maps
 
