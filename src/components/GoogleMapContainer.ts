@@ -2,8 +2,13 @@ import { Component, createElement } from "react";
 import { Location, Map, heightUnitType, widthUnitType } from "./Map";
 import { Alert } from "./Alert";
 
-interface GoogleMapContainerProps {
-    mxObject: mendix.lib.MxObject;
+interface WrapperProps {
+    "class"?: string;
+    mxObject?: mendix.lib.MxObject;
+    style: string;
+}
+
+interface GoogleMapContainerProps extends WrapperProps {
     apiKey: string;
     dataSource: DataSource;
     dataSourceMicroflow: string;
@@ -48,10 +53,15 @@ class GoogleMapContainer extends Component<GoogleMapContainerProps, { alertMessa
 
     render() {
         if (this.state.alertMessage) {
-            return createElement(Alert, { message: this.state.alertMessage });
+            return createElement(Alert, {
+                bootstrapStyle: "danger",
+                className: "widget-google-maps-alert",
+                message: this.state.alertMessage
+            });
         } else {
             return createElement(Map, {
                 apiKey: this.props.apiKey,
+                className: this.props.class,
                 defaultCenterAddress: this.props.defaultCenterAddress,
                 height: this.props.height,
                 heightUnit: this.props.heightUnit,
@@ -61,6 +71,7 @@ class GoogleMapContainer extends Component<GoogleMapContainerProps, { alertMessa
                 optionScroll: this.props.optionScroll,
                 optionStreetView: this.props.optionStreetView,
                 optionZoomControl: this.props.optionZoomControl,
+                style: GoogleMapContainer.parseStyle(this.props.style),
                 width: this.props.width,
                 widthUnit: this.props.widthUnit,
                 zoomLevel: this.props.zoomLevel
@@ -78,7 +89,7 @@ class GoogleMapContainer extends Component<GoogleMapContainerProps, { alertMessa
     }
 
     componentWillUnmount() {
-        this.unSubscribe();
+        this.subscriptionHandles.forEach(window.mx.data.unsubscribe);
     }
 
     public static validateProps(props: GoogleMapContainerProps) {
@@ -119,8 +130,9 @@ class GoogleMapContainer extends Component<GoogleMapContainerProps, { alertMessa
         }));
     }
 
-    private subscribe(contextObject: mendix.lib.MxObject) {
-        this.unSubscribe();
+    private subscribe(contextObject?: mendix.lib.MxObject) {
+        this.subscriptionHandles.forEach(window.mx.data.unsubscribe);
+        this.subscriptionHandles = [];
 
         if (contextObject) {
             this.subscriptionHandles.push(window.mx.data.subscribe({
@@ -138,12 +150,7 @@ class GoogleMapContainer extends Component<GoogleMapContainerProps, { alertMessa
         }
     }
 
-    private unSubscribe() {
-        this.subscriptionHandles.forEach(window.mx.data.unsubscribe);
-        this.subscriptionHandles = [];
-    }
-
-    private fetchData(contextObject: mendix.lib.MxObject) {
+    private fetchData(contextObject?: mendix.lib.MxObject) {
         if (this.props.dataSource === "static") {
             this.setState({ locations: GoogleMapContainer.parseStaticLocations(this.props.staticLocations) });
         } else if (this.props.dataSource === "context") {
@@ -184,7 +191,7 @@ class GoogleMapContainer extends Component<GoogleMapContainerProps, { alertMessa
         });
     }
 
-    private fetchLocationsByMicroflow(microflow: string, contextObject: mendix.lib.MxObject) {
+    private fetchLocationsByMicroflow(microflow: string, contextObject?: mendix.lib.MxObject) {
         if (microflow) {
             window.mx.ui.action(microflow, {
                 callback: (mxObjects: mendix.lib.MxObject[]) => this.setLocationsFromMxObjects(mxObjects),
@@ -211,6 +218,24 @@ class GoogleMapContainer extends Component<GoogleMapContainerProps, { alertMessa
         });
 
         this.setState({ locations });
+    }
+
+    private static parseStyle = (style = ""): {[key: string]: string} => { // Doesn't support a few stuff.
+        try {
+            return style.split(";").reduce<{[key: string]: string}>((styleObject, line) => {
+                const pair = line.split(":");
+                if (pair.length === 2) {
+                    const name = pair[0].trim().replace(/(-.)/g, match => match[1].toUpperCase());
+                    styleObject[name] = pair[1].trim();
+                }
+                return styleObject;
+            }, {});
+        } catch (error) {
+            // tslint:disable-next-line no-console
+            window.console.log("Failed to parse style", style, error);
+        }
+
+        return {};
     }
 }
 

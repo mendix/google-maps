@@ -1,6 +1,5 @@
-import { Component, DOM, ReactElement, createElement } from "react";
+import { Component, ReactElement, createElement } from "react";
 import { Map, MapProps } from "./components/Map";
-import { Overlay } from "./components/Overlay";
 import { Alert } from "./components/Alert";
 import GoogleMapContainer, { GoogleMapContainerProps } from "./components/GoogleMapContainer";
 
@@ -11,22 +10,25 @@ type VisibilityMap = {
 
 // tslint:disable-next-line class-name
 export class preview extends Component<GoogleMapContainerProps, {}> {
-
     render() {
         const warnings = GoogleMapContainer.validateProps(this.props);
         let reactElement: ReactElement<{}>;
         if (!warnings) {
-            reactElement = createElement(Map, this.transformProps(this.props));
+            reactElement = createElement(Map, preview.transformProps(this.props));
         } else {
-            reactElement = DOM.div({},
-                createElement(Alert, { message: warnings }),
-                createElement(Map, this.transformProps(this.props))
+            reactElement = createElement("div", {},
+                createElement(Alert, {
+                    bootstrapStyle: "danger",
+                    className: "widget-google-maps-alert",
+                    message: warnings
+                }),
+                createElement(Map, preview.transformProps(this.props))
             );
         }
-        return createElement(Overlay, {}, reactElement);
+        return createElement("div", {}, reactElement);
     }
 
-    private transformProps(props: GoogleMapContainerProps): MapProps {
+    private static transformProps(props: GoogleMapContainerProps): MapProps {
         const locations = props.dataSource === "static"
             ? GoogleMapContainer.parseStaticLocations(props.staticLocations)
             : [];
@@ -41,6 +43,7 @@ export class preview extends Component<GoogleMapContainerProps, {}> {
             optionScroll: props.optionScroll,
             optionStreetView: props.optionStreetView,
             optionZoomControl: props.optionZoomControl,
+            style: {},
             width: props.width,
             widthUnit: props.widthUnit,
             zoomLevel: props.zoomLevel
