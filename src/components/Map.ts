@@ -1,4 +1,5 @@
-import { Component, Props, ReactElement, createElement } from "react";
+import { CSSProperties, Component, ReactElement, createElement } from "react";
+import * as classNames from "classnames";
 import GoogleMap, { GoogleMapLoader, LatLng } from "google-map-react";
 
 import { Alert } from "./Alert";
@@ -14,7 +15,8 @@ export interface Location {
     latitude?: number;
     longitude?: number;
 }
-export interface MapProps extends Props<Map> {
+export interface MapProps {
+    className?: string;
     apiKey?: string;
     defaultCenterAddress: string;
     height: number;
@@ -28,6 +30,7 @@ export interface MapProps extends Props<Map> {
     width: number;
     widthUnit: widthUnitType;
     zoomLevel: number;
+    style: object;
 }
 
 export interface MapState {
@@ -59,7 +62,7 @@ export class Map extends Component<MapProps, MapState> {
     render() {
         return createElement("div",
             {
-                className: "widget-google-maps-wrapper",
+                className: classNames("widget-google-maps-wrapper", this.props.className),
                 ref: (node: HTMLElement | null) => this.mapWrapper = node,
                 style: this.getStyle()
             },
@@ -145,7 +148,7 @@ export class Map extends Component<MapProps, MapState> {
     }
 
     private getStyle(): object {
-        const style: { paddingBottom?: string; width: string, height?: string } = {
+        const style: CSSProperties = {
             width: this.props.widthUnit === "percentage" ? `${this.props.width}%` : `${this.props.width}`
         };
         if (this.props.heightUnit === "percentageOfWidth") {
@@ -155,7 +158,8 @@ export class Map extends Component<MapProps, MapState> {
         } else if (this.props.heightUnit === "percentageOfParent") {
             style.height = `${this.props.height}%`;
         }
-        return style;
+
+        return { ...style, ... this.props.style };
     }
 
     private handleOnGoogleApiLoaded(mapLoader: GoogleMapLoader) {

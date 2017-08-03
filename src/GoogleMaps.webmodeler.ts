@@ -10,12 +10,11 @@ type VisibilityMap = {
 
 // tslint:disable-next-line class-name
 export class preview extends Component<GoogleMapContainerProps, {}> {
-
     render() {
         const warnings = GoogleMapContainer.validateProps(this.props);
         let reactElement: ReactElement<{}>;
         if (!warnings) {
-            reactElement = createElement(Map, this.transformProps(this.props));
+            reactElement = createElement(Map, preview.transformProps(this.props));
         } else {
             reactElement = createElement("div", {},
                 createElement(Alert, {
@@ -23,13 +22,13 @@ export class preview extends Component<GoogleMapContainerProps, {}> {
                     className: "widget-google-maps-alert",
                     message: warnings
                 }),
-                createElement(Map, this.transformProps(this.props))
+                createElement(Map, preview.transformProps(this.props))
             );
         }
         return createElement("div", {}, reactElement);
     }
 
-    private transformProps(props: GoogleMapContainerProps): MapProps {
+    private static transformProps(props: GoogleMapContainerProps): MapProps {
         const locations = props.dataSource === "static"
             ? GoogleMapContainer.parseStaticLocations(props.staticLocations)
             : [];
@@ -44,6 +43,7 @@ export class preview extends Component<GoogleMapContainerProps, {}> {
             optionScroll: props.optionScroll,
             optionStreetView: props.optionStreetView,
             optionZoomControl: props.optionZoomControl,
+            style: {},
             width: props.width,
             widthUnit: props.widthUnit,
             zoomLevel: props.zoomLevel
