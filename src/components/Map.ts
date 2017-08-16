@@ -117,10 +117,9 @@ export class Map extends Component<MapProps, MapState> {
     private adjustStyle() {
         const domElement = findDOMNode(this).parentNode as HTMLElement;
         if (domElement) {
-            const wrapperElement = domElement;
-            if (this.props.heightUnit === "percentageOfParent" && wrapperElement) {
-                wrapperElement.style.height = "100%";
-                wrapperElement.style.width = "100%";
+            if (this.props.heightUnit === "percentageOfParent" && domElement) {
+                domElement.style.height = "100%";
+                domElement.style.width = "100%";
             }
         }
     }
