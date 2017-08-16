@@ -1,5 +1,4 @@
 import { CSSProperties, Component, ReactElement, createElement } from "react";
-import { findDOMNode } from "react-dom";
 
 import * as classNames from "classnames";
 import GoogleMap, { GoogleMapLoader, LatLng } from "google-map-react";
@@ -99,7 +98,6 @@ export class Map extends Component<MapProps, MapState> {
     }
 
     componentDidMount() {
-        this.adjustStyle();
         this.setUpEvents();
     }
 
@@ -111,16 +109,6 @@ export class Map extends Component<MapProps, MapState> {
     componentWillUnmount() {
         if (this.getIframe()) {
             window.removeEventListener("resize", this.onResizeIframe);
-        }
-    }
-
-    private adjustStyle() {
-        const domElement = findDOMNode(this).parentNode as HTMLElement;
-        if (domElement) {
-            if (this.props.heightUnit === "percentageOfParent" && domElement) {
-                domElement.style.height = "100%";
-                domElement.style.width = "100%";
-            }
         }
     }
 
