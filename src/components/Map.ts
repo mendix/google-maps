@@ -1,4 +1,6 @@
 import { CSSProperties, Component, ReactElement, createElement } from "react";
+import { findDOMNode } from "react-dom";
+
 import * as classNames from "classnames";
 import GoogleMap, { GoogleMapLoader, LatLng } from "google-map-react";
 
@@ -43,7 +45,6 @@ export interface MapState {
 export class Map extends Component<MapProps, MapState> {
     // Location of Mendix Netherlands office
     private defaultCenterLocation: LatLng = { lat: 51.9107963, lng: 4.4789878 };
-    private mapWrapper: HTMLElement | null;
     private mapLoader?: GoogleMapLoader;
     private bounds: google.maps.LatLngBounds;
 
@@ -63,7 +64,6 @@ export class Map extends Component<MapProps, MapState> {
         return createElement("div",
             {
                 className: classNames("widget-google-maps-wrapper", this.props.className),
-                ref: (node: HTMLElement | null) => this.mapWrapper = node,
                 style: this.getStyle()
             },
             createElement("div", { className: "widget-google-maps" },
@@ -115,8 +115,9 @@ export class Map extends Component<MapProps, MapState> {
     }
 
     private adjustStyle() {
-        if (this.mapWrapper) {
-            const wrapperElement = this.mapWrapper.parentElement;
+        const domElement = findDOMNode(this).parentNode as HTMLElement;
+        if (domElement) {
+            const wrapperElement = domElement;
             if (this.props.heightUnit === "percentageOfParent" && wrapperElement) {
                 wrapperElement.style.height = "100%";
                 wrapperElement.style.width = "100%";
