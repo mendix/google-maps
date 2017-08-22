@@ -80,6 +80,7 @@ export class Map extends Component<MapProps, MapState> {
                         onGoogleApiLoaded: this.handleOnGoogleApiLoaded,
                         options: {
                             draggable: this.props.optionDrag,
+                            fullscreenControl: false,
                             mapTypeControl: this.props.optionMapControl,
                             maxZoom: 20,
                             minZoom: 2,
