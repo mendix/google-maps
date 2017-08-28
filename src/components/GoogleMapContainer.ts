@@ -200,6 +200,7 @@ class GoogleMapContainer extends Component<GoogleMapContainerProps, { alertMessa
                     locations: []
                 }),
                 params: {
+                    applyto: "selection",
                     guids: contextObject ? [ contextObject.getGuid() ] : []
                 }
             });
