@@ -6,6 +6,7 @@ import { Location, Map, MapProps, heightUnitType, widthUnitType } from "../Map";
 import { Marker } from "../Marker";
 import { Alert } from "../Alert";
 
+// tslint:disable:no-submodule-imports
 import { mockGoogleMaps } from "tests/mocks/GoogleMaps";
 import { mockMendix } from "tests/mocks/Mendix";
 
