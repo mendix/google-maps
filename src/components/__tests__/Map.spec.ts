@@ -6,6 +6,7 @@ import { Location, Map, MapProps, heightUnitType, widthUnitType } from "../Map";
 import { Marker } from "../Marker";
 import { Alert } from "../Alert";
 
+// tslint:disable:no-submodule-imports
 import { mockGoogleMaps } from "tests/mocks/GoogleMaps";
 import { mockMendix } from "tests/mocks/Mendix";
 
@@ -28,6 +29,7 @@ describe("Map", () => {
         defaultCenterParam?: string): ShallowWrapper<MapProps, any> => {
         const output = renderMap({
             apiKey: APIKeyParam,
+            autoZoom: true,
             defaultCenterAddress: defaultCenterParam !== undefined ? defaultCenterParam : "",
             height: heightParam ? heightParam : 75,
             heightUnit: heightUnitParam ? heightUnitParam : "pixels",
@@ -202,7 +204,7 @@ describe("Map", () => {
         });
 
         it("should display the first marker if multiple locations are found", () => {
-            const output = setUpMap([ { address: "multipleAddress" } ] );
+            const output = setUpMap([ { address: "multipleAddress" } ]);
 
             const marker = output.find(Marker);
 
