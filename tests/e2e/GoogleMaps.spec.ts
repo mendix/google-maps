@@ -1,28 +1,30 @@
-import page from "./pages/home.page";
+import homepage from "./pages/home.page";
+import singleLocationPage from "./pages/singleLocation.page";
 import { Element } from "webdriverio";
 
 describe("Google maps", () => {
     it("should show single location", () => {
-        page.open();
-        page.googleMapNavBarItem.waitForVisible();
-        page.googleMapNavBarItem.click();
-        page.navBarItems.waitForVisible();
-        page.correctAddressBarItem.waitForVisible();
-        page.correctAddressBarItem.click();
-        page.markers.waitForVisible();
+        singleLocationPage.open();
+        homepage.markers.waitForVisible();
 
-        const markerList: Element[] = page.markers.value;
+        const markerList: Element[] = homepage.markers.value;
         expect(markerList.length).toBe(1);
 
     });
 
     it("when xpath selected should show locations", () => {
-        page.open();
-        page.gridRow1.waitForVisible();
-        page.gridRow1.click();
-        page.markers.waitForVisible();
+        homepage.open();
+        homepage.firstGridRow1.waitForVisible();
+        homepage.firstGridRow1.click();
+        homepage.secondGridRow1.waitForVisible();
+        homepage.secondGridRow1.click();
+        homepage.secondGridRow2.waitForVisible();
+        homepage.secondGridRow2.click();
+        homepage.secondGridRow3.waitForVisible();
+        homepage.secondGridRow3.click();
+        homepage.markers.waitForVisible();
 
-        const markerList: Element[] = page.markers.value;
+        const markerList: Element[] = homepage.markers.value;
         expect(markerList.length).toBeGreaterThan(1);
     });
 });
