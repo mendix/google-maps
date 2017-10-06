@@ -139,12 +139,12 @@ export class Map extends Component<MapProps, MapState> {
 
     private getStyle(): object {
         const style: CSSProperties = {
-            width: this.props.widthUnit === "percentage" ? `${this.props.width}%` : `${this.props.width}`
+            width: this.props.widthUnit === "percentage" ? `${this.props.width}%` : `${this.props.width}px`
         };
         if (this.props.heightUnit === "percentageOfWidth") {
             style.paddingBottom = `${this.props.height}%`;
         } else if (this.props.heightUnit === "pixels") {
-            style.paddingBottom = `${this.props.height}`;
+            style.paddingBottom = `${this.props.height}px`;
         } else if (this.props.heightUnit === "percentageOfParent") {
             style.height = `${this.props.height}%`;
         }

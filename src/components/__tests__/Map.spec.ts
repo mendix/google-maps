@@ -81,7 +81,7 @@ describe("Map", () => {
 
     it("should render a structure correctly with pixels", () => {
         const map = setUpMap([ { address } ], undefined, 100, 75, "pixels", "pixels");
-        const style = { paddingBottom: "75", width: "100" };
+        const style = { paddingBottom: "75px", width: "100px" };
 
         expect(map).toBeElement(
             createElement("div", { className: "widget-google-maps-wrapper", style },
@@ -105,7 +105,7 @@ describe("Map", () => {
 
     it("should render a structure correctly with percentage", () => {
         const map = setUpMap([ { address } ], undefined, 20, 30, "percentage", "pixels");
-        const style = { width: "20%", paddingBottom: "30" };
+        const style = { width: "20%", paddingBottom: "30px" };
 
         expect(map).toBeElement(
             createElement("div", { className: "widget-google-maps-wrapper", style },
