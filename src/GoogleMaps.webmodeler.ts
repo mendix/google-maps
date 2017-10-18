@@ -34,7 +34,7 @@ export class preview extends Component<GoogleMapContainerProps, {}> {
             : [];
         return {
             apiKey: props.apiKey,
-            autoZoom: true,
+            autoZoom: props.autoZoom,
             defaultCenterAddress: props.defaultCenterAddress,
             height: props.height,
             heightUnit: props.heightUnit,
