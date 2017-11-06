@@ -133,6 +133,10 @@
       }
     ],
     "curly": false,
+    "max-line-length": [
+      true,
+      150
+    ],
     "arrow-parens": false,
     "linebreak-style": [ true, "LF" ],
     "tslint.jsEnable": true
