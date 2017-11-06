@@ -5,6 +5,7 @@ import { UrlHelper } from "../UrlHelper";
 
 interface WrapperProps {
     "class"?: string;
+    friendlyId: string;
     mxObject?: mendix.lib.MxObject;
     style: string;
 }

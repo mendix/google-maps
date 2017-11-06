@@ -1,7 +1,7 @@
 import { CSSProperties, Component, ReactElement, createElement } from "react";
 
 import * as classNames from "classnames";
-import GoogleMap, { GoogleMapLoader, LatLng } from "google-map-react";
+import GoogleMap, { GoogleMapLoader, GoogleMapProps, LatLng } from "google-map-react";
 
 import { Alert } from "./Alert";
 import { Marker, MarkerProps } from "./Marker";
@@ -17,11 +17,13 @@ export interface Location {
     longitude?: number;
     url?: string;
 }
+
 export interface MapProps {
     className?: string;
     apiKey?: string;
     autoZoom: boolean;
     defaultCenterAddress: string;
+    friendlyId?: string;
     height: number;
     heightUnit: heightUnitType;
     locations: Location[];
@@ -59,6 +61,7 @@ export class Map extends Component<MapProps, MapState> {
         };
         this.handleOnGoogleApiLoaded = this.handleOnGoogleApiLoaded.bind(this);
         this.onResizeIframe = this.onResizeIframe.bind(this);
+        this.renderGoogleMap = this.renderGoogleMap.bind(this);
     }
 
     render() {
@@ -73,29 +76,7 @@ export class Map extends Component<MapProps, MapState> {
                     className: "widget-google-maps-alert",
                     message: this.state.alertMessage
                 }),
-                createElement(GoogleMap,
-                    {
-                        bootstrapURLKeys: { key: this.props.apiKey },
-                        center: this.state.center,
-                        defaultZoom: this.props.zoomLevel,
-                        onGoogleApiLoaded: this.handleOnGoogleApiLoaded,
-                        options: {
-                            draggable: this.props.optionDrag,
-                            fullscreenControl: false,
-                            mapTypeControl: this.props.optionMapControl,
-                            maxZoom: 20,
-                            minZoom: 2,
-                            minZoomOverride: true,
-                            resetBoundsOnResize: true,
-                            scrollwheel: this.props.optionScroll,
-                            streetViewControl: this.props.optionStreetView,
-                            zoomControl: this.props.optionZoomControl
-                        },
-                        resetBoundsOnResize: true,
-                        yesIWantToUseGoogleMapApiInternals: true
-                    },
-                    this.createMakers()
-                )
+                this.renderGoogleMap()
             )
         );
     }
@@ -112,6 +93,41 @@ export class Map extends Component<MapProps, MapState> {
     componentWillUnmount() {
         if (this.getIframe()) {
             window.removeEventListener("resize", this.onResizeIframe);
+        }
+    }
+
+    private renderGoogleMap(): ReactElement<GoogleMapProps> | null {
+        try {
+            return createElement(GoogleMap,
+                {
+                    bootstrapURLKeys: { key: this.props.apiKey },
+                    center: this.state.center,
+                    defaultZoom: this.props.zoomLevel,
+                    onGoogleApiLoaded: this.handleOnGoogleApiLoaded,
+                    options: {
+                        draggable: this.props.optionDrag,
+                        fullscreenControl: false,
+                        mapTypeControl: this.props.optionMapControl,
+                        maxZoom: 20,
+                        minZoom: 2,
+                        minZoomOverride: true,
+                        resetBoundsOnResize: true,
+                        scrollwheel: this.props.optionScroll,
+                        streetViewControl: this.props.optionStreetView,
+                        zoomControl: this.props.optionZoomControl
+                    },
+                    resetBoundsOnResize: true,
+                    yesIWantToUseGoogleMapApiInternals: true
+                },
+                this.createMakers()
+            );
+
+        } catch (error) {
+            const alertMessage = `${ this.props.friendlyId } load failed, Check internet connection.${error.message}`;
+
+            this.setState({ alertMessage });
+
+            return null;
         }
     }
 
@@ -150,7 +166,7 @@ export class Map extends Component<MapProps, MapState> {
             style.height = `${this.props.height}%`;
         }
 
-        return { ...style, ... this.props.style };
+        return { ...style, ...this.props.style };
     }
 
     private handleOnGoogleApiLoaded(mapLoader: GoogleMapLoader) {
