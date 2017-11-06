@@ -190,7 +190,7 @@ export class Map extends Component<MapProps, MapState> {
         if (this.mapLoader) {
             let zoom = this.mapLoader.map.getZoom();
             if (props.autoZoom) {
-                const defaultBoundZoom = 6;
+                const defaultBoundZoom = 5;
                 if (zoom && (zoom > defaultBoundZoom) || !zoom) {
                     zoom = defaultBoundZoom;
                 }
