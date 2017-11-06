@@ -45,6 +45,11 @@
                     <category>Location</category>
                     <description>The longitude</description>
                 </property>
+                <property key="icon" type="image" required="false">
+                    <caption>Icon</caption>
+                    <category>Location</category>
+                    <description>The enumeration for the marker images.</description>
+                </property>
             </properties>
         </property>
         <property key="addressAttribute" type="attribute" required="false">
@@ -69,6 +74,14 @@
             <description>The longitude attribute on the context object</description>
             <attributeTypes>
                 <attributeType name="Decimal"/>
+            </attributeTypes>
+        </property>
+        <property key="markerImageAttribute" type="attribute" required="false">
+            <caption>Marker icon attribute</caption>
+            <category>Data source</category>
+            <description>The enumeration for the marker images.</description>
+            <attributeTypes>
+                <attributeType name="Enum"/>
             </attributeTypes>
         </property>
         <property key="autoZoom" type="boolean" defaultValue="true">
@@ -135,6 +148,29 @@
             <caption>Zoom Control</caption>
             <category>Map controls</category>
             <description>Enable/disable Zoom control</description>
+        </property>
+
+        <property key="defaultMakerIcon" type="image" required="false">
+            <caption>Default marker icon</caption>
+            <category>Advanced</category>
+            <description>The default image to use if no enumeration is available.</description>
+        </property>
+        <property key="markerImages" type="object" isList="true" required="false">
+            <caption>Enum based marker images</caption>
+            <category>Advanced</category>
+            <description>Set images for the markers based on an enumeration.</description>
+            <properties>
+                <property key="enumKey" type="string">
+                    <caption>Enum key</caption>
+                    <category>Appearance</category>
+                    <description>The enum key as string. (Does not recognize empty '' enum value. Use the default icon for these.)</description>
+                </property>
+                <property key="enumImage" type="image">
+                    <caption>Image</caption>
+                    <category>Appearance</category>
+                    <description>The image for the enumeration key.</description>
+                </property>
+            </properties>
         </property>
     </properties>
 </widget>

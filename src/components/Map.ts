@@ -15,6 +15,7 @@ export interface Location {
     address?: string;
     latitude?: number;
     longitude?: number;
+    url?: string;
 }
 export interface MapProps {
     className?: string;
@@ -180,7 +181,6 @@ export class Map extends Component<MapProps, MapState> {
             } else {
                 zoom = props.zoomLevel;
             }
-            this.mapLoader.map.setZoom(zoom);
         }
     }
 
@@ -246,12 +246,13 @@ export class Map extends Component<MapProps, MapState> {
         const markerElements: Array<ReactElement<MarkerProps>> = [];
         if (this.state.locations && this.state.locations.length) {
             this.state.locations.map((locationObject, index) => {
-                const { latitude, longitude } = locationObject;
+                const { latitude, longitude, url } = locationObject;
                 if (this.validLocation(locationObject)) {
                     markerElements.push(createElement(Marker, {
                         key: index,
                         lat: latitude as number,
-                        lng: longitude as number
+                        lng: longitude as number,
+                        url
                     }));
                 }
             });

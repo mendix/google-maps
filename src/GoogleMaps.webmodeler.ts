@@ -30,7 +30,7 @@ export class preview extends Component<GoogleMapContainerProps, {}> {
 
     private static transformProps(props: GoogleMapContainerProps): MapProps {
         const locations = props.dataSource === "static"
-            ? GoogleMapContainer.parseStaticLocations(props.staticLocations)
+            ? GoogleMapContainer.parseStaticLocations(props)
             : [];
         return {
             apiKey: props.apiKey,

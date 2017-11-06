@@ -1,6 +1,7 @@
 import { Component, createElement } from "react";
 import { Location, Map, heightUnitType, widthUnitType } from "./Map";
 import { Alert } from "./Alert";
+import { UrlHelper } from "../UrlHelper";
 
 interface WrapperProps {
     "class"?: string;
@@ -14,6 +15,7 @@ interface GoogleMapContainerProps extends WrapperProps {
     dataSource: DataSource;
     dataSourceMicroflow: string;
     defaultCenterAddress: string;
+    defaultMakerIcon: string;
     entityConstraint: string;
     height: number;
     heightUnit: heightUnitType;
@@ -26,7 +28,9 @@ interface GoogleMapContainerProps extends WrapperProps {
     addressAttribute: string;
     latitudeAttribute: string;
     longitudeAttribute: string;
+    markerImageAttribute: string;
     staticLocations: StaticLocation[];
+    markerImages: Array<{ enumKey: string, enumImage: string}>;
     width: number;
     widthUnit: widthUnitType;
     zoomLevel: number;
@@ -36,6 +40,7 @@ interface StaticLocation {
     address: string;
     latitude: string;
     longitude: string;
+    icon: string;
 }
 
 type DataSource = "static" | "context" | "XPath" | "microflow";
@@ -127,12 +132,23 @@ class GoogleMapContainer extends Component<GoogleMapContainerProps, { alertMessa
     }
 
     // Mendix does not support negative and decimal number as static inputs, so they are strings.
-    public static parseStaticLocations(locations: StaticLocation[]): Location[] {
-        return locations.map(location => ({
+    public static parseStaticLocations(props: GoogleMapContainerProps): Location[] {
+        return props.staticLocations.map(location => ({
             address: location.address,
             latitude: location.latitude.trim() !== "" ? Number(location.latitude) : undefined,
-            longitude: location.longitude.trim() !== "" ? Number(location.longitude) : undefined
+            longitude: location.longitude.trim() !== "" ? Number(location.longitude) : undefined,
+            url:  GoogleMapContainer.getStaticMarkerUrl(location, props.defaultMakerIcon)
         }));
+    }
+
+    private static getStaticMarkerUrl(location: StaticLocation, defaultMakerIcon: string): string {
+        if (location.icon) {
+            return UrlHelper.getStaticResourceUrl(location.icon);
+        }else if (defaultMakerIcon) {
+            return UrlHelper.getStaticResourceUrl(defaultMakerIcon);
+        }else {
+            return "";
+        }
     }
 
     private subscribe(contextObject?: mendix.lib.MxObject) {
@@ -147,7 +163,8 @@ class GoogleMapContainer extends Component<GoogleMapContainerProps, { alertMessa
             [
                 this.props.addressAttribute,
                 this.props.latitudeAttribute,
-                this.props.longitudeAttribute
+                this.props.longitudeAttribute,
+                this.props.markerImageAttribute
             ].forEach(attr => this.subscriptionHandles.push(window.mx.data.subscribe({
                 attr,
                 callback: () => this.fetchData(contextObject), guid: contextObject.getGuid()
@@ -157,7 +174,7 @@ class GoogleMapContainer extends Component<GoogleMapContainerProps, { alertMessa
 
     private fetchData(contextObject?: mendix.lib.MxObject) {
         if (this.props.dataSource === "static") {
-            this.setState({ locations: GoogleMapContainer.parseStaticLocations(this.props.staticLocations) });
+            this.setState({ locations: GoogleMapContainer.parseStaticLocations(this.props) });
         } else if (this.props.dataSource === "context") {
             this.fetchLocationsByContext(contextObject);
         } else if (this.props.dataSource === "XPath" && this.props.locationsEntity) {
@@ -216,14 +233,31 @@ class GoogleMapContainer extends Component<GoogleMapContainerProps, { alertMessa
         const locations = mxObjects.map(mxObject => {
             const lat = mxObject.get(this.props.latitudeAttribute);
             const lon = mxObject.get(this.props.longitudeAttribute);
+
             return {
                 address: mxObject.get(this.props.addressAttribute) as string,
                 latitude: lat ? Number(lat) : undefined,
-                longitude: lon ? Number(lon) : undefined
+                longitude: lon ? Number(lon) : undefined,
+                url: this.getMxObjectMarkerUrl(mxObject)
             };
         });
 
         this.setState({ locations });
+    }
+
+    private getMxObjectMarkerUrl(mxObject: mendix.lib.MxObject): string {
+        const imageKey: string = mxObject.get(this.props.markerImageAttribute) as string;
+        const image = this.props.markerImages.find(value => value.enumKey === imageKey);
+
+        if (imageKey) {
+            return image
+                ? UrlHelper.getStaticResourceUrl(image.enumImage)
+                : "";
+        }else if (this.props.defaultMakerIcon) {
+            return UrlHelper.getStaticResourceUrl(this.props.defaultMakerIcon);
+        }else {
+            return "";
+        }
     }
 
     private static parseStyle = (style = ""): {[key: string]: string} => { // Doesn't support a few stuff.

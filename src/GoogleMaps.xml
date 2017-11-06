@@ -54,6 +54,14 @@
                 <attributeType name="Decimal"/>
             </attributeTypes>
         </property>
+        <property key="markerImageAttribute" type="attribute" required="false" entityProperty="locationsEntity">
+            <caption>Marker icon attribute</caption>
+            <category>Data source</category>
+            <description>The enumeration for the marker images.</description>
+            <attributeTypes>
+                <attributeType name="Enum"/>
+            </attributeTypes>
+        </property>
         <property key="entityConstraint" type="entityConstraint" entityProperty="locationsEntity" required="false">
             <caption>XPath constraint</caption>
             <category>Data source</category>
@@ -129,6 +137,28 @@
             <caption>Zoom Control</caption>
             <category>Map controls</category>
             <description>Enable/disable Zoom control</description>
+        </property>
+        <property key="defaultMakerIcon" type="image" required="false">
+            <caption>Default marker icon</caption>
+            <category>Advanced</category>
+            <description>The default image to use if no enumeration is available.</description>
+        </property>
+        <property key="markerImages" type="object" isList="true" required="false">
+            <caption>Enum based marker images</caption>
+            <category>Advanced</category>
+            <description>Set images for the markers based on an enumeration.</description>
+            <properties>
+                <property key="enumKey" type="string">
+                    <caption>Enum key</caption>
+                    <category>Appearance</category>
+                    <description>The enum key as string. (Does not recognize empty '' enum value. Use the default icon for these.)</description>
+                </property>
+                <property key="enumImage" type="image">
+                    <caption>Image</caption>
+                    <category>Appearance</category>
+                    <description>The image for the enumeration key.</description>
+                </property>
+            </properties>
         </property>
     </properties>
 </widget>
