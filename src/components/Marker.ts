@@ -14,9 +14,9 @@ export const Marker: StatelessComponent<MarkerProps> = (props) => {
             className: "widget-google-maps-marker-url",
             style
         });
-    } else {
-        return createElement("div", { className: "widget-google-maps-marker" });
     }
+
+    return createElement("div", { className: "widget-google-maps-marker" });
 };
 
 Marker.displayName = "Marker";

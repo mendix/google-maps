@@ -5,18 +5,12 @@ import GoogleMap, { GoogleMapLoader, GoogleMapProps, LatLng } from "google-map-r
 
 import { Alert } from "./Alert";
 import { Marker, MarkerProps } from "./Marker";
+import { Location } from "../utils/ContainerUtils";
 
 import "../ui/GoogleMaps.css";
 
 export type widthUnitType = "percentage" | "pixels";
 export type heightUnitType = "percentageOfWidth" | "percentageOfParent" | "pixels";
-
-export interface Location {
-    address?: string;
-    latitude?: number;
-    longitude?: number;
-    url?: string;
-}
 
 export interface MapProps {
     className?: string;
@@ -197,6 +191,8 @@ export class Map extends Component<MapProps, MapState> {
             } else {
                 zoom = props.zoomLevel;
             }
+
+            this.mapLoader.map.setZoom(zoom);
         }
     }
 

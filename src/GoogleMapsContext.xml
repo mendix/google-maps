@@ -76,14 +76,6 @@
                 <attributeType name="Decimal"/>
             </attributeTypes>
         </property>
-        <property key="markerImageAttribute" type="attribute" required="false">
-            <caption>Marker icon attribute</caption>
-            <category>Data source</category>
-            <description>The enumeration for the marker images.</description>
-            <attributeTypes>
-                <attributeType name="Enum"/>
-            </attributeTypes>
-        </property>
         <property key="autoZoom" type="boolean" defaultValue="true">
             <caption>Auto zoom</caption>
             <category>Appearance</category>
@@ -149,26 +141,33 @@
             <category>Map controls</category>
             <description>Enable/disable Zoom control</description>
         </property>
-
         <property key="defaultMakerIcon" type="image" required="false">
             <caption>Default marker icon</caption>
-            <category>Advanced</category>
-            <description>The default image to use if no enumeration is available.</description>
+            <category>Custom markers</category>
+            <description>Overwrite the default marker image of the widget, if the enumeration key does not match an image it will show this default image</description>
+        </property>
+        <property key="markerImageAttribute" type="attribute" required="false">
+            <caption>Marker icon attribute</caption>
+            <category>Custom markers</category>
+            <description>Show different markers based on a enumeration attribute value. When not attribute is provided and no default marker icon is selected, the standaard marker will be shown</description>
+            <attributeTypes>
+                <attributeType name="Enum"/>
+            </attributeTypes>
         </property>
         <property key="markerImages" type="object" isList="true" required="false">
-            <caption>Enum based marker images</caption>
-            <category>Advanced</category>
-            <description>Set images for the markers based on an enumeration.</description>
+            <caption>Marker images</caption>
+            <category>Custom markers</category>
+            <description>Set images for the markers based on an enumeration</description>
             <properties>
                 <property key="enumKey" type="string">
-                    <caption>Enum key</caption>
+                    <caption>Enumeration key</caption>
                     <category>Appearance</category>
-                    <description>The enum key as string. (Does not recognize empty '' enum value. Use the default icon for these.)</description>
+                    <description>The enum key as string (Does not recognize empty '' enumeration value.)</description>
                 </property>
                 <property key="enumImage" type="image">
                     <caption>Image</caption>
                     <category>Appearance</category>
-                    <description>The image for the enumeration key.</description>
+                    <description>The image for the enumeration key</description>
                 </property>
             </properties>
         </property>

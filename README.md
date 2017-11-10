@@ -2,7 +2,7 @@
 [![Dependency Status](https://david-dm.org/mendixlabs/google-maps.svg)](https://david-dm.org/mendixlabs/google-maps)
 [![Dev Dependency Status](https://david-dm.org/mendixlabs/google-maps.svg#info=devDependencies)](https://david-dm.org/mendixlabs/google-maps#info=devDependencies)
 [![codecov](https://codecov.io/gh/mendixlabs/google-maps/branch/master/graph/badge.svg)](https://codecov.io/gh/mendixlabs/google-maps)
-![badge](https://img.shields.io/badge/mendix-7.6.0-green.svg)
+![badge](https://img.shields.io/badge/mendix-7.7.1-green.svg)
 
 # Google Maps
 * Show locations on google maps
@@ -12,6 +12,8 @@
 * Show location on a map based on an coordinate
 * Show list of both addresses and coordinates on the map
 * Data sources Context, Static, XPath or Microflow
+* Customize the display of the marker. If the marker can not be found from the custom markers. The widget will use
+  the specified custom markers else it will use the widget bundled marker.
 
 ## Limitations
 Context and static datasource are Offline capable with Mendix data, however still need to be online to see the map.
@@ -21,7 +23,7 @@ from Google applies, especially for geocoding. We even advise geocoding your loc
 Mendix application and store them for later use as coordinates on the widget.
 
 ## Dependencies
-Mendix 7.4
+Mendix 7.7.1
 
 ## How it Works
 When displaying locations, the widget will prioritize coordinates over addresses.In the event that 
@@ -56,33 +58,5 @@ When the default center is not specified, the map will use the bounds center
 Please report issues at [https://github.com/mendixlabs/google-maps/issues](https://github.com/mendixlabs/google-maps/issues).
 
 
-## Development
-Prerequisite: Install git, node package manager, webpack CLI, grunt CLI, Karma CLI
-
-To contribute, fork and clone.
-
-    git clone https://github.com/mendixlabs/google-maps.git
-
-The code is in typescript. Use a typescript IDE of your choice, like Visual Studio Code or WebStorm.
-
-To set up the development environment, run:
-
-    npm install
-
-Create a folder named dist in the project root.
-
-Create a Mendix test project in the dist folder and rename its root folder to MxTestProject. Changes to the widget code shall be automatically pushed to this test project. Or get the test project from [https://github.com/mendixlabs/google-maps/releases/latest](https://github.com/mendixlabs/google-maps/releases/latest)
-
-    dist/MxTestProject
-
-To automatically compile, bundle and push code changes to the running test project, run:
-
-    grunt
-
-To run the project unit tests with code coverage, results can be found at dist/testresults/coverage/index.html, run:
-
-    npm test
-
-or run the test continuously during development:
-
-    karma start
+## Development and contribution
+Please follow [development guide](/development.md).

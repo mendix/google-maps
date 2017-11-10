@@ -2,9 +2,10 @@ import { ShallowWrapper, shallow } from "enzyme";
 import GoogleMap from "google-map-react";
 import { createElement } from "react";
 
-import { Location, Map, MapProps, heightUnitType, widthUnitType } from "../Map";
+import { Map, MapProps, heightUnitType, widthUnitType } from "../Map";
 import { Marker } from "../Marker";
 import { Alert } from "../Alert";
+import { Location } from "../../utils/ContainerUtils";
 
 // tslint:disable:no-submodule-imports
 import { mockGoogleMaps } from "tests/mocks/GoogleMaps";
