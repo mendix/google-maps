@@ -8,9 +8,9 @@ Object.assign(webpackConfig, {
         "react/lib/ReactContext",
         "react/addons",
         "jsdom",
-        "dojo/_base/declare",
-        "mxui/widget/_WidgetBase"
-    ]
+        /^mxui\/|^mendix\/|^dojo\/|^dijit\//,
+        "react-test-renderer/shallow"
+    ],
 });
 
 module.exports = function(config) {

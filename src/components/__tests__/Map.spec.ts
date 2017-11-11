@@ -19,7 +19,7 @@ describe("Map", () => {
     const defaultCenterLocation = { lat: 51.9107963, lng: 4.4789878 };
     const successMockLocation = { lat: 30, lng: 118 };
     const multipleAddressMockLocation = { lat: 34.213171, lng: -118.571022 };
-    let mxOriginal: mx.mx;
+    let mxOriginal: mx.MxInterface;
 
     const setUpMap = (
         locationsParam: Location[], APIKeyParam?: string,

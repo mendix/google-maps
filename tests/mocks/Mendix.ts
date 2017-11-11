@@ -1,11 +1,11 @@
 /* tslint:disable */
-class MxMock implements mx.mx {
+class MxMock implements mx.MxInterface {
     appUrl: string;
     baseUrl: string;
     remoteUrl: string;
     modulePath: string
-    addOnLoad(callback: ()=>{}): void { /* */ }
-    login(username: string, password: string, onSuccess: ()=>{}, onError: ()=>{}): void { /* */ }
+    addOnLoad(_callback: () => void): void { /* */ }
+    login(_username: string, _password: string, _onSuccess: () => void, _onError: () => void): void { /* */ };
     logout(): void { /* */ }
     data: mx.data;
     meta: mx.meta;
@@ -13,13 +13,14 @@ class MxMock implements mx.mx {
     server: mx.server;
     session: mx.session;
     ui: mx.ui;
-    onError(error: Error): void { /* */ }
+    isOffline: () => false;
+    onError(_error: Error): void { /* */ }
 }
 
 class MxUiMock implements mx.ui {
     action(
-        actionname: string,
-        action: {
+        _actionname: string,
+        _action: {
             progress?: string,
             progressMsg?: string,
             params?: {
@@ -37,27 +38,27 @@ class MxUiMock implements mx.ui {
             error?: (e: Error) => void,
             onValidation?: ()=>{},
         },
-        scope?: any
+        _scope?: any
     ): void { /* */ }
     back(): void { /* */ }
-    confirmation(args: { content: string, proceed: string, cancel: string, handler: ()=>{} }): void { /* */ }
-    error(msg: string, modal?: boolean): void { /* */ }
-    exception(msg: string): void { /* */ }
-    getTemplate(mxid: string, content: string): DocumentFragment {
+    confirmation(_args: { content: string, proceed: string, cancel: string, handler: ()=>{} }): void { /* */ }
+    error(_msg: string, _modal?: boolean): void { /* */ }
+    exception(_msg: string): void { /* */ }
+    getTemplate(_mxid: string, _content: string): DocumentFragment {
         const fakeElement: any = "Fake";
         return fakeElement;
     }
     showProgress(): number { return 11; }
-    hideProgress(pid: number): void { /* */ }
-    info(msg: string, modal: boolean): void { /* */ }
-    onError(error: Error): void { /* */ }
-    showUnderlay(delay?: number): void { /* */ }
-    hideUnderlay(delay?: number): void { /* */ }
+    hideProgress(_pid: number): void { /* */ }
+    info(_msg: string, _modal: boolean): void { /* */ }
+    onError(_error: Error): void { /* */ }
+    showUnderlay(_delay?: number): void { /* */ }
+    hideUnderlay(_delay?: number): void { /* */ }
     resize(): void { /* */ }
     isRtl(): string { return "Fake"; }
     openForm(
-        path: string,
-        args?: {
+        _path: string,
+        _args?: {
             location?: "content" | "popup" | "modal",
             domNode?: HTMLElement,
             title?: string,
@@ -65,11 +66,11 @@ class MxUiMock implements mx.ui {
             callback?(form: mxui.lib.form._FormBase): void,
             error?(error: Error): void,
         },
-        scope?: any
+        _scope?: any
     ): void { /* */ }
-    showLogin(messageCode: number): void { /* */ }
-    reload(callback?: () => void): void { /* */ };
-    translate(lib: string, errorName: string): string { return "fakeTranslate";};
+    showLogin(_messageCode: number): void { /* */ }
+    reload(_callback?: () => void): void { /* */ };
+    translate(_lib: string, _errorName: string): string { return "fakeTranslate";};
 }
 
 let mxMockObject =  MxMock.prototype;

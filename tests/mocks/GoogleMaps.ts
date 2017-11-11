@@ -1,4 +1,5 @@
-/* tslint:disable:max-line-length no-console */
+/* tslint:disable */
+
 class MockGoogle {
     maps: MapsMock;
 
@@ -15,18 +16,17 @@ class MockGoogle {
     }
 }
 
-// tslint:disable-next-line:max-classes-per-file
 class MapsMock implements google.maps.Map {
     controls: Array<google.maps.MVCArray<Node>>;
     data: google.maps.Data;
     mapTypes: google.maps.MapTypeRegistry;
     overlayMapTypes: google.maps.MVCArray<google.maps.MapType>;
 
-    constructor(mapDiv: Element, opts?: google.maps.MapOptions) {
+    constructor(_mapDiv: Element, _opts?: google.maps.MapOptions) {
         console.log("Google Maps mock is used.");
     }
 
-    fitBounds(bounds: google.maps.LatLngBounds): void {/** */
+    fitBounds(_bounds: google.maps.LatLngBounds): void {/** */
     }
 
     getBounds(): google.maps.LatLngBounds {
@@ -66,63 +66,63 @@ class MapsMock implements google.maps.Map {
         return 0;
     }
 
-    panBy(x: number, y: number): void {/** */
+    panBy(_x: number, _y: number): void {/** */
     }
 
-    panTo(latLng: google.maps.LatLng | google.maps.LatLngLiteral): void {/** */
+    panTo(_latLng: google.maps.LatLng | google.maps.LatLngLiteral): void {/** */
     }
 
-    panToBounds(latLngBounds: google.maps.LatLngBounds): void {/** */
+    panToBounds(_latLngBounds: google.maps.LatLngBounds): void {/** */
     }
 
-    setCenter(latlng: google.maps.LatLng | google.maps.LatLngLiteral): void {/** */
+    setCenter(_latlng: google.maps.LatLng | google.maps.LatLngLiteral): void {/** */
     }
 
-    setHeading(heading: number): void {/** */
+    setHeading(_heading: number): void {/** */
     }
 
-    setMapTypeId(mapTypeId: google.maps.MapTypeId | string): void {/** */
+    setMapTypeId(_mapTypeId: google.maps.MapTypeId | string): void {/** */
     }
 
-    setOptions(options: google.maps.MapOptions): void {/** */
+    setOptions(_options: google.maps.MapOptions): void {/** */
     }
 
-    setStreetView(panorama: google.maps.StreetViewPanorama): void {/** */
+    setStreetView(_panorama: google.maps.StreetViewPanorama): void {/** */
     }
 
-    setTilt(tilt: number): void {/** */
+    setTilt(_tilt: number): void {/** */
     }
 
-    setZoom(zoom: number): void {/** */
+    setZoom(_zoom: number): void {/** */
     }
 
     // mvcObject
-    addListener(eventName: string, handler: (...args: any[]) => void): google.maps.MapsEventListener {
+    addListener(__eventName: string, _handler: (...args: any[]) => void): google.maps.MapsEventListener {
         return {
             remove: () => {/** */
             }
         };
     }
 
-    bindTo(key: string, target: google.maps.MVCObject, targetKey?: string, noNotify?: boolean): void {/** */
+    bindTo(__key: string, _target: google.maps.MVCObject, _targetKey?: string, _noNotify?: boolean): void {/** */
     }
 
-    changed(key: string): void {/** */
+    changed(__key: string): void {/** */
     }
 
-    get(key: string): any {/** */
+    get(__key: string): any {/** */
     }
 
-    notify(key: string): void {/** */
+    notify(__key: string): void {/** */
     }
 
-    set(key: string, value: any): void {/** */
+    set(__key: string, _value: any): void {/** */
     }
 
-    setValues(values: any): void {/** */
+    setValues(__values: any): void {/** */
     }
 
-    unbind(key: string): void {/** */
+    unbind(__key: string): void {/** */
     }
 
     unbindAll(): void {/** */
@@ -279,20 +279,19 @@ class MockGeocoder implements google.maps.Geocoder {
     }
 }
 
-// tslint:disable-next-line:max-classes-per-file
 class LatLngBoundsMock implements google.maps.LatLngBounds {
-    constructor(sw?: google.maps.LatLng | google.maps.LatLngLiteral, ne?: google.maps.LatLng | google.maps.LatLngLiteral) {/** */
+    constructor(_sw?: google.maps.LatLng | google.maps.LatLngLiteral, _ne?: google.maps.LatLng | google.maps.LatLngLiteral) {/** */
     }
 
-    contains(latLng: google.maps.LatLng): boolean {
+    contains(_latLng: google.maps.LatLng): boolean {
         return true;
     }
 
-    equals(other: google.maps.LatLngBounds | google.maps.LatLngBoundsLiteral): boolean {
+    equals(_other: google.maps.LatLngBounds | google.maps.LatLngBoundsLiteral): boolean {
         return true;
     }
 
-    extend(point: google.maps.LatLng): google.maps.LatLngBounds {
+    extend(_point: google.maps.LatLng): google.maps.LatLngBounds {
         return new google.maps.LatLngBounds();
     }
 
@@ -308,7 +307,7 @@ class LatLngBoundsMock implements google.maps.LatLngBounds {
         return new google.maps.LatLng(0, 0);
     }
 
-    intersects(other: google.maps.LatLngBounds | google.maps.LatLngBoundsLiteral): boolean {
+    intersects(_other: google.maps.LatLngBounds | google.maps.LatLngBoundsLiteral): boolean {
         return true;
     }
 
@@ -328,21 +327,20 @@ class LatLngBoundsMock implements google.maps.LatLngBounds {
         return "Fake";
     }
 
-    toUrlValue(precision?: number): string {
+    toUrlValue(_precision?: number): string {
         return "";
     }
 
-    union(other: google.maps.LatLngBounds | google.maps.LatLngBoundsLiteral): google.maps.LatLngBounds {
+    union(_other: google.maps.LatLngBounds | google.maps.LatLngBoundsLiteral): google.maps.LatLngBounds {
         return new google.maps.LatLngBounds();
     }
 }
 
-// tslint:disable-next-line:max-classes-per-file
 class LatLngMock implements google.maps.LatLng {
     _lat: number;
     _lng: number;
 
-    constructor(lat: number, lng: number, noWrap?: boolean) {
+    constructor(lat: number, lng: number, _noWrap?: boolean) {
         this._lat = lat;
         this._lng = lng;
     }
@@ -363,7 +361,7 @@ class LatLngMock implements google.maps.LatLng {
         return `Mock lat:{this._lat} lng {this._lng}`;
     }
 
-    toUrlValue(precision?: number): string {
+    toUrlValue(_precision?: number): string {
         return "";
     }
 
@@ -377,7 +375,7 @@ class MarkerMock implements google.maps.Marker {
     static MAX_ZINDEX: number;
     map: google.maps.Map;
 
-    constructor(opts?: google.maps.MarkerOptions) {/** */
+    constructor(_opts?: google.maps.MarkerOptions) {/** */
     }
 
     getAnimation(): google.maps.Animation {
@@ -457,81 +455,81 @@ class MarkerMock implements google.maps.Marker {
         return 0;
     }
 
-    setAnimation(animation: google.maps.Animation): void { /** */
+    setAnimation(_animation: google.maps.Animation): void { /** */
     }
 
-    setAttribution(attribution: google.maps.Attribution): void { /** */
+    setAttribution(_attribution: google.maps.Attribution): void { /** */
     }
 
-    setClickable(flag: boolean): void { /** */
+    setClickable(_flag: boolean): void { /** */
     }
 
-    setCursor(cursor: string): void { /** */
+    setCursor(_cursor: string): void { /** */
     }
 
-    setDraggable(flag: boolean): void { /** */
+    setDraggable(_flag: boolean): void { /** */
     }
 
-    setIcon(icon: string | google.maps.Icon | symbol): void { /** */
+    setIcon(_icon: string | google.maps.Icon | symbol): void { /** */
     }
 
-    setLabel(label: string | google.maps.MarkerLabel): void { /** */
+    setLabel(_label: string | google.maps.MarkerLabel): void { /** */
     }
 
-    setMap(map: google.maps.Map | google.maps.StreetViewPanorama): void { /** */
+    setMap(_map: google.maps.Map | google.maps.StreetViewPanorama): void { /** */
     }
 
-    setOpacity(opacity: number): void { /** */
+    setOpacity(_opacity: number): void { /** */
     }
 
-    setOptions(options: google.maps.MarkerOptions): void { /** */
+    setOptions(_options: google.maps.MarkerOptions): void { /** */
     }
 
-    setPlace(place: google.maps.Place): void { /** */
+    setPlace(_place: google.maps.Place): void { /** */
     }
 
-    setPosition(latlng: google.maps.LatLng | google.maps.LatLngLiteral): void { /** */
+    setPosition(_latlng: google.maps.LatLng | google.maps.LatLngLiteral): void { /** */
     }
 
-    setShape(shape: google.maps.MarkerShape): void { /** */
+    setShape(_shape: google.maps.MarkerShape): void { /** */
     }
 
-    setTitle(title: string): void { /** */
+    setTitle(_title: string): void { /** */
     }
 
-    setVisible(visible: boolean): void { /** */
+    setVisible(_visible: boolean): void { /** */
     }
 
-    setZIndex(zIndex: number): void { /** */
+    setZIndex(_zIndex: number): void { /** */
     }
 
     // mvcObject
-    addListener(eventName: string, handler: (...args: any[]) => void): google.maps.MapsEventListener {
+    addListener(_eventName: string, _handler: (...args: any[]) => void): google.maps.MapsEventListener {
         return {
             remove: () => {/** */
             }
         };
     }
 
-    bindTo(key: string, target: google.maps.MVCObject, targetKey?: string, noNotify?: boolean): void {/** */
+    bindTo(_key: string, _target: google.maps.MVCObject, _targetKey?: string, _noNotify?: boolean): void {/** */
     }
 
-    changed(key: string): void {/** */
+    changed(_key: string): void {/** */
     }
 
-    get(key: string): any {/** */
+    get(_key: string): any {/** */
     }
 
-    notify(key: string): void {/** */
+    notify(_key: string): void {/** */
     }
 
-    set(key: string, value: any): void {/** */
+    set(_key: string, _value: any): void {/** */
     }
 
-    setValues(values: any): void {/** */
+    setValues(_values: any): void {/** */
     }
 
-    unbind(key: string): void {/** */
+    unbind(_key: string): void {/** */
     }
 
     unbindAll(): void {/** */
@@ -548,19 +546,10 @@ export enum GeocoderStatus {
     ZERO_RESULTS
 }
 
-// enum GeocoderLocationType {
-//     APPROXIMATE,
-//     GEOMETRIC_CENTER,
-//     RANGE_INTERPOLATED,
-//     ROOFTOP
-// }
-
-// Add basic static handler store for testing.
-// tslint:disable-next-line:max-classes-per-file
 class EventMock {
     static handlers: Array<() => void> = [];
 
-    static addDomListener(instance: object, eventName: string, handler: () => void, capture?: boolean): google.maps.MapsEventListener {
+    static addDomListener(_instance: object, _eventName: string, handler: () => void, _capture?: boolean): google.maps.MapsEventListener {
         EventMock.handlers.push(handler);
         return {
             remove: () => { /** */
@@ -568,7 +557,7 @@ class EventMock {
         };
     }
 
-    static addDomListenerOnce(instance: object, eventName: string, handler: () => void, capture?: boolean): google.maps.MapsEventListener {
+    static addDomListenerOnce(_instance: object, _eventName: string, handler: () => void, _capture?: boolean): google.maps.MapsEventListener {
         EventMock.handlers.push(handler);
         return {
             remove: () => { /** */
@@ -576,7 +565,7 @@ class EventMock {
         };
     }
 
-    static addListener(instance: object, eventName: string, handler: () => void): google.maps.MapsEventListener {
+    static addListener(_instance: object, _eventName: string, handler: () => void): google.maps.MapsEventListener {
         EventMock.handlers.push(handler);
         return {
             remove: () => { /** */
@@ -584,7 +573,7 @@ class EventMock {
         };
     }
 
-    static addListenerOnce(instance: object, eventName: string, handler: () => void): google.maps.MapsEventListener {
+    static addListenerOnce(_instance: object, _eventName: string, handler: () => void): google.maps.MapsEventListener {
         EventMock.handlers.push(handler);
         return {
             remove: () => { /** */
@@ -592,18 +581,18 @@ class EventMock {
         };
     }
 
-    static clearInstanceListeners(instance: object): void {
+    static clearInstanceListeners(_instance: object): void {
         EventMock.handlers = [];
     }
 
-    static clearListeners(instance: object, eventName: string): void {
+    static clearListeners(_instance: object, _eventName: string): void {
         EventMock.handlers = [];
     }
 
-    static removeListener(listener: google.maps.MapsEventListener): void {/** */
+    static removeListener(_listener: google.maps.MapsEventListener): void {/** */
     }
 
-    static trigger(instance: any, eventName: string, ...args: any[]): void {/** */
+    static trigger(_instance: any, _eventName: string, ..._args: any[]): void {/** */
     }
 
     static mockEvent() {

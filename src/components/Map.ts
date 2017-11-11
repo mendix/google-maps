@@ -139,7 +139,7 @@ export class Map extends Component<MapProps, MapState> {
         return document.getElementsByClassName("t-page-editor-iframe")[0] as HTMLIFrameElement;
     }
 
-    private onResizeIframe(event: CustomEvent) {
+    private onResizeIframe(_event: CustomEvent) {
         if (this.mapLoader) {
             const originalCenter = this.mapLoader.map.getCenter();
             this.mapLoader.maps.event.trigger(this.mapLoader.map, "resize");
@@ -184,9 +184,8 @@ export class Map extends Component<MapProps, MapState> {
         if (this.mapLoader) {
             let zoom = this.mapLoader.map.getZoom();
             if (props.autoZoom) {
-                const defaultBoundZoom = 5;
-                if (zoom && (zoom > defaultBoundZoom) || !zoom) {
-                    zoom = defaultBoundZoom;
+                if (zoom && (zoom < 2) || !zoom) {
+                    zoom = 2;
                 }
             } else {
                 zoom = props.zoomLevel;
