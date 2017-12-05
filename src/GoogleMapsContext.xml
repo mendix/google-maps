@@ -141,19 +141,6 @@
             <category>Map controls</category>
             <description>Enable/disable Zoom control</description>
         </property>
-        <property key="defaultMakerIcon" type="image" required="false">
-            <caption>Default marker icon</caption>
-            <category>Custom markers</category>
-            <description>Overwrite the default marker image of the widget, if the enumeration key does not match an image it will show this default image</description>
-        </property>
-        <property key="markerImageAttribute" type="attribute" required="false">
-            <caption>Marker icon attribute</caption>
-            <category>Custom markers</category>
-            <description>Show different markers based on a enumeration attribute value. When not attribute is provided and no default marker icon is selected, the standaard marker will be shown</description>
-            <attributeTypes>
-                <attributeType name="Enum"/>
-            </attributeTypes>
-        </property>
         <property key="markerImages" type="object" isList="true" required="false">
             <caption>Marker images</caption>
             <category>Custom markers</category>
@@ -170,6 +157,19 @@
                     <description>The image for the enumeration key</description>
                 </property>
             </properties>
+        </property>
+        <property key="defaultMakerIcon" type="image" required="false">
+            <caption>Default marker icon</caption>
+            <category>Custom markers</category>
+            <description>Overwrite the default marker image of the widget, if the enumeration key does not match an image it will show this default image</description>
+        </property>
+        <property key="markerImageAttribute" type="attribute" required="false">
+            <caption>Marker icon attribute</caption>
+            <category>Custom markers</category>
+            <description>Show different markers based on a enumeration attribute value. When not attribute is provided and no default marker icon is selected, the standaard marker will be shown</description>
+            <attributeTypes>
+                <attributeType name="Enum"/>
+            </attributeTypes>
         </property>
     </properties>
 </widget>
