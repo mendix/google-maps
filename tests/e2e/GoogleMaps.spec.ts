@@ -6,6 +6,9 @@ import indexPage from "./pages/index.page";
 describe("Google maps", () => {
     beforeAll(() => {
         indexPage.tearDownSetUp();
+    });
+
+    beforeEach(() => {
         // wait for the records to be populated
         browser.timeouts("implicit", 20 * 1000);
     });
