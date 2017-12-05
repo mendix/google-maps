@@ -91,38 +91,29 @@ export class Map extends Component<MapProps, MapState> {
     }
 
     private renderGoogleMap(): ReactElement<GoogleMapProps> | null {
-        try {
-            return createElement(GoogleMap,
-                {
-                    bootstrapURLKeys: { key: this.props.apiKey },
-                    center: this.state.center,
-                    defaultZoom: this.props.zoomLevel,
-                    onGoogleApiLoaded: this.handleOnGoogleApiLoaded,
-                    options: {
-                        draggable: this.props.optionDrag,
-                        fullscreenControl: false,
-                        mapTypeControl: this.props.optionMapControl,
-                        maxZoom: 20,
-                        minZoom: 2,
-                        minZoomOverride: true,
-                        resetBoundsOnResize: true,
-                        scrollwheel: this.props.optionScroll,
-                        streetViewControl: this.props.optionStreetView,
-                        zoomControl: this.props.optionZoomControl
-                    },
+        return createElement(GoogleMap,
+            {
+                bootstrapURLKeys: { key: this.props.apiKey },
+                center: this.state.center,
+                defaultZoom: this.props.zoomLevel,
+                onGoogleApiLoaded: this.handleOnGoogleApiLoaded,
+                options: {
+                    draggable: this.props.optionDrag,
+                    fullscreenControl: false,
+                    mapTypeControl: this.props.optionMapControl,
+                    maxZoom: 20,
+                    minZoom: 2,
+                    minZoomOverride: true,
                     resetBoundsOnResize: true,
-                    yesIWantToUseGoogleMapApiInternals: true
+                    scrollwheel: this.props.optionScroll,
+                    streetViewControl: this.props.optionStreetView,
+                    zoomControl: this.props.optionZoomControl
                 },
-                this.createMakers()
-            );
-
-        } catch (error) {
-            const alertMessage = `${ this.props.friendlyId } load failed, Check internet connection.${error.message}`;
-
-            this.setState({ alertMessage });
-
-            return null;
-        }
+                resetBoundsOnResize: true,
+                yesIWantToUseGoogleMapApiInternals: true
+            },
+            this.createMakers()
+        );
     }
 
     private setUpEvents() {
@@ -164,9 +155,21 @@ export class Map extends Component<MapProps, MapState> {
     }
 
     private handleOnGoogleApiLoaded(mapLoader: GoogleMapLoader) {
-        this.mapLoader = mapLoader;
-        this.setState({ isLoaded: true });
-        this.resolveAddresses(this.props);
+        if (mapLoader.maps && mapLoader.map) {
+            this.mapLoader = mapLoader;
+            this.setState({ isLoaded: true });
+            this.resolveAddresses(this.props);
+        } else {
+            const alertMessage = `Google maps load failed, Check internet connection.`;
+            const elements = document.getElementsByClassName("mx-scrollcontainer-wrapper");
+
+            Array.from(elements).forEach(
+                (element: HTMLElement) => {
+                    element.classList.add("widget-google-maps-overflow");
+                }
+            );
+            this.setState({ alertMessage });
+        }
     }
 
     private updateBounds(props: MapProps, location: Location) {
