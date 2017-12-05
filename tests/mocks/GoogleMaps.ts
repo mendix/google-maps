@@ -1,9 +1,8 @@
 /* tslint:disable */
 
 class MockGoogle {
-    maps: MapsMock;
 
-    setup(): void {
+    constructor() {
         const mockGoogleObject = MockGoogle.prototype as any;
         mockGoogleObject.maps = MapsMock.prototype;
         mockGoogleObject.maps.Geocoder = MockGeocoder;
@@ -592,7 +591,7 @@ class EventMock {
     static removeListener(_listener: google.maps.MapsEventListener): void {/** */
     }
 
-    static trigger(_instance: any, _eventName: string, ..._args: any[]): void {/** */
+    trigger(_instance: any, _eventName: string, ..._args: any[]): void {/** */
     }
 
     static mockEvent() {
@@ -605,6 +604,6 @@ class EventMock {
     }
 }
 
-const googleMockObject = MockGoogle.prototype as any;
+const googleMockObject = new MockGoogle();
 
 export const mockGoogleMaps = googleMockObject;
