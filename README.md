@@ -2,7 +2,7 @@
 [![Dependency Status](https://david-dm.org/mendixlabs/google-maps.svg)](https://david-dm.org/mendixlabs/google-maps)
 [![Dev Dependency Status](https://david-dm.org/mendixlabs/google-maps.svg#info=devDependencies)](https://david-dm.org/mendixlabs/google-maps#info=devDependencies)
 [![codecov](https://codecov.io/gh/mendixlabs/google-maps/branch/master/graph/badge.svg)](https://codecov.io/gh/mendixlabs/google-maps)
-![badge](https://img.shields.io/badge/mendix-7.7.1-green.svg)
+![badge](https://img.shields.io/badge/mendix-7.9.0-green.svg)
 
 # Google Maps
 * Show locations on google maps
@@ -23,7 +23,7 @@ from Google applies, especially for geocoding. We even advise geocoding your loc
 Mendix application and store them for later use as coordinates on the widget.
 
 ## Dependencies
-Mendix 7.7.1
+Mendix 7.9.0
 
 ## How it Works
 When displaying locations, the widget will prioritize coordinates over addresses.In the event that 
