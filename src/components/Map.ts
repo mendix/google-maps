@@ -161,13 +161,6 @@ export class Map extends Component<MapProps, MapState> {
             this.resolveAddresses(this.props);
         } else {
             const alertMessage = `Google maps load failed, Check internet connection.`;
-            const elements = document.getElementsByClassName("mx-scrollcontainer-wrapper");
-
-            Array.from(elements).forEach(
-                (element: HTMLElement) => {
-                    element.classList.add("widget-google-maps-overflow");
-                }
-            );
             this.setState({ alertMessage });
         }
     }
@@ -258,7 +251,8 @@ export class Map extends Component<MapProps, MapState> {
 
     private createMakers(): Array<ReactElement<MarkerProps>> {
         const markerElements: Array<ReactElement<MarkerProps>> = [];
-        if (this.state.locations && this.state.locations.length) {
+
+        if (this.state.isLoaded && this.state.locations && this.state.locations.length) {
             this.state.locations.map((locationObject, index) => {
                 const { latitude, longitude, url } = locationObject;
                 if (this.validLocation(locationObject)) {
