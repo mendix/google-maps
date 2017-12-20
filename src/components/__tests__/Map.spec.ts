@@ -241,24 +241,6 @@ describe("Map", () => {
         });
     });
 
-    describe("with multiple locations", () => {
-        it("shows coordinates", () => {
-            const coordinateLocation1 = { latitude: 31.2, longitude: 11.5 };
-            const coordinateLocation2 = { latitude: 44.44, longitude: 60.11 };
-
-            const output = setUpMap([ coordinateLocation1, coordinateLocation2 ]);
-            const marker1 = output.find(Marker).at(0);
-
-            expect(marker1.prop("lat")).toBe(Number(coordinateLocation1.latitude));
-            expect(marker1.prop("lng")).toBe(Number(coordinateLocation1.longitude));
-
-            const marker2 = output.find(Marker).at(1);
-
-            expect(marker2.prop("lat")).toBe(Number(coordinateLocation2.latitude));
-            expect(marker2.prop("lng")).toBe(Number(coordinateLocation2.longitude));
-        });
-    });
-
     describe("loads", () => {
         it("if no API key is configured", () => {
             const output = setUpMap([ { address } ]);
@@ -271,44 +253,6 @@ describe("Map", () => {
 
             expect((output.find(GoogleMap).prop("bootstrapURLKeys") as any).key).toBe(APIKey);
         });
-    });
-
-    describe("with updated coordinates", () => {
-        it("should change the marker location to the new coordinates", () => {
-            const coordinateLocation1 = { lat: 31.2, lng: 11.5 };
-            const coordinateLocation2 = { lat: 44.44, lng: 60.11 };
-
-            const output = setUpMap([ { latitude: coordinateLocation1.lat, longitude: coordinateLocation1.lng } ]);
-            const marker = output.find(Marker).at(0);
-
-            expect(marker.prop("lat")).toBe(Number(coordinateLocation1.lat));
-            expect(marker.prop("lng")).toBe(Number(coordinateLocation1.lng));
-
-            output.setState({
-                defaultCenterAddress: address,
-                locations: [ { latitude: coordinateLocation2.lat, longitude: coordinateLocation2.lng } ]
-            });
-            const markerNew = output.find(Marker).at(0);
-
-            expect(markerNew.prop("lat")).toBe(Number(coordinateLocation2.lat));
-            expect(markerNew.prop("lng")).toBe(Number(coordinateLocation2.lng));
-        });
-
-        it("should not lookup the location if the coordinates are not changed", () => {
-            const coordinateLocation = { lat: 21.2, lng: 1.5 };
-            const locations = { latitude: coordinateLocation.lat, longitude: coordinateLocation.lng };
-            const output = setUpMap([ locations ], undefined, 100, 75, "pixels", "pixels");
-
-            output.setState({
-                defaultCenterAddress: address,
-                locations: [ { latitude: coordinateLocation.lat, longitude: coordinateLocation.lng } ]
-             });
-            const markerNew = output.find(Marker).at(0);
-
-            expect(markerNew.prop("lat")).toBe(Number(coordinateLocation.lat));
-            expect(markerNew.prop("lng")).toBe(Number(coordinateLocation.lng));
-        });
-
     });
 
     afterAll(() => {
