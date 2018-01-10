@@ -20,6 +20,7 @@ export interface MapProps {
     friendlyId?: string;
     height: number;
     heightUnit: heightUnitType;
+    mapStyles: string;
     locations: Location[];
     optionDrag: boolean;
     optionMapControl: boolean;
@@ -107,13 +108,30 @@ export class Map extends Component<MapProps, MapState> {
                     resetBoundsOnResize: true,
                     scrollwheel: this.props.optionScroll,
                     streetViewControl: this.props.optionStreetView,
-                    zoomControl: this.props.optionZoomControl
+                    zoomControl: this.props.optionZoomControl,
+                    styles: this.getMapsStyles()
                 },
                 resetBoundsOnResize: true,
                 yesIWantToUseGoogleMapApiInternals: true
             },
             this.createMakers()
         );
+    }
+
+    private getMapsStyles(): any {
+        if (this.props.mapStyles.trim()) {
+            try {
+                return JSON.parse(this.props.mapStyles);
+            } catch (error) {
+                // tslint:disable no-console
+                console.error("Error parsing Maps styles", error, this.props.mapStyles);
+            }
+        }
+        return [ {
+            featureType: "poi",
+            elementType: "labels",
+            stylers: [ { visibility: "off" } ]
+        } ];
     }
 
     private setUpEvents() {

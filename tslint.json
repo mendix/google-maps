@@ -142,7 +142,8 @@
     ],
     "arrow-parens": false,
     "no-namespace": false,
-    "no-implicit-dependencies": false
+    "no-implicit-dependencies": false,
+    "object-literal-sort-keys": false
   },
   "jsRules": {
     "trailing-comma": [

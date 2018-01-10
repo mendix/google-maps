@@ -44,6 +44,14 @@ export class ValidateConfigs {
             message = `${invalidEnumKeys} invalid enumeration keys on custom markers. Enumeration keys should not contain space `;
         }
 
+        if (props.mapStyles.trim()) {
+            try {
+                JSON.parse(props.mapStyles);
+            } catch (error) {
+                message = "Error parsing Maps style: " + error.message;
+            }
+        }
+
         return message;
     }
 }

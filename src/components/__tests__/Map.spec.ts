@@ -42,6 +42,7 @@ describe("Map", () => {
             optionStreetView: true,
             optionZoomControl: true,
             style: {},
+            mapStyles: "",
             width: widthParam ? widthParam : 100,
             widthUnit: widthUnitParam ? widthUnitParam : "pixels",
             zoomLevel: 7

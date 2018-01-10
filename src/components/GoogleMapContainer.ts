@@ -21,6 +21,7 @@ interface GoogleMapContainerProps extends WrapperProps {
     entityConstraint: string;
     height: number;
     heightUnit: heightUnitType;
+    mapStyles: string;
     optionDrag: boolean;
     optionMapControl: boolean;
     optionScroll: boolean;
@@ -74,6 +75,7 @@ class GoogleMapContainer extends Component<GoogleMapContainerProps, { alertMessa
                 optionStreetView: this.props.optionStreetView,
                 optionZoomControl: this.props.optionZoomControl,
                 style: parseStyle(this.props.style),
+                mapStyles: this.props.mapStyles,
                 width: this.props.width,
                 widthUnit: this.props.widthUnit,
                 zoomLevel: this.props.zoomLevel

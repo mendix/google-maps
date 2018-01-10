@@ -115,6 +115,11 @@
             <category>Appearance</category>
             <description/>
         </property>
+        <property key="mapStyles" type="string" multiline="true" required="false">
+            <caption>Map styles</caption>
+            <category>Appearance</category>
+            <description>JSON array with google maps styles https://developers.google.com/maps/documentation/javascript/style-reference</description>
+        </property>
         <!-- Map CONTROLS -->
         <property key="optionDrag" type="boolean" defaultValue="true">
             <caption>Drag</caption>
