@@ -1,10 +1,13 @@
 import { Component, createElement } from "react";
-import { Location, Map, heightUnitType, widthUnitType } from "./Map";
+import { Map, heightUnitType, widthUnitType } from "./Map";
 import { Alert } from "./Alert";
+import { ValidateConfigs } from "../utils/ValidateConfigs";
+import { Location, StaticLocation, getStaticMarkerUrl, parseStaticLocations, parseStyle } from "../utils/ContainerUtils";
 
 interface WrapperProps {
     "class"?: string;
-    mxObject?: mendix.lib.MxObject;
+    friendlyId: string;
+    mxObject: mendix.lib.MxObject;
     style: string;
 }
 
@@ -14,9 +17,11 @@ interface GoogleMapContainerProps extends WrapperProps {
     dataSource: DataSource;
     dataSourceMicroflow: string;
     defaultCenterAddress: string;
+    defaultMakerIcon: string;
     entityConstraint: string;
     height: number;
     heightUnit: heightUnitType;
+    mapStyles: string;
     optionDrag: boolean;
     optionMapControl: boolean;
     optionScroll: boolean;
@@ -26,16 +31,12 @@ interface GoogleMapContainerProps extends WrapperProps {
     addressAttribute: string;
     latitudeAttribute: string;
     longitudeAttribute: string;
+    markerImageAttribute: string;
     staticLocations: StaticLocation[];
+    markerImages: Array<{ enumKey: string, enumImage: string}>;
     width: number;
     widthUnit: widthUnitType;
     zoomLevel: number;
-}
-
-interface StaticLocation {
-    address: string;
-    latitude: string;
-    longitude: string;
 }
 
 type DataSource = "static" | "context" | "XPath" | "microflow";
@@ -46,7 +47,7 @@ class GoogleMapContainer extends Component<GoogleMapContainerProps, { alertMessa
     constructor(props: GoogleMapContainerProps) {
         super(props);
 
-        const alertMessage = GoogleMapContainer.validateProps(props);
+        const alertMessage = ValidateConfigs.validate(props);
         this.subscriptionHandles = [];
         this.state = { alertMessage, locations: [] };
         this.subscribe(this.props.mxObject);
@@ -73,7 +74,8 @@ class GoogleMapContainer extends Component<GoogleMapContainerProps, { alertMessa
                 optionScroll: this.props.optionScroll,
                 optionStreetView: this.props.optionStreetView,
                 optionZoomControl: this.props.optionZoomControl,
-                style: GoogleMapContainer.parseStyle(this.props.style),
+                style: parseStyle(this.props.style),
+                mapStyles: this.props.mapStyles,
                 width: this.props.width,
                 widthUnit: this.props.widthUnit,
                 zoomLevel: this.props.zoomLevel
@@ -87,52 +89,13 @@ class GoogleMapContainer extends Component<GoogleMapContainerProps, { alertMessa
     }
 
     componentDidMount() {
-        if (!this.state.alertMessage) this.fetchData(this.props.mxObject);
+        if (!this.state.alertMessage) {
+            this.fetchData(this.props.mxObject);
+        }
     }
 
     componentWillUnmount() {
         this.subscriptionHandles.forEach(window.mx.data.unsubscribe);
-    }
-
-    public static validateProps(props: GoogleMapContainerProps) {
-        let message = "";
-        if (props.dataSource === "static" && !props.staticLocations.length) {
-            message = "At least one static location is required for 'Data source 'Static'";
-        }
-        if (props.dataSource === "static") {
-            const invalidLocations = props.staticLocations.filter(location =>
-                !location.address && !(location.latitude && location.longitude)
-            );
-            if (invalidLocations.length > 0) {
-                message = "The 'Address' or 'Latitude' and 'Longitude' "
-                    + "is required for this 'Static' data source";
-            }
-        }
-        if (props.dataSource === "XPath" && !props.locationsEntity) {
-            message = "The 'Locations entity' is required for 'Data source' 'XPath'";
-        }
-        if (props.dataSource === "microflow" && !props.dataSourceMicroflow) {
-            message = "A 'Microflow' is required for 'Data source' 'Microflow'";
-        }
-        if (props.dataSource !== "static" && (!props.addressAttribute &&
-            !(props.longitudeAttribute && props.latitudeAttribute))) {
-            message = "The 'Address attribute' or 'Latitude Attribute' and 'Longitude attribute' "
-                + "is required for this data source";
-        }
-        if (!props.autoZoom && props.zoomLevel < 2) {
-            message = "Zoom level must be greater than 1";
-        }
-
-        return message;
-    }
-
-    // Mendix does not support negative and decimal number as static inputs, so they are strings.
-    public static parseStaticLocations(locations: StaticLocation[]): Location[] {
-        return locations.map(location => ({
-            address: location.address,
-            latitude: location.latitude.trim() !== "" ? Number(location.latitude) : undefined,
-            longitude: location.longitude.trim() !== "" ? Number(location.longitude) : undefined
-        }));
     }
 
     private subscribe(contextObject?: mendix.lib.MxObject) {
@@ -147,7 +110,8 @@ class GoogleMapContainer extends Component<GoogleMapContainerProps, { alertMessa
             [
                 this.props.addressAttribute,
                 this.props.latitudeAttribute,
-                this.props.longitudeAttribute
+                this.props.longitudeAttribute,
+                this.props.markerImageAttribute
             ].forEach(attr => this.subscriptionHandles.push(window.mx.data.subscribe({
                 attr,
                 callback: () => this.fetchData(contextObject), guid: contextObject.getGuid()
@@ -157,7 +121,7 @@ class GoogleMapContainer extends Component<GoogleMapContainerProps, { alertMessa
 
     private fetchData(contextObject?: mendix.lib.MxObject) {
         if (this.props.dataSource === "static") {
-            this.setState({ locations: GoogleMapContainer.parseStaticLocations(this.props.staticLocations) });
+            this.setState({ locations: parseStaticLocations(this.props) });
         } else if (this.props.dataSource === "context") {
             this.fetchLocationsByContext(contextObject);
         } else if (this.props.dataSource === "XPath" && this.props.locationsEntity) {
@@ -216,32 +180,25 @@ class GoogleMapContainer extends Component<GoogleMapContainerProps, { alertMessa
         const locations = mxObjects.map(mxObject => {
             const lat = mxObject.get(this.props.latitudeAttribute);
             const lon = mxObject.get(this.props.longitudeAttribute);
+
             return {
                 address: mxObject.get(this.props.addressAttribute) as string,
                 latitude: lat ? Number(lat) : undefined,
-                longitude: lon ? Number(lon) : undefined
+                longitude: lon ? Number(lon) : undefined,
+                url: this.getMxObjectMarkerUrl(mxObject)
             };
         });
 
         this.setState({ locations });
     }
 
-    private static parseStyle = (style = ""): {[key: string]: string} => { // Doesn't support a few stuff.
-        try {
-            return style.split(";").reduce<{[key: string]: string}>((styleObject, line) => {
-                const pair = line.split(":");
-                if (pair.length === 2) {
-                    const name = pair[0].trim().replace(/(-.)/g, match => match[1].toUpperCase());
-                    styleObject[name] = pair[1].trim();
-                }
-                return styleObject;
-            }, {});
-        } catch (error) {
-            // tslint:disable-next-line no-console
-            window.console.log("Failed to parse style", style, error);
-        }
+    private getMxObjectMarkerUrl(mxObject: mendix.lib.MxObject): string {
+        const imageKey: string = mxObject.get(this.props.markerImageAttribute) as string;
+        const image = this.props.markerImages.find(value => value.enumKey === imageKey);
 
-        return {};
+        return image
+            ? getStaticMarkerUrl(image.enumImage as string, this.props.defaultMakerIcon)
+            : "";
     }
 }
 

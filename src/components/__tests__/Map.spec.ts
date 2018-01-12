@@ -1,14 +1,18 @@
-import { ShallowWrapper, shallow } from "enzyme";
-import GoogleMap from "google-map-react";
 import { createElement } from "react";
+import { ShallowWrapper, configure, shallow } from "enzyme";
+import Adapter = require("enzyme-adapter-react-16");
+import GoogleMap from "google-map-react";
 
-import { Location, Map, MapProps, heightUnitType, widthUnitType } from "../Map";
+import { Map, MapProps, heightUnitType, widthUnitType } from "../Map";
 import { Marker } from "../Marker";
 import { Alert } from "../Alert";
+import { Location } from "../../utils/ContainerUtils";
 
 // tslint:disable:no-submodule-imports
 import { mockGoogleMaps } from "tests/mocks/GoogleMaps";
 import { mockMendix } from "tests/mocks/Mendix";
+
+configure({ adapter: new Adapter() });
 
 describe("Map", () => {
     const address = "Lumumba Ave, Kampala, Uganda";
@@ -16,9 +20,7 @@ describe("Map", () => {
     const APIKey = "AIzaSyACjBNesZXeRFx86N7RMCWiTQP5GT_jDec";
     const renderMap = (props: MapProps) => shallow(createElement(Map, props));
     const defaultCenterLocation = { lat: 51.9107963, lng: 4.4789878 };
-    const successMockLocation = { lat: 30, lng: 118 };
-    const multipleAddressMockLocation = { lat: 34.213171, lng: -118.571022 };
-    let mxOriginal: mx.mx;
+    let mxOriginal: mx.MxInterface;
 
     const setUpMap = (
         locationsParam: Location[], APIKeyParam?: string,
@@ -40,12 +42,21 @@ describe("Map", () => {
             optionStreetView: true,
             optionZoomControl: true,
             style: {},
+            mapStyles: "",
             width: widthParam ? widthParam : 100,
             widthUnit: widthUnitParam ? widthUnitParam : "pixels",
             zoomLevel: 7
         });
-        mockGoogleMaps.setup();
-        (output.find(GoogleMap).prop("onGoogleApiLoaded") as any).apply();
+        // (output.find(GoogleMap).prop("onGoogleApiLoaded") as any).apply();
+        const googleMap = output.find(GoogleMap);
+        const googleMapProps = googleMap.props();
+
+        if (googleMapProps && googleMapProps.onGoogleApiLoaded) {
+            googleMapProps.onGoogleApiLoaded({
+                map: google.maps as any,
+                maps: google.maps
+            });
+        }
         return output;
     };
 
@@ -153,8 +164,9 @@ describe("Map", () => {
 
     describe("with no address", () => {
         it("should not look up the location", () => {
-            setUpMap([ { address: "" } ]);
             spyOn(window.google.maps.Geocoder.prototype, "geocode").and.callThrough();
+
+            setUpMap([ { address: "" } ]);
 
             expect(window.google.maps.Geocoder.prototype.geocode).not.toHaveBeenCalled();
         });
@@ -192,25 +204,6 @@ describe("Map", () => {
 
             expect(window.google.maps.Geocoder.prototype.geocode).toHaveBeenCalled();
         });
-
-        it("should render a marker", () => {
-            const output = setUpMap([ { address } ]);
-
-            const marker = output.find(Marker);
-
-            expect(marker.length).toBe(1);
-            expect(marker.prop("lat")).toBe(successMockLocation.lat);
-            expect(marker.prop("lng")).toBe(successMockLocation.lng);
-        });
-
-        it("should display the first marker if multiple locations are found", () => {
-            const output = setUpMap([ { address: "multipleAddress" } ]);
-
-            const marker = output.find(Marker);
-
-            expect(marker.prop("lat")).toBe(multipleAddressMockLocation.lat);
-            expect(marker.prop("lng")).toBe(multipleAddressMockLocation.lng);
-        });
     });
 
     describe("with an invalid address", () => {
@@ -234,9 +227,9 @@ describe("Map", () => {
             spyOn(window.mx.ui, "error").and.callThrough();
 
             const output = setUpMap([ { address: invalidAddress } ]);
+            const mapComponent = output.instance();
 
-            expect(output.state().alertMessage).toBe(actionErrorMessage);
-            expect(output.find(Alert).props().message).toBe(output.state().alertMessage);
+            expect(mapComponent.state.alertMessage).toBe(actionErrorMessage);
         });
 
         it("should have a marker if coordinates are provided", () => {
@@ -246,24 +239,6 @@ describe("Map", () => {
 
             expect(output.state("locations")[0].latitude).toBe(coordinateLocation.lat);
             expect(output.state("locations")[0].longitude).toBe(coordinateLocation.lng);
-        });
-    });
-
-    describe("with multiple locations", () => {
-        it("shows coordinates", () => {
-            const coordinateLocation1 = { latitude: 31.2, longitude: 11.5 };
-            const coordinateLocation2 = { latitude: 44.44, longitude: 60.11 };
-
-            const output = setUpMap([ coordinateLocation1, coordinateLocation2 ]);
-            const marker1 = output.find(Marker).at(0);
-
-            expect(marker1.prop("lat")).toBe(Number(coordinateLocation1.latitude));
-            expect(marker1.prop("lng")).toBe(Number(coordinateLocation1.longitude));
-
-            const marker2 = output.find(Marker).at(1);
-
-            expect(marker2.prop("lat")).toBe(Number(coordinateLocation2.latitude));
-            expect(marker2.prop("lng")).toBe(Number(coordinateLocation2.longitude));
         });
     });
 
@@ -279,66 +254,6 @@ describe("Map", () => {
 
             expect((output.find(GoogleMap).prop("bootstrapURLKeys") as any).key).toBe(APIKey);
         });
-    });
-
-    describe("with an updated address", () => {
-        it("should change marker location to the new address", () => {
-            const output = setUpMap([ { address } ]);
-
-            const marker = output.find(Marker).at(0);
-
-            expect(marker.prop("lat")).toBe(successMockLocation.lat);
-            expect(marker.prop("lng")).toBe(successMockLocation.lng);
-
-            output.setProps({ locations: [ { address: "multipleAddress" } ], defaultCenterAddress: address });
-            (output.find(GoogleMap).prop("onGoogleApiLoaded") as any).apply();
-
-            const markerNew = output.find(Marker);
-
-            expect(markerNew.prop("lat")).toBe(multipleAddressMockLocation.lat);
-            expect(markerNew.prop("lng")).toBe(multipleAddressMockLocation.lng);
-        });
-
-    });
-
-    describe("with updated coordinates", () => {
-        it("should change the marker location to the new coordinates", () => {
-            const coordinateLocation1 = { lat: 31.2, lng: 11.5 };
-            const coordinateLocation2 = { lat: 44.44, lng: 60.11 };
-
-            const output = setUpMap([ { latitude: coordinateLocation1.lat, longitude: coordinateLocation1.lng } ]);
-            const marker = output.find(Marker).at(0);
-
-            expect(marker.prop("lat")).toBe(Number(coordinateLocation1.lat));
-            expect(marker.prop("lng")).toBe(Number(coordinateLocation1.lng));
-
-            output.setState({
-                defaultCenterAddress: address,
-                locations: [ { latitude: coordinateLocation2.lat, longitude: coordinateLocation2.lng } ]
-            });
-            const markerNew = output.find(Marker).at(0);
-
-            expect(markerNew.prop("lat")).toBe(Number(coordinateLocation2.lat));
-            expect(markerNew.prop("lng")).toBe(Number(coordinateLocation2.lng));
-        });
-
-        it("should not lookup the location if the coordinates are not changed", () => {
-            const coordinateLocation = { lat: 21.2, lng: 1.5 };
-            const locations = { latitude: coordinateLocation.lat, longitude: coordinateLocation.lng };
-            const output = setUpMap([ locations ], undefined, 100, 75, "pixels", "pixels");
-            mockGoogleMaps.setup();
-
-            (output.find(GoogleMap).prop("onGoogleApiLoaded") as any).apply();
-            output.setState({
-                defaultCenterAddress: address,
-                locations: [ { latitude: coordinateLocation.lat, longitude: coordinateLocation.lng } ]
-             });
-            const markerNew = output.find(Marker).at(0);
-
-            expect(markerNew.prop("lat")).toBe(Number(coordinateLocation.lat));
-            expect(markerNew.prop("lng")).toBe(Number(coordinateLocation.lng));
-        });
-
     });
 
     afterAll(() => {

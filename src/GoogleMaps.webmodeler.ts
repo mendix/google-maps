@@ -1,7 +1,9 @@
 import { Component, ReactElement, createElement } from "react";
 import { Map, MapProps } from "./components/Map";
 import { Alert } from "./components/Alert";
-import GoogleMapContainer, { GoogleMapContainerProps } from "./components/GoogleMapContainer";
+import { GoogleMapContainerProps } from "./components/GoogleMapContainer";
+import { parseStaticLocations } from "./utils/ContainerUtils";
+import { ValidateConfigs } from "./utils/ValidateConfigs";
 
 declare function require(name: string): string;
 type VisibilityMap = {
@@ -11,7 +13,7 @@ type VisibilityMap = {
 // tslint:disable-next-line class-name
 export class preview extends Component<GoogleMapContainerProps, {}> {
     render() {
-        const warnings = GoogleMapContainer.validateProps(this.props);
+        const warnings = ValidateConfigs.validate(this.props);
         let reactElement: ReactElement<{}>;
         if (!warnings) {
             reactElement = createElement(Map, preview.transformProps(this.props));
@@ -30,7 +32,7 @@ export class preview extends Component<GoogleMapContainerProps, {}> {
 
     private static transformProps(props: GoogleMapContainerProps): MapProps {
         const locations = props.dataSource === "static"
-            ? GoogleMapContainer.parseStaticLocations(props.staticLocations)
+            ? parseStaticLocations(props)
             : [];
         return {
             apiKey: props.apiKey,
@@ -45,6 +47,7 @@ export class preview extends Component<GoogleMapContainerProps, {}> {
             optionStreetView: props.optionStreetView,
             optionZoomControl: props.optionZoomControl,
             style: {},
+            mapStyles: props.mapStyles,
             width: props.width,
             widthUnit: props.widthUnit,
             zoomLevel: props.zoomLevel
