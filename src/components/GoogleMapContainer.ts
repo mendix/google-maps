@@ -17,6 +17,8 @@ interface GoogleMapContainerProps extends WrapperProps {
     dataSource: DataSource;
     dataSourceMicroflow: string;
     defaultCenterAddress: string;
+    defaultCenterLatitude: string;
+    defaultCenterLongitude: string;
     defaultMakerIcon: string;
     entityConstraint: string;
     height: number;
@@ -32,6 +34,10 @@ interface GoogleMapContainerProps extends WrapperProps {
     latitudeAttribute: string;
     longitudeAttribute: string;
     markerImageAttribute: string;
+    addressAttributeContext: string;
+    latitudeAttributeContext: string;
+    longitudeAttributeContext: string;
+    markerImageAttributeContext: string;
     staticLocations: StaticLocation[];
     markerImages: Array<{ enumKey: string, enumImage: string}>;
     width: number;
@@ -66,6 +72,8 @@ class GoogleMapContainer extends Component<GoogleMapContainerProps, { alertMessa
                 autoZoom: this.props.autoZoom,
                 className: this.props.class,
                 defaultCenterAddress: this.props.defaultCenterAddress,
+                defaultCenterLatitude: this.props.defaultCenterLatitude,
+                defaultCenterLongitude: this.props.defaultCenterLongitude,
                 height: this.props.height,
                 heightUnit: this.props.heightUnit,
                 locations: this.state.locations,
@@ -111,7 +119,11 @@ class GoogleMapContainer extends Component<GoogleMapContainerProps, { alertMessa
                 this.props.addressAttribute,
                 this.props.latitudeAttribute,
                 this.props.longitudeAttribute,
-                this.props.markerImageAttribute
+                this.props.markerImageAttribute,
+                this.props.addressAttributeContext,
+                this.props.latitudeAttributeContext,
+                this.props.longitudeAttributeContext,
+                this.props.markerImageAttributeContext
             ].forEach(attr => this.subscriptionHandles.push(window.mx.data.subscribe({
                 attr,
                 callback: () => this.fetchData(contextObject), guid: contextObject.getGuid()
@@ -134,7 +146,7 @@ class GoogleMapContainer extends Component<GoogleMapContainerProps, { alertMessa
 
     private fetchLocationsByContext(contextObject?: mendix.lib.MxObject) {
         if (contextObject) {
-            this.setLocationsFromMxObjects([ contextObject ]);
+            this.setLocationsFromMxObjects([ contextObject ], true);
         }
     }
 
@@ -176,24 +188,44 @@ class GoogleMapContainer extends Component<GoogleMapContainerProps, { alertMessa
         }
     }
 
-    private setLocationsFromMxObjects(mxObjects: mendix.lib.MxObject[]) {
+    private setLocationsFromMxObjects(mxObjects: mendix.lib.MxObject[], isContext = false) {
         const locations = mxObjects.map(mxObject => {
-            const lat = mxObject.get(this.props.latitudeAttribute);
-            const lon = mxObject.get(this.props.longitudeAttribute);
+            let lat;
+            let lon;
+            let address;
+            let url;
 
-            return {
-                address: mxObject.get(this.props.addressAttribute) as string,
-                latitude: lat ? Number(lat) : undefined,
-                longitude: lon ? Number(lon) : undefined,
-                url: this.getMxObjectMarkerUrl(mxObject)
-            };
+            if (isContext) {
+                lat = mxObject.get(this.props.latitudeAttributeContext);
+                lon = mxObject.get(this.props.longitudeAttributeContext);
+                address = mxObject.get(this.props.addressAttributeContext) as string;
+                url = this.getMxObjectMarkerUrl(mxObject.get(this.props.markerImageAttribute) as string);
+
+                return {
+                    address,
+                    latitude: lat ? Number(lat) : undefined,
+                    longitude: lon ? Number(lon) : undefined,
+                    url
+                };
+            } else {
+                lat = mxObject.get(this.props.latitudeAttribute);
+                lon = mxObject.get(this.props.longitudeAttribute);
+                address = mxObject.get(this.props.addressAttribute) as string;
+                url = this.getMxObjectMarkerUrl(mxObject.get(this.props.markerImageAttributeContext) as string);
+
+                return {
+                    address,
+                    latitude: lat ? Number(lat) : undefined,
+                    longitude: lon ? Number(lon) : undefined,
+                    url
+                };
+            }
         });
 
         this.setState({ locations });
     }
 
-    private getMxObjectMarkerUrl(mxObject: mendix.lib.MxObject): string {
-        const imageKey: string = mxObject.get(this.props.markerImageAttribute) as string;
+    private getMxObjectMarkerUrl(imageKey: string): string {
         const image = this.props.markerImages.find(value => value.enumKey === imageKey);
 
         return image

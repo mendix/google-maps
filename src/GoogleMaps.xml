@@ -21,12 +21,12 @@
             <category>General</category>
             <description>Map center location when no locations are available. The address will be used to lookup the location. No lookup is done when 'Default center latitude' and 'Default center longitude' contains a valid coordinate</description>
         </property>
-        <property key="latitude" type="string" required="false">
+        <property key="defaultCenterLatitude" type="string" required="false">
             <caption>Default center latitude</caption>
             <category>General</category>
             <description/>
         </property>
-        <property key="longitude" type="string" required="false">
+        <property key="defaultCenterLongitude" type="string" required="false">
             <caption>Default center longitude</caption>
             <category>General</category>
             <description/>
@@ -62,7 +62,7 @@ WARNING: Address lookups are Google APIs calls which are limited in the free tri
                 <attributeType name="Decimal"/>
             </attributeTypes>
         </property>
-        <property key="locationsEntity" type="entity">
+        <property key="locationsEntity" type="entity" required="false">
             <caption>Locations entity</caption>
             <category>Database / Microflow</category>
             <description/>

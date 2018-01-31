@@ -30,10 +30,16 @@ export class ValidateConfigs {
             message = "A 'Microflow' is required for 'Data source' 'Microflow'";
         }
 
-        if (props.dataSource !== "static" && (!props.addressAttribute &&
+        if ((props.dataSource === "XPath" || props.dataSource === "microflow") && (!props.addressAttribute &&
             !(props.longitudeAttribute && props.latitudeAttribute))) {
             message = "The 'Address attribute' or 'Latitude Attribute' and 'Longitude attribute' "
-                + "is required for this data source";
+                + "is required for this data source 'Database / Microflow'";
+        }
+
+        if (props.dataSource === "context" && (!props.addressAttributeContext &&
+                !(props.longitudeAttributeContext && props.latitudeAttributeContext))) {
+            message = "The 'Address attribute' or 'Latitude Attribute' and 'Longitude attribute' "
+                + "is required for this data source 'Context'";
         }
 
         if (!props.autoZoom && props.zoomLevel < 2) {
