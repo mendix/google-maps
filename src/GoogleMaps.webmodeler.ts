@@ -2,7 +2,7 @@ import { Component, ReactElement, createElement } from "react";
 import { Map, MapProps } from "./components/Map";
 import { Alert } from "./components/Alert";
 import { GoogleMapContainerProps } from "./components/GoogleMapContainer";
-import { parseStaticLocations } from "./utils/ContainerUtils";
+import { parseStaticLocations, parseStyle } from "./utils/ContainerUtils";
 import { ValidateConfigs } from "./utils/ValidateConfigs";
 
 declare function require(name: string): string;
@@ -37,6 +37,7 @@ export class preview extends Component<GoogleMapContainerProps, {}> {
         return {
             apiKey: props.apiKey,
             autoZoom: props.autoZoom,
+            className: props.class,
             defaultCenterAddress: props.defaultCenterAddress,
             defaultCenterLatitude: props.defaultCenterLatitude,
             defaultCenterLongitude: props.defaultCenterLongitude,
@@ -48,7 +49,7 @@ export class preview extends Component<GoogleMapContainerProps, {}> {
             optionScroll: props.optionScroll,
             optionStreetView: props.optionStreetView,
             optionZoomControl: props.optionZoomControl,
-            style: {},
+            style: parseStyle(props.style),
             mapStyles: props.mapStyles,
             width: props.width,
             widthUnit: props.widthUnit,
@@ -65,6 +66,11 @@ export function getVisibleProperties(valueMap: GoogleMapContainerProps, visibili
         visibilityMap.locationsEntity = false;
         visibilityMap.latitudeAttribute = false;
         visibilityMap.longitudeAttribute = false;
+        visibilityMap.markerImageAttribute = false;
+        visibilityMap.latitudeAttributeContext = false;
+        visibilityMap.longitudeAttributeContext = false;
+        visibilityMap.addressAttributeContext = false;
+        visibilityMap.markerImageAttributeContext = false;
     } else if (valueMap.dataSource === "XPath") {
         visibilityMap.addressAttribute = true;
         visibilityMap.dataSourceMicroflow = false;
@@ -72,13 +78,23 @@ export function getVisibleProperties(valueMap: GoogleMapContainerProps, visibili
         visibilityMap.locationsEntity = true;
         visibilityMap.latitudeAttribute = true;
         visibilityMap.longitudeAttribute = true;
+        visibilityMap.markerImageAttribute = true;
+        visibilityMap.latitudeAttributeContext = false;
+        visibilityMap.longitudeAttributeContext = false;
+        visibilityMap.addressAttributeContext = false;
+        visibilityMap.markerImageAttributeContext = false;
     } else if (valueMap.dataSource === "context") {
-        visibilityMap.addressAttribute = true;
+        visibilityMap.addressAttribute = false;
         visibilityMap.dataSourceMicroflow = false;
         visibilityMap.entityConstraint = false;
         visibilityMap.locationsEntity = false;
-        visibilityMap.latitudeAttribute = true;
-        visibilityMap.longitudeAttribute = true;
+        visibilityMap.markerImageAttribute = false;
+        visibilityMap.latitudeAttribute = false;
+        visibilityMap.longitudeAttribute = false;
+        visibilityMap.latitudeAttributeContext = true;
+        visibilityMap.longitudeAttributeContext = true;
+        visibilityMap.addressAttributeContext = true;
+        visibilityMap.markerImageAttributeContext = true;
     } else if (valueMap.dataSource === "microflow") {
         visibilityMap.addressAttribute = true;
         visibilityMap.dataSourceMicroflow = true;
@@ -86,6 +102,11 @@ export function getVisibleProperties(valueMap: GoogleMapContainerProps, visibili
         visibilityMap.locationsEntity = true;
         visibilityMap.latitudeAttribute = true;
         visibilityMap.longitudeAttribute = true;
+        visibilityMap.markerImageAttribute = true;
+        visibilityMap.latitudeAttributeContext = false;
+        visibilityMap.longitudeAttributeContext = false;
+        visibilityMap.addressAttributeContext = false;
+        visibilityMap.markerImageAttributeContext = false;
     }
 
     return visibilityMap;
