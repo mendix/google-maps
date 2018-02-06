@@ -34,9 +34,9 @@ describe("Map", () => {
         const output = renderMap({
             apiKey: APIKeyParam,
             autoZoom: true,
-            defaultCenterAddress: defaultCenterAddressParam !== undefined ? defaultCenterAddressParam : "",
-            defaultCenterLatitude: defaultCenterLatitudeParam !== undefined ? defaultCenterLatitudeParam : defaultCenterLocation.lat.toString(),
-            defaultCenterLongitude: defaultCenterLongitudeParam !== undefined ? defaultCenterLongitudeParam : defaultCenterLocation.lng.toString(),
+            defaultCenterAddress: defaultCenterAddressParam || "",
+            defaultCenterLatitude: defaultCenterLatitudeParam || defaultCenterLocation.lat.toString(),
+            defaultCenterLongitude: defaultCenterLongitudeParam || defaultCenterLocation.lng.toString(),
             height: heightParam ? heightParam : 75,
             heightUnit: heightUnitParam ? heightUnitParam : "pixels",
             locations: locationsParam,

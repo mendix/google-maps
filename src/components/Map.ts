@@ -181,7 +181,7 @@ export class Map extends Component<MapProps, MapState> {
             this.setState({ isLoaded: true });
             this.resolveAddresses(this.props);
         } else {
-            const alertMessage = "Google maps load failed, Check internet connection.";
+            const alertMessage = "Google maps load failed, check internet connection.";
             this.setState({ alertMessage });
         }
     }
@@ -235,6 +235,8 @@ export class Map extends Component<MapProps, MapState> {
             });
             if (invalidLocations.length > 0) {
                 this.setState({ alertMessage: `Can not find address ${invalidLocations.join(", ")}` });
+            } else {
+                this.setState({ alertMessage: "" });
             }
         }
 
@@ -260,10 +262,13 @@ export class Map extends Component<MapProps, MapState> {
         } else if (this.props.defaultCenterAddress) {
             this.getLocation(this.props.defaultCenterAddress, location =>
                 location ? this.setState({ center: location }) : this.setState({ center: this.defaultCenterLocation }));
-        } else {
-            if (this.bounds) {
-                this.setState({ center: { lat: this.bounds.getCenter().lat(), lng: this.bounds.getCenter().lng() } });
-            }
+        } else if (this.bounds) {
+            this.setState({
+                center: {
+                    lat: this.bounds.getCenter().lat(),
+                    lng: this.bounds.getCenter().lng()
+                }
+            });
         }
     }
 
@@ -278,7 +283,7 @@ export class Map extends Component<MapProps, MapState> {
                         lng: results[0].geometry.location.lng()
                     });
                 } else if (status === google.maps.GeocoderStatus.OVER_QUERY_LIMIT) {
-                    this.setState({ alertMessage: "Google free quota request exceeded." });
+                    this.setState({ alertMessage: "Failed to look up the address. Google Geocoder free request quota exceeded." });
                     callback();
                 } else {
                     this.setState({ alertMessage: `Can not find address ${address}` });

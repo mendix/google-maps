@@ -190,36 +190,22 @@ class GoogleMapContainer extends Component<GoogleMapContainerProps, { alertMessa
 
     private setLocationsFromMxObjects(mxObjects: mendix.lib.MxObject[], isContext = false) {
         const locations = mxObjects.map(mxObject => {
-            let lat;
-            let lon;
-            let address;
-            let url;
+            const latitudeAttribute = isContext ? this.props.latitudeAttributeContext : this.props.latitudeAttribute;
+            const longitudeAttribute = isContext ? this.props.longitudeAttributeContext : this.props.longitudeAttribute;
+            const addressAttribute = isContext ? this.props.addressAttributeContext : this.props.addressAttribute;
+            const markerImageAttribute = isContext ? this.props.markerImageAttributeContext : this.props.markerImageAttribute;
 
-            if (isContext) {
-                lat = mxObject.get(this.props.latitudeAttributeContext);
-                lon = mxObject.get(this.props.longitudeAttributeContext);
-                address = mxObject.get(this.props.addressAttributeContext) as string;
-                url = this.getMxObjectMarkerUrl(mxObject.get(this.props.markerImageAttribute) as string);
+            const lat = mxObject.get(latitudeAttribute);
+            const lon = mxObject.get(longitudeAttribute);
+            const address = mxObject.get(addressAttribute) as string;
+            const url = this.getMxObjectMarkerUrl(mxObject.get(markerImageAttribute) as string);
 
-                return {
-                    address,
-                    latitude: lat ? Number(lat) : undefined,
-                    longitude: lon ? Number(lon) : undefined,
-                    url
-                };
-            } else {
-                lat = mxObject.get(this.props.latitudeAttribute);
-                lon = mxObject.get(this.props.longitudeAttribute);
-                address = mxObject.get(this.props.addressAttribute) as string;
-                url = this.getMxObjectMarkerUrl(mxObject.get(this.props.markerImageAttributeContext) as string);
-
-                return {
-                    address,
-                    latitude: lat ? Number(lat) : undefined,
-                    longitude: lon ? Number(lon) : undefined,
-                    url
-                };
-            }
+            return {
+                address,
+                latitude: lat ? Number(lat) : undefined,
+                longitude: lon ? Number(lon) : undefined,
+                url
+            };
         });
 
         this.setState({ locations });

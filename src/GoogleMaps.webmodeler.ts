@@ -59,50 +59,10 @@ export class preview extends Component<GoogleMapContainerProps, {}> {
 }
 
 export function getVisibleProperties(valueMap: GoogleMapContainerProps, visibilityMap: VisibilityMap) {
-    if (valueMap.dataSource === "static") {
-        visibilityMap.addressAttribute = false;
-        visibilityMap.dataSourceMicroflow = false;
-        visibilityMap.entityConstraint = false;
-        visibilityMap.locationsEntity = false;
-        visibilityMap.latitudeAttribute = false;
-        visibilityMap.longitudeAttribute = false;
-        visibilityMap.markerImageAttribute = false;
-        visibilityMap.latitudeAttributeContext = false;
-        visibilityMap.longitudeAttributeContext = false;
-        visibilityMap.addressAttributeContext = false;
-        visibilityMap.markerImageAttributeContext = false;
-    } else if (valueMap.dataSource === "XPath") {
-        visibilityMap.addressAttribute = true;
-        visibilityMap.dataSourceMicroflow = false;
-        visibilityMap.entityConstraint = true;
-        visibilityMap.locationsEntity = true;
-        visibilityMap.latitudeAttribute = true;
-        visibilityMap.longitudeAttribute = true;
-        visibilityMap.markerImageAttribute = true;
-        visibilityMap.latitudeAttributeContext = false;
-        visibilityMap.longitudeAttributeContext = false;
-        visibilityMap.addressAttributeContext = false;
-        visibilityMap.markerImageAttributeContext = false;
-    } else if (valueMap.dataSource === "context") {
-        visibilityMap.addressAttribute = false;
-        visibilityMap.dataSourceMicroflow = false;
-        visibilityMap.entityConstraint = false;
-        visibilityMap.locationsEntity = false;
-        visibilityMap.markerImageAttribute = false;
-        visibilityMap.latitudeAttribute = false;
-        visibilityMap.longitudeAttribute = false;
-        visibilityMap.latitudeAttributeContext = true;
-        visibilityMap.longitudeAttributeContext = true;
-        visibilityMap.addressAttributeContext = true;
-        visibilityMap.markerImageAttributeContext = true;
-    } else if (valueMap.dataSource === "microflow") {
-        visibilityMap.addressAttribute = true;
-        visibilityMap.dataSourceMicroflow = true;
-        visibilityMap.entityConstraint = false;
-        visibilityMap.locationsEntity = true;
-        visibilityMap.latitudeAttribute = true;
-        visibilityMap.longitudeAttribute = true;
-        visibilityMap.markerImageAttribute = true;
+    if (valueMap.dataSource !== "static") {
+        visibilityMap.staticLocations = false;
+    }
+    if (valueMap.dataSource !== "context") {
         visibilityMap.latitudeAttributeContext = false;
         visibilityMap.longitudeAttributeContext = false;
         visibilityMap.addressAttributeContext = false;
