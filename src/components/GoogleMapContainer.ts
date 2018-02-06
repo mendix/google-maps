@@ -53,9 +53,8 @@ class GoogleMapContainer extends Component<GoogleMapContainerProps, { alertMessa
     constructor(props: GoogleMapContainerProps) {
         super(props);
 
-        const alertMessage = ValidateConfigs.validate(props);
         this.subscriptionHandles = [];
-        this.state = { alertMessage, locations: [] };
+        this.state = { alertMessage: "", locations: [] };
         this.subscribe(this.props.mxObject);
     }
 
@@ -94,6 +93,9 @@ class GoogleMapContainer extends Component<GoogleMapContainerProps, { alertMessa
     componentWillReceiveProps(nextProps: GoogleMapContainerProps) {
         this.subscribe(nextProps.mxObject);
         this.fetchData(nextProps.mxObject);
+
+        const alertMessage = ValidateConfigs.validate(nextProps);
+        this.state = { alertMessage, locations: [] };
     }
 
     componentDidMount() {

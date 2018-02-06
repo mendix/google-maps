@@ -4,9 +4,27 @@ export class ValidateConfigs {
 
     public static validate(props: GoogleMapContainerProps): string {
         const message: string[] = [];
-        const invalidEnumKeys = props.markerImages.filter(markerImage =>
-            /^\w+$/.test(markerImage.enumKey)
-        );
+        const getInvalidCustomKeys = (attributeEnums: Array<{ key: string, caption: string }>): string[] => {
+            const customEnums = props.markerImages;
+            const invalidCustomKeys: string[] = [];
+
+            customEnums.forEach(customEnum => {
+                const foundEnums = attributeEnums.filter(value => value.key === customEnum.enumKey);
+                if (foundEnums.length === 0) {
+                    invalidCustomKeys.push(customEnum.enumKey);
+                }
+            });
+
+            return invalidCustomKeys;
+        };
+        const getEnumValidationMessage = (invalidCustomKeys: string[]): string => {
+            if (invalidCustomKeys.length > 0) {
+                return ("Invalid enumeration keys on custom markers. " +
+                    `${invalidCustomKeys.join(", ")} keys must match with ones specified in the enumeration attribute`);
+            }
+
+            return "";
+        };
 
         if (props.dataSource === "static" && !props.staticLocations.length) {
             message.push("At least one static location is required for 'Data source 'Static'");
@@ -42,13 +60,23 @@ export class ValidateConfigs {
                 + "is required for this data source 'Context'");
         }
 
-        if (!props.autoZoom && props.zoomLevel < 2) {
-            message.push("Zoom level must be greater than 1");
+        if (props.dataSource === "context" && props.markerImageAttributeContext) {
+            const attributeEnums = props.mxObject.getEnumMap(props.markerImageAttributeContext);
+            const invalidCustomKeys = getInvalidCustomKeys(attributeEnums);
+
+            message.push(getEnumValidationMessage(invalidCustomKeys));
         }
 
-        if (invalidEnumKeys.length > 0) {
-            message.push("Invalid enumeration keys on custom markers. " +
-            "Enumeration keys should start with a letter and can only contain letters, digits and underscores");
+        if (props.dataSource === "XPath" && props.markerImageAttribute && props.locationsEntity) {
+            const entity = mx.meta.getEntity(props.locationsEntity);
+            const attributeEnums = entity.getEnumMap(props.markerImageAttribute);
+            const invalidCustomKeys = getInvalidCustomKeys(attributeEnums);
+
+            message.push(getEnumValidationMessage(invalidCustomKeys));
+        }
+
+        if (!props.autoZoom && props.zoomLevel < 2) {
+            message.push("Zoom level must be greater than 1");
         }
 
         if (props.mapStyles.trim()) {
