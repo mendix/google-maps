@@ -56,6 +56,7 @@ export class Map extends Component<MapProps, MapState> {
             isLoaded: false,
             locations: props.locations
         };
+
         this.handleOnGoogleApiLoaded = this.handleOnGoogleApiLoaded.bind(this);
         this.onResizeIframe = this.onResizeIframe.bind(this);
         this.renderGoogleMap = this.renderGoogleMap.bind(this);
@@ -214,33 +215,40 @@ export class Map extends Component<MapProps, MapState> {
 
         if (this.mapLoader) {
             this.bounds = new google.maps.LatLngBounds();
-        }
-        this.setZoom(props);
-        if (props.locations && props.locations.length) {
-            props.locations.forEach(location => {
-                if (!this.validLocation(location) && location.address) {
-                    this.getLocation(location.address, locationLookup => {
-                        if (locationLookup) {
-                            location.latitude = Number(locationLookup.lat);
-                            location.longitude = Number(locationLookup.lng);
-                            this.setState({ locations: props.locations });
-                            this.updateBounds(props, location);
-                        } else {
-                            invalidLocations.push(`${location.address}`);
-                        }
-                    });
-                } else if (this.validLocation(location)) {
-                    this.updateBounds(props, location);
+            this.setZoom(props);
+            if (props.locations && props.locations.length) {
+                props.locations.forEach(location => {
+                    if (!this.validLocation(location) && location.address) {
+                        this.getLocation(location.address, locationLookup => {
+                            if (locationLookup) {
+                                location.latitude = Number(locationLookup.lat);
+                                location.longitude = Number(locationLookup.lng);
+                                this.setState({ locations: props.locations });
+                                this.updateBounds(props, location);
+                            } else {
+                                invalidLocations.push(`${location.address}`);
+                            }
+                        });
+                    } else if (this.validLocation(location)) {
+                        this.updateBounds(props, location);
+                    } else if (!this.validLocation(location) && !location.address) {
+                        invalidLocations.push(`${location.address}`);
+                    }
+                });
+
+                if (invalidLocations.length > 0) {
+                    this.setState({ alertMessage: `Can not find address ${invalidLocations.join(", ")}` });
+                } else {
+                    this.setState({ alertMessage: "" });
                 }
-            });
-            if (invalidLocations.length > 0) {
-                this.setState({ alertMessage: `Can not find address ${invalidLocations.join(", ")}` });
+            }
+
+            if (invalidLocations.length === props.locations.length) {
+                this.setCenter(props, true);
             } else {
-                this.setState({ alertMessage: "" });
+                this.setCenter(props, false);
             }
         }
-
-        this.setCenter();
     }
 
     private validLocation(location: Location): boolean {
@@ -251,18 +259,18 @@ export class Map extends Component<MapProps, MapState> {
             && !(lat === 0 && lng === 0);
     }
 
-    private setCenter() {
-        if (this.props.defaultCenterLatitude && this.props.defaultCenterLongitude) {
+    private setCenter(props: MapProps, allLocationsInvalid: boolean) {
+        if (props.defaultCenterLatitude && props.defaultCenterLongitude) {
               this.setState({
                   center: {
-                      lat: Number(this.props.defaultCenterLatitude),
-                      lng: Number(this.props.defaultCenterLongitude)
+                      lat: Number(props.defaultCenterLatitude),
+                      lng: Number(props.defaultCenterLongitude)
                   }
               });
-        } else if (this.props.defaultCenterAddress) {
-            this.getLocation(this.props.defaultCenterAddress, location =>
+        } else if (props.defaultCenterAddress) {
+            this.getLocation(props.defaultCenterAddress, location =>
                 location ? this.setState({ center: location }) : this.setState({ center: this.defaultCenterLocation }));
-        } else if (this.bounds) {
+        } else if (this.bounds && props.locations && !allLocationsInvalid) {
             this.setState({
                 center: {
                     lat: this.bounds.getCenter().lat(),

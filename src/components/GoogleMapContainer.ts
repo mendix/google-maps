@@ -91,11 +91,13 @@ class GoogleMapContainer extends Component<GoogleMapContainerProps, { alertMessa
     }
 
     componentWillReceiveProps(nextProps: GoogleMapContainerProps) {
-        this.subscribe(nextProps.mxObject);
-        this.fetchData(nextProps.mxObject);
-
         const alertMessage = ValidateConfigs.validate(nextProps);
-        this.state = { alertMessage, locations: [] };
+        if (alertMessage) {
+            this.setState({ alertMessage });
+        } else {
+            this.subscribe(nextProps.mxObject);
+            this.fetchData(nextProps.mxObject);
+        }
     }
 
     componentDidMount() {
