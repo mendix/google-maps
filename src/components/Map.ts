@@ -60,7 +60,7 @@ export class Map extends Component<MapProps, MapState> {
         this.handleOnGoogleApiLoaded = this.handleOnGoogleApiLoaded.bind(this);
         this.onResizeIframe = this.onResizeIframe.bind(this);
         this.renderGoogleMap = this.renderGoogleMap.bind(this);
-        this.setCenter = this.setCenter.bind(this);
+        this.setDefaultCenter = this.setDefaultCenter.bind(this);
     }
 
     render() {
@@ -192,6 +192,12 @@ export class Map extends Component<MapProps, MapState> {
             this.bounds.extend(new google.maps.LatLng(location.latitude as number, location.longitude as number));
             this.mapLoader.map.fitBounds(this.bounds);
             this.setZoom(props);
+            this.setState({
+                center: {
+                    lat: this.bounds.getCenter().lat(),
+                    lng: this.bounds.getCenter().lng()
+                }
+            });
         }
     }
 
@@ -211,13 +217,11 @@ export class Map extends Component<MapProps, MapState> {
     }
 
     private resolveAddresses(props: MapProps) {
-        const invalidLocations: string[] = [];
-
         if (this.mapLoader) {
             this.bounds = new google.maps.LatLngBounds();
             this.setZoom(props);
             if (props.locations && props.locations.length) {
-                props.locations.forEach(location => {
+                props.locations.forEach((location) => {
                     if (!this.validLocation(location) && location.address) {
                         this.getLocation(location.address, locationLookup => {
                             if (locationLookup) {
@@ -225,30 +229,17 @@ export class Map extends Component<MapProps, MapState> {
                                 location.longitude = Number(locationLookup.lng);
                                 this.setState({ locations: props.locations });
                                 this.updateBounds(props, location);
-                            } else {
-                                invalidLocations.push(`${location.address}`);
                             }
                         });
                     } else if (this.validLocation(location)) {
                         this.updateBounds(props, location);
                     } else if (!this.validLocation(location) && !location.address) {
-                        invalidLocations.push(`${location.address}`);
+                        this.setState({ alertMessage: "Location address, latitude and longitude are not specified" });
                     }
                 });
-
-                if (invalidLocations.length > 0) {
-                    this.setState({ alertMessage: `Can not find address ${invalidLocations.join(", ")}` });
-                } else {
-                    this.setState({ alertMessage: "" });
-                }
-            }
-
-            if (invalidLocations.length === props.locations.length) {
-                this.setCenter(props, true);
-            } else {
-                this.setCenter(props, false);
             }
         }
+        this.setDefaultCenter(this.props);
     }
 
     private validLocation(location: Location): boolean {
@@ -259,7 +250,7 @@ export class Map extends Component<MapProps, MapState> {
             && !(lat === 0 && lng === 0);
     }
 
-    private setCenter(props: MapProps, allLocationsInvalid: boolean) {
+    private setDefaultCenter(props: MapProps) {
         if (props.defaultCenterLatitude && props.defaultCenterLongitude) {
               this.setState({
                   center: {
@@ -270,13 +261,6 @@ export class Map extends Component<MapProps, MapState> {
         } else if (props.defaultCenterAddress) {
             this.getLocation(props.defaultCenterAddress, location =>
                 location ? this.setState({ center: location }) : this.setState({ center: this.defaultCenterLocation }));
-        } else if (this.bounds && props.locations && !allLocationsInvalid) {
-            this.setState({
-                center: {
-                    lat: this.bounds.getCenter().lat(),
-                    lng: this.bounds.getCenter().lng()
-                }
-            });
         }
     }
 
