@@ -68,7 +68,19 @@ export function getVisibleProperties(valueMap: GoogleMapContainerProps, visibili
         visibilityMap.addressAttributeContext = false;
         visibilityMap.markerImageAttributeContext = false;
     }
-
+    if (valueMap.dataSource !== "microflow") {
+        visibilityMap.dataSourceMicroflow = false;
+    }
+    if (valueMap.dataSource !== "XPath") {
+        visibilityMap.entityConstraint = false;
+    }
+    if (valueMap.dataSource !== "microflow" && valueMap.dataSource !== "XPath") {
+        visibilityMap.locationsEntity = false;
+        visibilityMap.latitudeAttribute = false;
+        visibilityMap.longitudeAttribute = false;
+        visibilityMap.addressAttribute = false;
+        visibilityMap.markerImageAttribute = false;
+    }
     return visibilityMap;
 }
 
