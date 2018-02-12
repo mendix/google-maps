@@ -75,7 +75,7 @@ export class ValidateConfigs {
             message.push(getEnumValidationMessage(invalidCustomKeys));
         }
 
-        if (!props.autoZoom && props.zoomLevel < 2) {
+        if (props.autoZoom && props.zoomLevel < 2) {
             message.push("Zoom level must be greater than 1");
         }
 
