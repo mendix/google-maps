@@ -98,7 +98,7 @@ export class Map extends Component<MapProps, MapState> {
     private renderGoogleMap(): ReactElement<GoogleMapProps> | null {
         return createElement(GoogleMap,
             {
-                bootstrapURLKeys: { key: this.props.apiKey },
+                bootstrapURLKeys: { key: this.props.apiKey, v: "3.29" },
                 center: this.state.center,
                 defaultZoom: this.props.zoomLevel,
                 onGoogleApiLoaded: this.handleOnGoogleApiLoaded,
@@ -142,9 +142,11 @@ export class Map extends Component<MapProps, MapState> {
         // A workaround for attaching the resize event to the Iframe window because the google-map-react
         // library does not support it. This fix will be done in the web modeler preview class when the
         // google-map-react library starts supporting listening to Iframe events.
+        // TODO CHECK UPDATE LIB has solved it?
+        // https://github.com/istarkov/google-map-react/issues/397
         const iFrame = this.getIframe();
         if (iFrame) {
-            iFrame.contentWindow.addEventListener("resize", this.onResizeIframe);
+            iFrame.contentWindow.addEventListener("resize", this.onResizeIframe); // TODO throttles
         }
     }
 
@@ -157,7 +159,7 @@ export class Map extends Component<MapProps, MapState> {
             const originalCenter = this.mapLoader.map.getCenter();
             this.mapLoader.maps.event.trigger(this.mapLoader.map, "resize");
             this.mapLoader.map.setCenter(originalCenter);
-            window.dispatchEvent(new Event("resize"));
+            // window.dispatchEvent(new Event("resize"));
         }
     }
 
