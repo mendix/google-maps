@@ -162,7 +162,7 @@ class GoogleMapContainer extends Component<GoogleMapContainerProps, { alertMessa
             return;
         }
 
-        const constraint = entityConstraint ? entityConstraint.replace("[%CurrentObject%]", contextGuid) : "";
+        const constraint = entityConstraint ? entityConstraint.replace(/\[%CurrentObject%\]/g, contextGuid) : "";
         const xpath = `//${this.props.locationsEntity}${constraint}`;
 
         window.mx.data.get({
