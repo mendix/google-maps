@@ -9,15 +9,14 @@ export class UrlHelper {
     }
 
     static getStaticResourceUrl(url: string) {
-        const cacheBust = mx.server.getCacheBust();
-
-        if (this.startsWith(url, "data:")) {
+        if (this.startsWith(url, "data:") || !window.mx) {
             return url;
         }
         if (!/^\w+:\/\//.test(url)) {
             url = this.getStaticResourceUrlFromPath(url);
         }
         // Only add a cache bust if it's not already there and it's a Mendix URL
+        const cacheBust = mx.server.getCacheBust();
         if (this.startsWith(url, mx.appUrl) && !this.endsWith(url, cacheBust)) {
             url += (/\?/.test(url) ? "&" : "?") + cacheBust;
         }
