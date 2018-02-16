@@ -17,6 +17,8 @@ interface GoogleMapContainerProps extends WrapperProps {
     dataSource: DataSource;
     dataSourceMicroflow: string;
     defaultCenterAddress: string;
+    defaultCenterLatitude: string;
+    defaultCenterLongitude: string;
     defaultMakerIcon: string;
     entityConstraint: string;
     height: number;
@@ -32,6 +34,10 @@ interface GoogleMapContainerProps extends WrapperProps {
     latitudeAttribute: string;
     longitudeAttribute: string;
     markerImageAttribute: string;
+    addressAttributeContext: string;
+    latitudeAttributeContext: string;
+    longitudeAttributeContext: string;
+    markerImageAttributeContext: string;
     staticLocations: StaticLocation[];
     markerImages: Array<{ enumKey: string, enumImage: string}>;
     width: number;
@@ -47,9 +53,8 @@ class GoogleMapContainer extends Component<GoogleMapContainerProps, { alertMessa
     constructor(props: GoogleMapContainerProps) {
         super(props);
 
-        const alertMessage = ValidateConfigs.validate(props);
         this.subscriptionHandles = [];
-        this.state = { alertMessage, locations: [] };
+        this.state = { alertMessage: "", locations: [] };
         this.subscribe(this.props.mxObject);
     }
 
@@ -66,6 +71,8 @@ class GoogleMapContainer extends Component<GoogleMapContainerProps, { alertMessa
                 autoZoom: this.props.autoZoom,
                 className: this.props.class,
                 defaultCenterAddress: this.props.defaultCenterAddress,
+                defaultCenterLatitude: this.props.defaultCenterLatitude,
+                defaultCenterLongitude: this.props.defaultCenterLongitude,
                 height: this.props.height,
                 heightUnit: this.props.heightUnit,
                 locations: this.state.locations,
@@ -84,8 +91,13 @@ class GoogleMapContainer extends Component<GoogleMapContainerProps, { alertMessa
     }
 
     componentWillReceiveProps(nextProps: GoogleMapContainerProps) {
-        this.subscribe(nextProps.mxObject);
-        this.fetchData(nextProps.mxObject);
+        const alertMessage = ValidateConfigs.validate(nextProps);
+        if (alertMessage) {
+            this.setState({ alertMessage });
+        } else {
+            this.subscribe(nextProps.mxObject);
+            this.fetchData(nextProps.mxObject);
+        }
     }
 
     componentDidMount() {
@@ -111,7 +123,11 @@ class GoogleMapContainer extends Component<GoogleMapContainerProps, { alertMessa
                 this.props.addressAttribute,
                 this.props.latitudeAttribute,
                 this.props.longitudeAttribute,
-                this.props.markerImageAttribute
+                this.props.markerImageAttribute,
+                this.props.addressAttributeContext,
+                this.props.latitudeAttributeContext,
+                this.props.longitudeAttributeContext,
+                this.props.markerImageAttributeContext
             ].forEach(attr => this.subscriptionHandles.push(window.mx.data.subscribe({
                 attr,
                 callback: () => this.fetchData(contextObject), guid: contextObject.getGuid()
@@ -134,7 +150,7 @@ class GoogleMapContainer extends Component<GoogleMapContainerProps, { alertMessa
 
     private fetchLocationsByContext(contextObject?: mendix.lib.MxObject) {
         if (contextObject) {
-            this.setLocationsFromMxObjects([ contextObject ]);
+            this.setLocationsFromMxObjects([ contextObject ], true);
         }
     }
 
@@ -146,7 +162,7 @@ class GoogleMapContainer extends Component<GoogleMapContainerProps, { alertMessa
             return;
         }
 
-        const constraint = entityConstraint ? entityConstraint.replace("[%CurrentObject%]", contextGuid) : "";
+        const constraint = entityConstraint ? entityConstraint.replace(/\[%CurrentObject%\]/g, contextGuid) : "";
         const xpath = `//${this.props.locationsEntity}${constraint}`;
 
         window.mx.data.get({
@@ -176,24 +192,30 @@ class GoogleMapContainer extends Component<GoogleMapContainerProps, { alertMessa
         }
     }
 
-    private setLocationsFromMxObjects(mxObjects: mendix.lib.MxObject[]) {
+    private setLocationsFromMxObjects(mxObjects: mendix.lib.MxObject[], isContext = false) {
         const locations = mxObjects.map(mxObject => {
-            const lat = mxObject.get(this.props.latitudeAttribute);
-            const lon = mxObject.get(this.props.longitudeAttribute);
+            const latitudeAttribute = isContext ? this.props.latitudeAttributeContext : this.props.latitudeAttribute;
+            const longitudeAttribute = isContext ? this.props.longitudeAttributeContext : this.props.longitudeAttribute;
+            const addressAttribute = isContext ? this.props.addressAttributeContext : this.props.addressAttribute;
+            const markerImageAttribute = isContext ? this.props.markerImageAttributeContext : this.props.markerImageAttribute;
+
+            const lat = mxObject.get(latitudeAttribute);
+            const lon = mxObject.get(longitudeAttribute);
+            const address = mxObject.get(addressAttribute) as string;
+            const url = this.getMxObjectMarkerUrl(mxObject.get(markerImageAttribute) as string);
 
             return {
-                address: mxObject.get(this.props.addressAttribute) as string,
+                address,
                 latitude: lat ? Number(lat) : undefined,
                 longitude: lon ? Number(lon) : undefined,
-                url: this.getMxObjectMarkerUrl(mxObject)
+                url
             };
         });
 
         this.setState({ locations });
     }
 
-    private getMxObjectMarkerUrl(mxObject: mendix.lib.MxObject): string {
-        const imageKey: string = mxObject.get(this.props.markerImageAttribute) as string;
+    private getMxObjectMarkerUrl(imageKey: string): string {
         const image = this.props.markerImages.find(value => value.enumKey === imageKey);
 
         return image

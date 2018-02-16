@@ -28,11 +28,15 @@ describe("Map", () => {
         heightParam?: number,
         widthUnitParam?: widthUnitType,
         heightUnitParam?: heightUnitType,
-        defaultCenterParam?: string): ShallowWrapper<MapProps, any> => {
+        defaultCenterAddressParam?: string,
+        defaultCenterLatitudeParam?: string,
+        defaultCenterLongitudeParam?: string): ShallowWrapper<MapProps, any> => {
         const output = renderMap({
             apiKey: APIKeyParam,
             autoZoom: true,
-            defaultCenterAddress: defaultCenterParam !== undefined ? defaultCenterParam : "",
+            defaultCenterAddress: defaultCenterAddressParam || "",
+            defaultCenterLatitude: defaultCenterLatitudeParam || defaultCenterLocation.lat.toString(),
+            defaultCenterLongitude: defaultCenterLongitudeParam || defaultCenterLocation.lng.toString(),
             height: heightParam ? heightParam : 75,
             heightUnit: heightUnitParam ? heightUnitParam : "pixels",
             locations: locationsParam,

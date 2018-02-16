@@ -17,6 +17,8 @@ export interface MapProps {
     apiKey?: string;
     autoZoom: boolean;
     defaultCenterAddress: string;
+    defaultCenterLatitude: string;
+    defaultCenterLongitude: string;
     friendlyId?: string;
     height: number;
     heightUnit: heightUnitType;
@@ -54,9 +56,11 @@ export class Map extends Component<MapProps, MapState> {
             isLoaded: false,
             locations: props.locations
         };
+
         this.handleOnGoogleApiLoaded = this.handleOnGoogleApiLoaded.bind(this);
         this.onResizeIframe = this.onResizeIframe.bind(this);
         this.renderGoogleMap = this.renderGoogleMap.bind(this);
+        this.setDefaultCenter = this.setDefaultCenter.bind(this);
     }
 
     render() {
@@ -94,7 +98,7 @@ export class Map extends Component<MapProps, MapState> {
     private renderGoogleMap(): ReactElement<GoogleMapProps> | null {
         return createElement(GoogleMap,
             {
-                bootstrapURLKeys: { key: this.props.apiKey },
+                bootstrapURLKeys: { key: this.props.apiKey, v: "3.29" },
                 center: this.state.center,
                 defaultZoom: this.props.zoomLevel,
                 onGoogleApiLoaded: this.handleOnGoogleApiLoaded,
@@ -138,9 +142,11 @@ export class Map extends Component<MapProps, MapState> {
         // A workaround for attaching the resize event to the Iframe window because the google-map-react
         // library does not support it. This fix will be done in the web modeler preview class when the
         // google-map-react library starts supporting listening to Iframe events.
+        // TODO CHECK UPDATE LIB has solved it?
+        // https://github.com/istarkov/google-map-react/issues/397
         const iFrame = this.getIframe();
         if (iFrame) {
-            iFrame.contentWindow.addEventListener("resize", this.onResizeIframe);
+            iFrame.contentWindow.addEventListener("resize", this.onResizeIframe); // TODO throttles
         }
     }
 
@@ -153,7 +159,7 @@ export class Map extends Component<MapProps, MapState> {
             const originalCenter = this.mapLoader.map.getCenter();
             this.mapLoader.maps.event.trigger(this.mapLoader.map, "resize");
             this.mapLoader.map.setCenter(originalCenter);
-            window.dispatchEvent(new Event("resize"));
+            // window.dispatchEvent(new Event("resize"));
         }
     }
 
@@ -178,7 +184,7 @@ export class Map extends Component<MapProps, MapState> {
             this.setState({ isLoaded: true });
             this.resolveAddresses(this.props);
         } else {
-            const alertMessage = `Google maps load failed, Check internet connection.`;
+            const alertMessage = "Google maps load failed, check internet connection.";
             this.setState({ alertMessage });
         }
     }
@@ -188,9 +194,12 @@ export class Map extends Component<MapProps, MapState> {
             this.bounds.extend(new google.maps.LatLng(location.latitude as number, location.longitude as number));
             this.mapLoader.map.fitBounds(this.bounds);
             this.setZoom(props);
-            if (!props.defaultCenterAddress) {
-                this.setState({ center: { lat: this.bounds.getCenter().lat(), lng: this.bounds.getCenter().lng() } });
-            }
+            this.setState({
+                center: {
+                    lat: this.bounds.getCenter().lat(),
+                    lng: this.bounds.getCenter().lng()
+                }
+            });
         }
     }
 
@@ -212,28 +221,27 @@ export class Map extends Component<MapProps, MapState> {
     private resolveAddresses(props: MapProps) {
         if (this.mapLoader) {
             this.bounds = new google.maps.LatLngBounds();
+            this.setZoom(props);
+            if (props.locations && props.locations.length) {
+                props.locations.forEach((location) => {
+                    if (!this.validLocation(location) && location.address) {
+                        this.getLocation(location.address, locationLookup => {
+                            if (locationLookup) {
+                                location.latitude = Number(locationLookup.lat);
+                                location.longitude = Number(locationLookup.lng);
+                                this.setState({ locations: props.locations });
+                                this.updateBounds(props, location);
+                            }
+                        });
+                    } else if (this.validLocation(location)) {
+                        this.updateBounds(props, location);
+                    } else if (!this.validLocation(location) && !location.address) {
+                        this.setState({ alertMessage: "Location address, latitude and longitude are not specified" });
+                    }
+                });
+            }
         }
-        this.setZoom(props);
-        if (props.locations && props.locations.length) {
-            props.locations.forEach(location => {
-                if (!this.validLocation(location) && location.address) {
-                    this.getLocation(location.address, locationLookup => {
-                        if (locationLookup) {
-                            location.latitude = Number(locationLookup.lat);
-                            location.longitude = Number(locationLookup.lng);
-                            this.setState({ locations: props.locations });
-                            this.updateBounds(props, location);
-                        }
-                    });
-                } else if (this.validLocation(location)) {
-                    this.updateBounds(props, location);
-                }
-            });
-        }
-        if (props.defaultCenterAddress) {
-            this.getLocation(props.defaultCenterAddress, location =>
-                location ? this.setState({ center: location }) : this.setState({ center: this.defaultCenterLocation }));
-        }
+        this.setDefaultCenter(this.props);
     }
 
     private validLocation(location: Location): boolean {
@@ -242,6 +250,20 @@ export class Map extends Component<MapProps, MapState> {
             && lat <= 90 && lat >= -90
             && lng <= 180 && lng >= -180
             && !(lat === 0 && lng === 0);
+    }
+
+    private setDefaultCenter(props: MapProps) {
+        if (props.defaultCenterLatitude && props.defaultCenterLongitude) {
+              this.setState({
+                  center: {
+                      lat: Number(props.defaultCenterLatitude),
+                      lng: Number(props.defaultCenterLongitude)
+                  }
+              });
+        } else if (props.defaultCenterAddress) {
+            this.getLocation(props.defaultCenterAddress, location =>
+                location ? this.setState({ center: location }) : this.setState({ center: this.defaultCenterLocation }));
+        }
     }
 
     private getLocation(address: string, callback: (result?: LatLng) => void) {
@@ -255,7 +277,7 @@ export class Map extends Component<MapProps, MapState> {
                         lng: results[0].geometry.location.lng()
                     });
                 } else if (status === google.maps.GeocoderStatus.OVER_QUERY_LIMIT) {
-                    this.setState({ alertMessage: `Google free quota request exceeded.` });
+                    this.setState({ alertMessage: "Failed to look up the address. Google Geocoder free request quota exceeded." });
                     callback();
                 } else {
                     this.setState({ alertMessage: `Can not find address ${address}` });

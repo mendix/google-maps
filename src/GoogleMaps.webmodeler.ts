@@ -2,7 +2,7 @@ import { Component, ReactElement, createElement } from "react";
 import { Map, MapProps } from "./components/Map";
 import { Alert } from "./components/Alert";
 import { GoogleMapContainerProps } from "./components/GoogleMapContainer";
-import { parseStaticLocations } from "./utils/ContainerUtils";
+import { parseStaticLocations, parseStyle } from "./utils/ContainerUtils";
 import { ValidateConfigs } from "./utils/ValidateConfigs";
 
 declare function require(name: string): string;
@@ -37,7 +37,10 @@ export class preview extends Component<GoogleMapContainerProps, {}> {
         return {
             apiKey: props.apiKey,
             autoZoom: props.autoZoom,
+            className: props.class,
             defaultCenterAddress: props.defaultCenterAddress,
+            defaultCenterLatitude: props.defaultCenterLatitude,
+            defaultCenterLongitude: props.defaultCenterLongitude,
             height: props.height,
             heightUnit: props.heightUnit,
             locations,
@@ -46,7 +49,7 @@ export class preview extends Component<GoogleMapContainerProps, {}> {
             optionScroll: props.optionScroll,
             optionStreetView: props.optionStreetView,
             optionZoomControl: props.optionZoomControl,
-            style: {},
+            style: parseStyle(props.style),
             mapStyles: props.mapStyles,
             width: props.width,
             widthUnit: props.widthUnit,
@@ -56,36 +59,28 @@ export class preview extends Component<GoogleMapContainerProps, {}> {
 }
 
 export function getVisibleProperties(valueMap: GoogleMapContainerProps, visibilityMap: VisibilityMap) {
-    if (valueMap.dataSource === "static") {
-        visibilityMap.addressAttribute = false;
+    if (valueMap.dataSource !== "static") {
+        visibilityMap.staticLocations = false;
+    }
+    if (valueMap.dataSource !== "context") {
+        visibilityMap.latitudeAttributeContext = false;
+        visibilityMap.longitudeAttributeContext = false;
+        visibilityMap.addressAttributeContext = false;
+        visibilityMap.markerImageAttributeContext = false;
+    }
+    if (valueMap.dataSource !== "microflow") {
         visibilityMap.dataSourceMicroflow = false;
+    }
+    if (valueMap.dataSource !== "XPath") {
         visibilityMap.entityConstraint = false;
+    }
+    if (valueMap.dataSource !== "microflow" && valueMap.dataSource !== "XPath") {
         visibilityMap.locationsEntity = false;
         visibilityMap.latitudeAttribute = false;
         visibilityMap.longitudeAttribute = false;
-    } else if (valueMap.dataSource === "XPath") {
-        visibilityMap.addressAttribute = true;
-        visibilityMap.dataSourceMicroflow = false;
-        visibilityMap.entityConstraint = true;
-        visibilityMap.locationsEntity = true;
-        visibilityMap.latitudeAttribute = true;
-        visibilityMap.longitudeAttribute = true;
-    } else if (valueMap.dataSource === "context") {
-        visibilityMap.addressAttribute = true;
-        visibilityMap.dataSourceMicroflow = false;
-        visibilityMap.entityConstraint = false;
-        visibilityMap.locationsEntity = false;
-        visibilityMap.latitudeAttribute = true;
-        visibilityMap.longitudeAttribute = true;
-    } else if (valueMap.dataSource === "microflow") {
-        visibilityMap.addressAttribute = true;
-        visibilityMap.dataSourceMicroflow = true;
-        visibilityMap.entityConstraint = false;
-        visibilityMap.locationsEntity = true;
-        visibilityMap.latitudeAttribute = true;
-        visibilityMap.longitudeAttribute = true;
+        visibilityMap.addressAttribute = false;
+        visibilityMap.markerImageAttribute = false;
     }
-
     return visibilityMap;
 }
 
