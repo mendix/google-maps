@@ -234,6 +234,12 @@ WARNING: Address lookups are Google APIs calls which are limited in the free tri
                 </property>
             </properties>
         </property>
+        <property key="onClickMicroflow" type="microflow" required="false" entityProperty="locationsEntity">
+            <caption>On click microflow</caption>
+            <category>Markers</category>
+            <description>The microflow that will be executed when a marker is click </description>
+            <returnType type="Void" />
+        </property>
         <!-- Maps styles -->
         <property key="mapStyles" type="string" multiline="true" required="false">
             <caption>Map styles</caption>

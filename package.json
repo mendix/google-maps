@@ -75,7 +75,7 @@
     "karma-spec-reporter": "0.0.32",
     "karma-typescript": "^3.0.12",
     "karma-webpack": "^2.0.9",
-    "mendix-client": "^7.6.5",
+    "mendix-client": "^7.13.2",
     "mendix-widget-build-script": "^1.0.0-rc2",
     "nodemon": "^1.14.12",
     "pre-commit": "^1.2.2",

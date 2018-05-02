@@ -3,9 +3,11 @@ import { Map, heightUnitType, widthUnitType } from "./Map";
 import { Alert } from "./Alert";
 import { ValidateConfigs } from "../utils/ValidateConfigs";
 import { Location, StaticLocation, getStaticMarkerUrl, parseStaticLocations, parseStyle } from "../utils/ContainerUtils";
+import { LatLng } from "google-map-react";
 
 interface WrapperProps {
     "class"?: string;
+    mxform: mxui.lib.form._FormBase;
     friendlyId: string;
     mxObject: mendix.lib.MxObject;
     style: string;
@@ -40,6 +42,7 @@ interface GoogleMapContainerProps extends WrapperProps {
     markerImageAttributeContext: string;
     staticLocations: StaticLocation[];
     markerImages: Array<{ enumKey: string, enumImage: string}>;
+    onClickMicroflow: string;
     width: number;
     widthUnit: widthUnitType;
     zoomLevel: number;
@@ -81,6 +84,7 @@ class GoogleMapContainer extends Component<GoogleMapContainerProps, { alertMessa
                 optionScroll: this.props.optionScroll,
                 optionStreetView: this.props.optionStreetView,
                 optionZoomControl: this.props.optionZoomControl,
+                onClickAction: this.onClick,
                 style: parseStyle(this.props.style),
                 mapStyles: this.props.mapStyles,
                 width: this.props.width,
@@ -221,6 +225,27 @@ class GoogleMapContainer extends Component<GoogleMapContainerProps, { alertMessa
         return image
             ? getStaticMarkerUrl(image.enumImage as string, this.props.defaultMakerIcon)
             : "";
+    }
+
+    private onClick = (data: LatLng) => {
+        const { latitudeAttribute, locationsEntity, longitudeAttribute, mxform, onClickMicroflow } = this.props;
+        const latitude = data.lat ? Math.round(data.lat * 100000000) / 100000000 : 0 ;
+        const longitude = data.lng ? Math.round(data.lng * 100000000) / 100000000 : 0;
+        // Note: The precision in the databae is limited to 20 digits before and 8 digits after the decimal point
+
+        mx.data.create({
+            entity: locationsEntity,
+            callback: object => {
+                object.set(latitudeAttribute, latitude);
+                object.set(longitudeAttribute, longitude);
+                mx.ui.action(onClickMicroflow, {
+                    origin: mxform,
+                    params: { applyto: "selection", guids: [ object.getGuid() ] },
+                    error: error => window.mx.ui.error(`Error executing on click microflow ${onClickMicroflow} : ${error.message}`)
+                });
+            },
+            error: error => window.mx.ui.error(`Error creating event entity ${locationsEntity} : ${error.message}`)
+        });
     }
 }
 

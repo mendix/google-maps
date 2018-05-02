@@ -37,6 +37,7 @@ declare module "google-map-react" {
         defaultZoom?: number;
         googleMapLoader?: () => void;
         onGoogleApiLoaded?: (mapLoader: GoogleMapLoader) => void;
+        onChildClick?: (hoverKey: number, childProps: LatLng) => void;
         options?: MapLoaderProps;
         resetBoundsOnResize?: boolean;
         yesIWantToUseGoogleMapApiInternals?: boolean;
