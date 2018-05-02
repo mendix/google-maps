@@ -43,12 +43,16 @@ interface GoogleMapContainerProps extends WrapperProps {
     staticLocations: StaticLocation[];
     markerImages: Array<{ enumKey: string, enumImage: string}>;
     onClickMicroflow: string;
+    onClickEvent: OnClickOptions;
+    page: string;
     width: number;
     widthUnit: widthUnitType;
     zoomLevel: number;
 }
 
 type DataSource = "static" | "context" | "XPath" | "microflow";
+
+type OnClickOptions = "doNothing" | "showPage" | "callMicroflow";
 
 class GoogleMapContainer extends Component<GoogleMapContainerProps, { alertMessage?: string, locations: Location[] }> {
     private subscriptionHandles: number[];
@@ -57,7 +61,7 @@ class GoogleMapContainer extends Component<GoogleMapContainerProps, { alertMessa
         super(props);
 
         this.subscriptionHandles = [];
-        this.state = { alertMessage: "", locations: [] };
+        this.state = { alertMessage: GoogleMapContainer.validateProps(this.props), locations: [] };
         this.subscribe(this.props.mxObject);
     }
 
@@ -227,25 +231,48 @@ class GoogleMapContainer extends Component<GoogleMapContainerProps, { alertMessa
             : "";
     }
 
+    public static validateProps(props: GoogleMapContainerProps): string {
+        let errorMessage = "";
+        if (props.onClickEvent === "callMicroflow" && !props.onClickMicroflow) {
+            errorMessage = "A 'Microflow' is required for 'Markers' 'Call a microflow'";
+        } else if (props.onClickEvent === "showPage" && !props.page) {
+            errorMessage = "A 'Page' is required for 'Markers' 'Show a page'";
+        }
+        if (errorMessage) {
+            errorMessage = `Error in google maps configuration: ${errorMessage}`;
+        }
+
+        return errorMessage;
+    }
+
     private onClick = (data: LatLng) => {
-        const { latitudeAttribute, locationsEntity, longitudeAttribute, mxform, onClickMicroflow } = this.props;
+        const { latitudeAttribute, locationsEntity, longitudeAttribute, mxform, mxObject, onClickEvent, onClickMicroflow, page } = this.props;
         const latitude = data.lat ? Math.round(data.lat * 100000000) / 100000000 : 0 ;
         const longitude = data.lng ? Math.round(data.lng * 100000000) / 100000000 : 0;
         // Note: The precision in the databae is limited to 20 digits before and 8 digits after the decimal point
+        const context = new mendix.lib.MxContext();
+        context.setContext(mxObject.getEntity(), mxObject.getGuid());
 
-        mx.data.create({
-            entity: locationsEntity,
-            callback: object => {
-                object.set(latitudeAttribute, latitude);
-                object.set(longitudeAttribute, longitude);
-                mx.ui.action(onClickMicroflow, {
-                    origin: mxform,
-                    params: { applyto: "selection", guids: [ object.getGuid() ] },
-                    error: error => window.mx.ui.error(`Error executing on click microflow ${onClickMicroflow} : ${error.message}`)
-                });
-            },
-            error: error => window.mx.ui.error(`Error creating event entity ${locationsEntity} : ${error.message}`)
-        });
+        if (onClickEvent === "callMicroflow" && onClickMicroflow) {
+            mx.data.create({
+                entity: locationsEntity,
+                callback: object => {
+                    object.set(latitudeAttribute, latitude);
+                    object.set(longitudeAttribute, longitude);
+                    mx.ui.action(onClickMicroflow, {
+                        origin: mxform,
+                        params: { applyto: "selection", guids: [ object.getGuid() ] },
+                        error: error => window.mx.ui.error(`Error executing on click microflow ${onClickMicroflow} : ${error.message}`)
+                    });
+                },
+                error: error => window.mx.ui.error(`Error creating event entity ${locationsEntity} : ${error.message}`)
+            });
+        } else if (onClickEvent === "showPage" && page) {
+            window.mx.ui.openForm(page, {
+                context,
+                error: error => window.mx.ui.error(`Error while opening page ${page}: ${error.message}`)
+            });
+        }
     }
 }
 
