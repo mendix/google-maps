@@ -251,11 +251,18 @@ WARNING: Address lookups are Google APIs calls which are limited in the free tri
             <description>The microflow that will be executed when a marker is click </description>
             <returnType type="Void" />
         </property>
+        <property key="onClickNanoflow" type="nanoflow" required="false" entityProperty="locationsEntity">
+            <caption>On click nanoflow</caption>
+            <category>Markers</category>
+            <description>The nanoflow that will be executed when a marker is click </description>
+            <returnType type="Void" />
+        </property>
         <property key="page" type="form" required="false">
             <caption>Page</caption>
             <category>Markers</category>
             <description>The page that will be opened when a marker is click</description>
         </property>
+         <!-- Maps styles -->
         <property key="mapStyles" type="string" multiline="true" required="false">
             <caption>Map styles</caption>
             <category>Styles</category>
