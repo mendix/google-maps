@@ -15,7 +15,7 @@ declare module "google-map-react" {
     }
 
     export interface BootstrapURLKeysProps {
-        key?: string;
+        key: string;
         v?: string;
     }
 

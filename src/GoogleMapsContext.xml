@@ -5,10 +5,10 @@
     <icon>iVBORw0KGgoAAAANSUhEUgAAAA8AAAAPCAYAAAA71pVKAAAAAXNSR0IArs4c6QAAAihJREFUKBWVk09PE0EYxp+dmW3d/qOtgLapVQgUJEKiRz+AXvSoB+8mfgUPkPABvHv26sfwpF40xIOhAlaw0JZtabfd3e7srO9M8Q6bvJk3m+c3zzPv7Fovd3aeJ4xVcM3HUqotlFLVj7u776/J4sX29hsRJ4mVEPnqQxOWBTBGRSsXVHxW+t3/nlP/7skKNCdkFDGVJAQlKNVWjcjrHKJ8ZwmCNpj0jlGs1mBTX07HaPcG0HrNiVhKi3YhtwTChgG00L7shW2ZfjXnosDGuJ13ybUEzQkppXHmXGF8uk9xGZxclhx/00YcjZsSym/CC6eQso+74ic5P6BeknMcG2fOFBaW143z8PQI8/V7eFxuo+h+wsJ8Hm6QghfE2GsV8JCSak7ElD1WCoKcTVQaki0sLDo+1vgX7IcOUl4fk2Bi6szbgNZrzsTWZ9bOo3aTYnPcyGYx1/uMg+4JEp5D83gAP3ThTwP4QVVPehY7iiITu57xYK9sYckJwTu/8KiaJfE6Wid/gEwFKr5AFKaRZwMDa05P2wxsS3xFI+1hPDlHq9/CXpCgP/aRRBnUbjWQSq1BhF2ETt1cleZYFMdMx5iEHnrDQ7heB+1BFxYrolK8D0fM4azzF5QY4WhKqzVzJk5Evs/1pQ+GE8ijPqQCHL6Ibz++Y+j3YUm657hIE9/A+ShAoXRhnDUn3F4vbdOYnz57e+XPW+s1Z+U3N1/Tz7F8ZfJSyBg7+AfODzPRal+LJQAAAABJRU5ErkJggg==</icon>
     <properties>
         <!-- General -->
-        <property key="apiKey" type="string" required="false">
+        <property key="apiKey" type="string">
             <caption>API key</caption>
             <category>General</category>
-            <description>The Google Maps Javascript API v3 does not require an API key to function correctly. However, Google strongly encourages you to load the Maps API using an APIs key</description>
+            <description>The Google Maps Javascript API v3 requires an API key.</description>
         </property>
         <property key="defaultCenterAddress" type="string" required="false">
             <caption>Default center address</caption>

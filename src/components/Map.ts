@@ -14,7 +14,7 @@ export type heightUnitType = "percentageOfWidth" | "percentageOfParent" | "pixel
 
 export interface MapProps {
     className?: string;
-    apiKey?: string;
+    apiKey: string;
     autoZoom: boolean;
     defaultCenterAddress: string;
     defaultCenterLatitude: string;

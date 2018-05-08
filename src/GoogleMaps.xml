@@ -31,10 +31,10 @@
             <category>General</category>
             <description/>
         </property>
-        <property key="apiKey" type="string" required="false">
+        <property key="apiKey" type="string">
             <caption>API key</caption>
             <category>General</category>
-            <description>The Google Maps Javascript API v3 does not require an API key to function correctly. However, Google strongly encourages you to load the Maps API using an APIs key.
+            <description>The Google Maps Javascript API v3 requires an API key.
 WARNING: Address lookups are Google APIs calls which are limited in the free trier, it is recommended to use longitude latitude coordinates</description>
         </property>
         <!-- Data source -->
