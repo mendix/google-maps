@@ -248,19 +248,29 @@ WARNING: Address lookups are Google APIs calls which are limited in the free tri
         <property key="onClickMicroflow" type="microflow" required="false" entityProperty="locationsEntity">
             <caption>On click microflow</caption>
             <category>Markers</category>
-            <description>The microflow that will be executed when a marker is click </description>
+            <description>The microflow that will be executed when a marker is clicked</description>
             <returnType type="Void" />
         </property>
         <property key="onClickNanoflow" type="nanoflow" required="false" entityProperty="locationsEntity">
             <caption>On click nanoflow</caption>
             <category>Markers</category>
-            <description>The nanoflow that will be executed when a marker is click </description>
+            <description>The nanoflow that will be executed when a marker is clicked</description>
             <returnType type="Void" />
         </property>
         <property key="page" type="form" required="false">
             <caption>Page</caption>
             <category>Markers</category>
-            <description>The page that will be opened when a marker is click</description>
+            <description>The page that will be opened when a marker is clicked</description>
+        </property>
+        <property key="openPageAs" type="enumeration" defaultValue="content">
+            <caption>Open page as</caption>
+            <category>Markers</category>
+            <description/>
+            <enumerationValues>
+                <enumerationValue key="content">Full page</enumerationValue>
+                <enumerationValue key="popup">Popup</enumerationValue>
+                <enumerationValue key="modal">Blocking popup</enumerationValue>
+            </enumerationValues>
         </property>
          <!-- Maps styles -->
         <property key="mapStyles" type="string" multiline="true" required="false">
