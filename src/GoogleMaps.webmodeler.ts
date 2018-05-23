@@ -79,6 +79,7 @@ export function getVisibleProperties(valueMap: GoogleMapContainerProps, visibili
     visibilityMap.onClickMicroflow = valueMap.onClickEvent === "callMicroflow";
     visibilityMap.onClickNanoflow = valueMap.onClickEvent === "callNanoflow";
     visibilityMap.page = valueMap.onClickEvent === "showPage";
+    visibilityMap.openPageAs = valueMap.onClickEvent === "showPage";
 
     return visibilityMap;
 }
