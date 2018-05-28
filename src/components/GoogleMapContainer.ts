@@ -3,7 +3,6 @@ import { Map, heightUnitType, widthUnitType } from "./Map";
 import { Alert } from "./Alert";
 import { ValidateConfigs } from "../utils/ValidateConfigs";
 import { Location, StaticLocation, getStaticMarkerUrl, parseStaticLocations, parseStyle } from "../utils/ContainerUtils";
-import { LatLng } from "google-map-react";
 
 interface WrapperProps {
     "class"?: string;
@@ -52,6 +51,11 @@ interface GoogleMapContainerProps extends WrapperProps {
     zoomLevel: number;
 }
 
+interface GoogleMapContainerState {
+    alertMessage?: string;
+    locations: Location[];
+}
+
 interface Nanoflow {
     nanoflow: object[];
     paramsSpec: { Progress: string };
@@ -61,7 +65,7 @@ type DataSource = "static" | "context" | "XPath" | "microflow";
 type OnClickOptions = "doNothing" | "showPage" | "callMicroflow" | "callNanoflow";
 type PageLocation = "content" | "popup" | "modal";
 
-class GoogleMapContainer extends Component<GoogleMapContainerProps, { alertMessage?: string, locations: Location[] }> {
+class GoogleMapContainer extends Component<GoogleMapContainerProps, GoogleMapContainerState> {
     private subscriptionHandles: number[];
 
     constructor(props: GoogleMapContainerProps) {
@@ -95,7 +99,7 @@ class GoogleMapContainer extends Component<GoogleMapContainerProps, { alertMessa
                 optionScroll: this.props.optionScroll,
                 optionStreetView: this.props.optionStreetView,
                 optionZoomControl: this.props.optionZoomControl,
-                onClickAction: this.handleOnClickAction,
+                onClickAction: this.executeAction,
                 style: parseStyle(this.props.style),
                 mapStyles: this.props.mapStyles,
                 width: this.props.width,
@@ -223,6 +227,7 @@ class GoogleMapContainer extends Component<GoogleMapContainerProps, { alertMessa
                 address,
                 latitude: lat ? Number(lat) : undefined,
                 longitude: lon ? Number(lon) : undefined,
+                mxObject,
                 url
             };
         });
@@ -254,27 +259,16 @@ class GoogleMapContainer extends Component<GoogleMapContainerProps, { alertMessa
         return errorMessage;
     }
 
-    private handleOnClickAction = (data: LatLng) => {
-        const { latitudeAttribute, locationsEntity, longitudeAttribute } = this.props;
-        const latitude = data.lat ? Math.round(data.lat * 100000000) / 100000000 : 0 ;
-        const longitude = data.lng ? Math.round(data.lng * 100000000) / 100000000 : 0;
-        // Note: The precision in the databae is limited to 20 digits before and 8 digits after the decimal point
-
-        mx.data.create({
-            entity: locationsEntity,
-            callback: object => {
-                object.set(latitudeAttribute, latitude);
-                object.set(longitudeAttribute, longitude);
-                this.executeAction(object);
-            },
-            error: error => window.mx.ui.error(`Error creating event entity ${locationsEntity} : ${error.message}`)
-        });
-    }
-
-    private executeAction = (object: mendix.lib.MxObject) => {
-        const { mxform, onClickEvent, onClickMicroflow, onClickNanoflow, openPageAs, page } = this.props;
+    private executeAction = (markerLocation: Location) => {
+        const object = markerLocation.mxObject;
         const context = new mendix.lib.MxContext();
-        context.setContext(object.getEntity(), object.getGuid());
+        const { mxform, onClickEvent, onClickMicroflow, onClickNanoflow, openPageAs, page } = this.props;
+
+        if (!object || onClickEvent === "doNothing") {
+            return;
+        } else {
+            context.setContext(object.getEntity(), object.getGuid());
+        }
 
         if (onClickEvent === "callMicroflow" && onClickMicroflow) {
             mx.ui.action(onClickMicroflow, {

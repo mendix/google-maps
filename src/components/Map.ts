@@ -29,7 +29,7 @@ export interface MapProps {
     optionScroll: boolean;
     optionStreetView: boolean;
     optionZoomControl: boolean;
-    onClickAction?: (data: LatLng) => void;
+    onClickAction?: (location: Location) => void;
     width: number;
     widthUnit: widthUnitType;
     zoomLevel: number;
@@ -310,9 +310,9 @@ export class Map extends Component<MapProps, MapState> {
         return markerElements;
     }
 
-    private onChildClick = (_hoverKey: number, childProps: LatLng) => {
+    private onChildClick = (hoverKey: number, _childProps: LatLng) => {
         if (this.props.onClickAction) {
-            this.props.onClickAction(childProps);
+            this.props.onClickAction(this.props.locations[hoverKey]);
         }
     }
 }
