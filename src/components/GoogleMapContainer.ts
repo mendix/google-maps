@@ -99,7 +99,7 @@ class GoogleMapContainer extends Component<GoogleMapContainerProps, GoogleMapCon
                 optionScroll: this.props.optionScroll,
                 optionStreetView: this.props.optionStreetView,
                 optionZoomControl: this.props.optionZoomControl,
-                onClickAction: this.executeAction,
+                onClickAction: this.props.onClickEvent !== "doNothing" ? this.executeAction : undefined,
                 style: parseStyle(this.props.style),
                 mapStyles: this.props.mapStyles,
                 width: this.props.width,
@@ -261,34 +261,32 @@ class GoogleMapContainer extends Component<GoogleMapContainerProps, GoogleMapCon
 
     private executeAction = (markerLocation: Location) => {
         const object = markerLocation.mxObject;
-        const context = new mendix.lib.MxContext();
-        const { mxform, onClickEvent, onClickMicroflow, onClickNanoflow, openPageAs, page } = this.props;
 
-        if (!object || onClickEvent === "doNothing") {
-            return;
-        } else {
+        if (object) {
+            const { mxform, onClickEvent, onClickMicroflow, onClickNanoflow, openPageAs, page } = this.props;
+            const context = new mendix.lib.MxContext();
             context.setContext(object.getEntity(), object.getGuid());
-        }
 
-        if (onClickEvent === "callMicroflow" && onClickMicroflow) {
-            mx.ui.action(onClickMicroflow, {
-                origin: mxform,
-                params: { applyto: "selection", guids: [ object.getGuid() ] },
-                error: error => window.mx.ui.error(`Error executing on click microflow ${onClickMicroflow} : ${error.message}`)
-            });
-        } else if (onClickEvent === "callNanoflow" && onClickNanoflow.nanoflow) {
-            window.mx.data.callNanoflow({
-                nanoflow: onClickNanoflow,
-                origin: mxform,
-                context,
-                error: error => window.mx.ui.error(`Error while executing the on change nanoflow: ${error.message}`)
-            });
-        } else if (onClickEvent === "showPage" && page) {
-            window.mx.ui.openForm(page, {
-                location: openPageAs,
-                context,
-                error: error => window.mx.ui.error(`Error while opening page ${page}: ${error.message}`)
-            });
+            if (onClickEvent === "callMicroflow" && onClickMicroflow) {
+                mx.ui.action(onClickMicroflow, {
+                    context,
+                    origin: mxform,
+                    error: error => window.mx.ui.error(`Error while executing on click microflow ${onClickMicroflow} : ${error.message}`)
+                });
+            } else if (onClickEvent === "callNanoflow" && onClickNanoflow.nanoflow) {
+                window.mx.data.callNanoflow({
+                    nanoflow: onClickNanoflow,
+                    origin: mxform,
+                    context,
+                    error: error => window.mx.ui.error(`Error while executing on click nanoflow: ${error.message}`)
+                });
+            } else if (onClickEvent === "showPage" && page) {
+                window.mx.ui.openForm(page, {
+                    location: openPageAs,
+                    context,
+                    error: error => window.mx.ui.error(`Error while opening page ${page}: ${error.message}`)
+                });
+            }
         }
     }
 }
