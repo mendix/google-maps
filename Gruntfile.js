@@ -62,10 +62,10 @@ module.exports = function(grunt) {
             addSourceURL: {
                 files: [ {
                     append: `\n\n//# sourceURL=${pkg.widgetName}.webmodeler.js\n`,
-                    input: `dist/tmp/src/${pkg.widgetName}.webmodeler.js`
+                    input: `dist/tmp/src/GoogleMaps/${pkg.widgetName}.webmodeler.js`
                 }, {
                     append: `\n\n//# sourceURL=${pkg.widgetName}Context.webmodeler.js\n`,
-                    input: `dist/tmp/src/${pkg.widgetName}Context.webmodeler.js`
+                    input: `dist/tmp/src/GoogleMaps/${pkg.widgetName}Context.webmodeler.js`
                 } ]
             }
         },

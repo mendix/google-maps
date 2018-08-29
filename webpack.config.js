@@ -5,8 +5,8 @@ const ExtractTextPlugin = require("extract-text-webpack-plugin");
 
 const widgetConfig = {
     entry: {
-        GoogleMaps: "./src/components/GoogleMapContainer.ts",
-        GoogleMapsContext: "./src/components/GoogleMapContext.ts",
+        GoogleMaps: "./src/GoogleMaps/components/GoogleMapContainer.ts",
+        GoogleMapsContext: "./src/GoogleMaps/components/GoogleMapContext.ts",
     },
     output: {
         path: path.resolve(__dirname, "dist/tmp"),
@@ -41,10 +41,10 @@ const widgetConfig = {
 };
 
 const previewConfig = {
-    entry: "./src/GoogleMaps.webmodeler.ts",
+    entry: "./src/GoogleMaps/GoogleMaps.webmodeler.ts",
     output: {
         path: path.resolve(__dirname, "dist/tmp"),
-        filename: "src/GoogleMaps.webmodeler.js",
+        filename: "src/GoogleMaps/GoogleMaps.webmodeler.js",
         libraryTarget: "commonjs"
     },
     resolve: {
@@ -64,10 +64,10 @@ const previewConfig = {
 };
 
 const previewContextConfig = {
-    entry: "./src/GoogleMaps.webmodeler.ts",
+    entry: "./src/GoogleMaps/GoogleMaps.webmodeler.ts",
     output: {
         path: path.resolve(__dirname, "dist/tmp"),
-        filename: "src/GoogleMapsContext.webmodeler.js",
+        filename: "src/GoogleMaps/GoogleMapsContext.webmodeler.js",
         libraryTarget: "commonjs"
     },
     resolve: {
