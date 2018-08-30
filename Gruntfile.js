@@ -2,10 +2,14 @@
 const webpack = require("webpack");
 const webpackConfig = require("./webpack.config");
 const merge = require("webpack-merge");
+const widgetNames = Object.keys(webpackConfig[0].entry);
 
 const webpackConfigRelease = webpackConfig.map(config => merge(config, {
     devtool: false,
-    plugins: [ new webpack.optimize.UglifyJsPlugin() ]
+    mode: "production",
+    optimization: {
+        minimize: true
+    }
 }));
 
 module.exports = function(grunt) {
@@ -60,10 +64,12 @@ module.exports = function(grunt) {
 
         file_append: {
             addSourceURL: {
-                files: [ {
-                    append: `\n\n//# sourceURL=${pkg.widgetName}.webmodeler.js\n`,
-                    input: `dist/tmp/src/GoogleMaps/${pkg.widgetName}.webmodeler.js`
-                } ]
+                files: widgetNames.map(widgetName => {
+                    return {
+                        append: `\n\n//# sourceURL=${widgetName}.webmodeler.js\n`,
+                        input: `dist/tmp/src/${widgetName}/${widgetName}.webmodeler.js`
+                    };
+                })
             }
         },
 

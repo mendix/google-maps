@@ -6,16 +6,16 @@ const ExtractTextPlugin = require("extract-text-webpack-plugin");
 const widgetConfig = {
     entry: {
         GoogleMaps: "./src/GoogleMaps/components/GoogleMapContainer.ts",
+        Maps: "./src/Maps/components/MapsContainer.ts"
     },
     output: {
         path: path.resolve(__dirname, "dist/tmp"),
-        filename: "src/com/mendix/widget/custom/GoogleMaps/[name].js",
+        filename: "src/com/mendix/widget/custom/[name]/[name].js",
         libraryTarget: "umd"
     },
     resolve: {
         extensions: [ ".ts", ".js" ],
         alias: {
-            "react-google-maps": path.resolve(__dirname, "./node_modules/react-google-maps"),
             "tests": path.resolve(__dirname, "./tests")
         }
     },
@@ -25,25 +25,32 @@ const widgetConfig = {
             { test: /\.css$/, loader: ExtractTextPlugin.extract({
                 fallback: "style-loader",
                 use: "css-loader"
-            }) }
+            }) },
+            {
+                test: /\.(png|jpg|gif|svg|eot|ttf|woff|woff2)$/,
+                loader: "url-loader"
+            }
         ]
     },
-    devtool: "source-map",
+    devtool: "eval",
     externals: [ "mendix/lang", "react", "react-dom" ],
     plugins: [
         new CopyWebpackPlugin([
             { from: "src/**/*.xml" },
         ], { copyUnmodified: true }),
-        new ExtractTextPlugin({ filename: "./src/com/mendix/widget/custom/GoogleMaps/ui/[name].css" }),
+        new ExtractTextPlugin({ filename: `./src/com/mendix/widget/custom/[name]/ui/[name].css` }),
         new webpack.LoaderOptionsPlugin({ debug: true })
     ]
 };
 
 const previewConfig = {
-    entry: "./src/GoogleMaps/GoogleMaps.webmodeler.ts",
+    entry: {
+        GoogleMaps: "./src/GoogleMaps/GoogleMaps.webmodeler.ts",
+        Maps: "./src/Maps/Maps.webmodeler.ts"
+    },
     output: {
         path: path.resolve(__dirname, "dist/tmp"),
-        filename: "src/GoogleMaps/GoogleMaps.webmodeler.js",
+        filename: "src/[name]/[name].webmodeler.js",
         libraryTarget: "commonjs"
     },
     resolve: {
@@ -55,7 +62,7 @@ const previewConfig = {
             { test: /\.css$/, loader: "raw-loader" }
         ]
     },
-    devtool: "inline-source-map",
+    devtool: "eval",
     externals: [ "react", "react-dom" ],
     plugins: [
         new webpack.LoaderOptionsPlugin({ debug: true })
