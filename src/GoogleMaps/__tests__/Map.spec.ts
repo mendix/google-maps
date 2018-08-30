@@ -3,26 +3,28 @@ import { ShallowWrapper, configure, shallow } from "enzyme";
 import Adapter = require("enzyme-adapter-react-16");
 import GoogleMap from "google-map-react";
 
-import { Map, MapProps, heightUnitType, widthUnitType } from "../Map";
-import { Marker } from "../Marker";
-import { Alert } from "../Alert";
-import { Location } from "../../utils/ContainerUtils";
+import { Map, MapProps, heightUnitType, widthUnitType } from "../components/Map";
+import { Marker } from "../components/Marker";
+import { Alert } from "../../components/Alert";
+import { Location } from "../utils/ContainerUtils";
 
 // tslint:disable:no-submodule-imports
-import { mockGoogleMaps } from "tests/mocks/GoogleMaps";
-import { mockMendix } from "tests/mocks/Mendix";
+import { mockGoogleMaps } from "../../../tests/mocks/GoogleMaps";
+import { mockMendix } from "../../../tests/mocks/Mendix";
 
 configure({ adapter: new Adapter() });
 
 describe("Map", () => {
     const address = "Lumumba Ave, Kampala, Uganda";
     const invalidAddress = "invalidAddress";
+    // tslint:disable-next-line:variable-name
     const APIKey = "AIzaSyACjBNesZXeRFx86N7RMCWiTQP5GT_jDec";
     const renderMap = (props: MapProps) => shallow(createElement(Map, props));
     const defaultCenterLocation = { lat: 51.9107963, lng: 4.4789878 };
     let mxOriginal: mx.MxInterface;
 
     const setUpMap = (
+        // tslint:disable-next-line:variable-name
         locationsParam: Location[], APIKeyParam?: string,
         widthParam?: number,
         heightParam?: number,
@@ -61,13 +63,14 @@ describe("Map", () => {
                 maps: google.maps
             });
         }
+
         return output;
     };
 
     beforeAll(() => {
         mxOriginal = window.mx;
         window.google = mockGoogleMaps;
-        window.mx = mockMendix;
+        (window as any).mx = mockMendix;
     });
 
     it("should render with the map structure", () => {
@@ -79,9 +82,8 @@ describe("Map", () => {
                 createElement("div", { className: "widget-google-maps" },
                     createElement(Alert, {
                         bootstrapStyle: "danger",
-                        className: "widget-google-maps-alert",
-                        message: undefined
-                    }),
+                        className: "widget-google-maps-alert"
+                    }, undefined),
                     createElement(GoogleMap, {
                         bootstrapURLKeys: { key: undefined },
                         center: defaultCenterLocation,
@@ -103,9 +105,8 @@ describe("Map", () => {
                 createElement("div", { className: "widget-google-maps" },
                     createElement(Alert, {
                         bootstrapStyle: "danger",
-                        className: "widget-google-maps-alert",
-                        message: undefined
-                    }),
+                        className: "widget-google-maps-alert"
+                    }, undefined),
                     createElement(GoogleMap, {
                         bootstrapURLKeys: { key: undefined },
                         center: defaultCenterLocation,
@@ -127,9 +128,8 @@ describe("Map", () => {
                 createElement("div", { className: "widget-google-maps" },
                     createElement(Alert, {
                         bootstrapStyle: "danger",
-                        className: "widget-google-maps-alert",
-                        message: undefined
-                    }),
+                        className: "widget-google-maps-alert"
+                    }, undefined),
                     createElement(GoogleMap, {
                         bootstrapURLKeys: { key: undefined },
                         center: defaultCenterLocation,
@@ -151,9 +151,8 @@ describe("Map", () => {
                 createElement("div", { className: "widget-google-maps" },
                     createElement(Alert, {
                         bootstrapStyle: "danger",
-                        className: "widget-google-maps-alert",
-                        message: undefined
-                    }),
+                        className: "widget-google-maps-alert"
+                    }, undefined),
                     createElement(GoogleMap, {
                         bootstrapURLKeys: { key: undefined },
                         center: defaultCenterLocation,
@@ -231,7 +230,7 @@ describe("Map", () => {
             spyOn(window.mx.ui, "error").and.callThrough();
 
             const output = setUpMap([ { address: invalidAddress } ]);
-            const mapComponent = output.instance();
+            const mapComponent = output.instance() as any;
 
             expect(mapComponent.state.alertMessage).toBe(actionErrorMessage);
         });
