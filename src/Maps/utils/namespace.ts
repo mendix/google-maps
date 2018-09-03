@@ -40,6 +40,7 @@ export namespace Container {
         longitude?: number;
         mxObject?: mendix.lib.MxObject;
         url?: string;
+        locationAttr?: Container.DataSourceLocationProps;
     }
 
     export interface DefaultLocations {

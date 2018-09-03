@@ -6,12 +6,13 @@ import googleApiWrapper from "./GoogleApi";
 import { Container, MapUtils } from "../utils/namespace";
 import { Shared } from "../utils/sharedConfigs";
 import MapProps = Container.MapProps;
+import DataSourceLocationProps = Container.DataSourceLocationProps;
 import Location = Container.Location;
 import SharedProps = MapUtils.SharedProps;
 
 export type GoogleMapsProps = {
     scriptsLoaded?: boolean,
-    onClickMarker?: (event: Event | google.maps.MouseEvent) => void
+    onClickMarker?: (event: google.maps.MouseEvent, locationAttr: DataSourceLocationProps) => void
 } & SharedProps & MapProps;
 
 export interface GoogleMapState {
@@ -122,9 +123,9 @@ class GoogleMap extends Component<GoogleMapsProps, GoogleMapState> {
                     },
                     icon: location.url ? location.url : undefined
                 });
-                marker.addListener("click", (event: any) => {
-                    if (this.props.onClickMarker) {
-                        this.props.onClickMarker(event);
+                marker.addListener("click", (event: google.maps.MouseEvent) => {
+                    if (this.props.onClickMarker && location.locationAttr) {
+                        this.props.onClickMarker(event, location.locationAttr);
                     }
                 });
                 this.markers.push(marker);

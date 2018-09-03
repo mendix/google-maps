@@ -14,12 +14,15 @@ import { Container, MapUtils } from "../utils/namespace";
 import { Shared } from "../utils/sharedConfigs";
 import { Alert } from "../../components/Alert";
 import MapProps = Container.MapProps;
+import DataSourceLocationProps = Container.DataSourceLocationProps;
 import Location = Container.Location;
 import customUrls = MapUtils.customUrls;
 import mapAttr = MapUtils.mapAttr;
 import SharedProps = MapUtils.SharedProps;
 
-export type LeafletMapProps = { onClickMarker?: (event: LeafletEvent) => void } & SharedProps & MapProps;
+export type LeafletMapProps = {
+    onClickMarker?: (event: LeafletEvent, locationAttr: DataSourceLocationProps) => void
+} & SharedProps & MapProps;
 
 export interface LeafletMapState {
     center: LatLngLiteral;
@@ -125,8 +128,12 @@ export class LeafletMap extends Component<LeafletMapProps, LeafletMapState> {
                 this.createMarker(location)
                     .then(marker =>
                         this.markerGroup.addLayer(marker
-                            .on("click", event => this.props.onClickMarker ? this.props.onClickMarker(event) : undefined)
-                        ))
+                            .on("click", event => {
+                                if (event && location && location.locationAttr && this.props.onClickMarker) {
+                                    this.props.onClickMarker(event, location.locationAttr);
+                                }
+                            }
+                        )))
                     .then(layer =>
                         this.map
                             ? this.map.addLayer(layer)
