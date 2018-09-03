@@ -1,7 +1,7 @@
 import { shallow } from "enzyme";
 import { ReactChild, createElement } from "react";
 
-import { Alert, AlertProps } from "../components/Alert";
+import { Alert, AlertProps } from "../Alert";
 
 describe("Alert", () => {
     const renderAlert = (props: AlertProps, message: ReactChild) => shallow(createElement(Alert, props, message));
