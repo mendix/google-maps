@@ -24,38 +24,39 @@ describe("utils/Data", () => {
         };
 
         it("returns no alert message if autoZoom is enabled", () => {
-            const validationMessage = validateLocationProps({ autoZoom: true });
+            const validationMessage = validateLocationProps({ autoZoom: true, mapProvider: "openStreet" });
 
             expect(validationMessage).toBe("");
         });
 
         it("returns alert message if autozoom is not enabled and zomm is less than 2", () => {
-            const validationMessage = validateLocationProps({ autoZoom: false, zoomLevel: 1 });
+            const validationMessage = validateLocationProps({ autoZoom: false, zoomLevel: 1, mapProvider: "openStreet" });
 
             expect(validationMessage).toBe("Zoom Level should be greater than one");
         });
 
         it("returns no alert if there is a map token for mapProvider mapbox", () => {
             const mapToken = random.uuid();
-            const validationMessage = validateLocationProps({ mapProvider: "mapBox", mapBoxAccessToken: mapToken });
+            const validationMessage = validateLocationProps({ mapProvider: "mapBox", apiToken: mapToken });
 
             expect(validationMessage).toBe("");
         });
 
         it("returns alert if there is no map token for mapProvider mapbox", () => {
-            const validationMessage = validateLocationProps({ mapProvider: "mapBox", mapBoxAccessToken: "" });
+            const validationMessage = validateLocationProps({ mapProvider: "mapBox" });
 
-            expect(validationMessage).toBe("A Mapbox token is reaquired");
+            expect(validationMessage).toBe("An api token is required");
         });
 
         it("returns no alert if there are no locations", () => {
-            const validationMessage = validateLocationProps({ locations: [] });
+            const validationMessage = validateLocationProps({ locations: [], mapProvider: "openStreet" });
 
             expect(validationMessage).toBe("");
         });
 
         it("returns alert if data source type is context and there is no latitude or longitude", () => {
             const validationMessage = validateLocationProps({
+                mapProvider: "openStreet",
                 locations: [ contextLocation as locationDataProps ]
             });
 
@@ -65,6 +66,7 @@ describe("utils/Data", () => {
 
         it("returns alert if data source type is static and there is no latitude or longitude", () => {
             const validationMessage = validateLocationProps({
+                mapProvider: "openStreet",
                 locations: [ staticLocation as locationDataProps ]
             });
 
@@ -73,6 +75,7 @@ describe("utils/Data", () => {
 
         it("returns alert if data source type is microflow and there is no microflow", () => {
             const validationMessage = validateLocationProps({
+                mapProvider: "openStreet",
                 locations: [ microflowLocation as locationDataProps ]
             });
 

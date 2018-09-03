@@ -6,8 +6,8 @@ export const validateLocationProps = <T extends Partial<Container.MapsContainerP
     if (!autoZoom && (zoomLevel && zoomLevel < 2)) {
         errorMessage.push("Zoom Level should be greater than one");
     }
-    if (mapProvider === "mapBox" && !apiToken) {
-        errorMessage.push(`A Mapbox token is reaquired`);
+    if (!(mapProvider === "openStreet") && !apiToken) {
+        errorMessage.push(`An api token is required`);
     }
     if (locations && locations.length) {
         locations.forEach((location, index) => {
