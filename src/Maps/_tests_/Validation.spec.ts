@@ -45,7 +45,7 @@ describe("utils/Data", () => {
         it("returns alert if there is no map token for mapProvider mapbox", () => {
             const validationMessage = validateLocationProps({ mapProvider: "mapBox" });
 
-            expect(validationMessage).toBe("An api token is required");
+            expect(validationMessage).toBe("An api token for mapBox is required");
         });
 
         it("returns no alert if there are no locations", () => {
