@@ -162,7 +162,7 @@ export default class MapsContainer extends Component<MapsContainerProps, MapsCon
             }
         })
 
-    private setLocationsFromMxObjects = (mxObjects: mendix.lib.MxObject[], locationAttr: DataSourceLocationProps) =>
+    private setLocationsFromMxObjects = (mxObjects: mendix.lib.MxObject[], locationAttr: DataSourceLocationProps): Promise<Location[]> =>
         Promise.all(mxObjects.map(mxObject =>
             fetchMarkerObjectUrl({ type: locationAttr.markerImage, markerIcon: locationAttr.staticMarkerIcon }, mxObject)
                 .then(markerUrl => {
@@ -175,10 +175,14 @@ export default class MapsContainer extends Component<MapsContainerProps, MapsCon
                 })
             ))
 
-    private onClickMarker = (event: LeafletEvent | Event) => {
+    private onClickMarker = (event: LeafletEvent & google.maps.MouseEvent) => {
         const { locations } = this.state;
         if (locations && locations.length) {
-            this.executeAction(locations[ locations.findIndex(targetLoc => targetLoc.latitude === event.target.getLatLng().lat) ]);
+            if (this.props.mapProvider === "googleMaps") {
+                this.executeAction(locations[locations.findIndex(targetLoc => targetLoc.latitude === event.latLng.lat())]);
+            } else {
+                this.executeAction(locations[locations.findIndex(targetLoc => targetLoc.latitude === event.target.getLatLng().lat)]);
+            }
         }
     }
 

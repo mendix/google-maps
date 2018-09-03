@@ -9,7 +9,10 @@ import MapProps = Container.MapProps;
 import Location = Container.Location;
 import SharedProps = MapUtils.SharedProps;
 
-export type GoogleMapsProps = { scriptsLoaded?: boolean, onClickMarker?: (event: Event) => void } & SharedProps & MapProps;
+export type GoogleMapsProps = {
+    scriptsLoaded?: boolean,
+    onClickMarker?: (event: Event | google.maps.MouseEvent) => void
+} & SharedProps & MapProps;
 
 export interface GoogleMapState {
     center: google.maps.LatLngLiteral;
@@ -18,11 +21,11 @@ export interface GoogleMapState {
 
 class GoogleMap extends Component<GoogleMapsProps, GoogleMapState> {
 
-    private map?: google.maps.Map;
+    private map!: google.maps.Map;
 
     private defaultCenterLocation: google.maps.LatLngLiteral = { lat: 51.9107963, lng: 4.4789878 };
     private markers: google.maps.Marker[] = [];
-    private bounds?: google.maps.LatLngBounds;
+    private bounds!: google.maps.LatLngBounds;
 
     private googleMapsNode?: HTMLDivElement;
     readonly state: GoogleMapState = { center: this.defaultCenterLocation };
@@ -79,6 +82,7 @@ class GoogleMap extends Component<GoogleMapsProps, GoogleMapState> {
                 mapTypeControl: this.props.mapTypeControl,
                 fullscreenControl: this.props.fullScreenControl,
                 rotateControl: this.props.rotateControl,
+                styles: this.getMapsStyles(),
                 minZoom: 2,
                 maxZoom: 20
             });
@@ -107,12 +111,10 @@ class GoogleMap extends Component<GoogleMapsProps, GoogleMapState> {
         if (mapLocations && mapLocations.length) {
             this.bounds = new google.maps.LatLngBounds();
             mapLocations.forEach(location => {
-                if (this.bounds) {
-                    this.bounds.extend({
-                        lat: Number(location.latitude),
-                        lng: Number(location.longitude)
-                    });
-                }
+                this.bounds.extend({
+                    lat: Number(location.latitude),
+                    lng: Number(location.longitude)
+                });
                 const marker = new google.maps.Marker({
                     position: {
                         lat: Number(location.latitude),
@@ -152,6 +154,23 @@ class GoogleMap extends Component<GoogleMapsProps, GoogleMapState> {
             this.markers.forEach(marker => marker.setMap(map));
         }
     }
+
+    private getMapsStyles(): google.maps.MapTypeStyle[] {
+        if (this.props.mapStyles && this.props.mapStyles.trim()) {
+            try {
+                return JSON.parse(this.props.mapStyles);
+            } catch (error) {
+                this.setState({ alertMessage: `invalid Maps styles, ${error}` });
+            }
+        }
+
+        return [ {
+            featureType: "poi",
+            elementType: "labels",
+            stylers: [ { visibility: "off" } ]
+        } ];
+    }
+
 }
 
 export default googleApiWrapper(`https://maps.googleapis.com/maps/api/js?key=`)(GoogleMap);
