@@ -28,9 +28,8 @@ const googleApiWrapper = (script: string) => <P extends GoogleMapsProps>(wrapped
         }
 
         private addScript = (googleScript: string) => {
-            if (!(window as any)["com.mendix.widget.custom.maps.Maps"]) {
-                (window as any)["com.mendix.widget.custom.maps.Maps"] = new Promise((resolve, reject) => {
-                    // TODO: add to the mendx window object.
+            if (!(window as any)["_com.mendix.widget.custom.maps.Maps"]) {
+                (window as any)["_com.mendix.widget.custom.maps.Maps"] = new Promise((resolve, reject) => {
                     const refNode = window.document.getElementsByTagName("script")[0];
                     const scriptElement = document.createElement("script");
                     scriptElement.async = true;
@@ -50,7 +49,7 @@ const googleApiWrapper = (script: string) => <P extends GoogleMapsProps>(wrapped
                 });
             }
 
-            return (window as any)["com.mendix.widget.custom.maps.Maps"];
+            return (window as any)["_com.mendix.widget.custom.maps.Maps"];
         }
 
         private loadScript = (googleScript: string) => {

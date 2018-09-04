@@ -129,7 +129,7 @@ export class LeafletMap extends Component<LeafletMapProps, LeafletMapState> {
                     .then(marker =>
                         this.markerGroup.addLayer(marker
                             .on("click", event => {
-                                if (event && location && location.locationAttr && this.props.onClickMarker) {
+                                if (this.props.onClickMarker && location.locationAttr) {
                                     this.props.onClickMarker(event, location.locationAttr);
                                 }
                             }
@@ -164,25 +164,27 @@ export class LeafletMap extends Component<LeafletMapProps, LeafletMapState> {
     private createMarker = <T extends Location>(location: T): Promise<Marker> =>
         new Promise((resolve, reject) => {
             const { latitude, longitude, url } = location;
-            if (url) {
-                resolve(
-                    new Marker([
+            if (location) {
+                if (url) {
+                    resolve(
+                        new Marker([
+                            Number(latitude),
+                            Number(longitude)
+                        ]).setIcon(icon({
+                            iconUrl: url,
+                            iconSize: [ 38, 95 ],
+                            iconAnchor: [ 22, 94 ],
+                            className: "marker"
+                        }))
+                    );
+                } else {
+                    resolve(new Marker([
                         Number(latitude),
                         Number(longitude)
-                    ]).setIcon(icon({
-                        iconUrl: url,
-                        iconSize: [ 38, 95 ],
-                        iconAnchor: [ 22, 94 ],
-                        className: "marker"
-                    }))
-                );
-            } else if (!url) {
-                resolve(new Marker([
-                    Number(latitude),
-                    Number(longitude)
-                ]));
+                    ]));
+                }
             } else {
-                reject("Failed to create Marker");
+                reject("Failed no locations available");
             }
         })
 }
