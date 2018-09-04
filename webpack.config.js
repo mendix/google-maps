@@ -32,6 +32,7 @@ const widgetConfig = {
             }
         ]
     },
+    mode: "development",
     devtool: "eval",
     externals: [ "mendix/lang", "react", "react-dom" ],
     plugins: [
@@ -62,6 +63,7 @@ const previewConfig = {
             { test: /\.css$/, loader: "raw-loader" }
         ]
     },
+    mode: "development",
     devtool: "eval",
     externals: [ "react", "react-dom" ],
     plugins: [

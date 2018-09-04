@@ -6,7 +6,10 @@ const widgetNames = Object.keys(webpackConfig[0].entry);
 
 const webpackConfigRelease = webpackConfig.map(config => merge(config, {
     devtool: false,
-    mode: "production"
+    mode: "development",
+    optimization: {
+        minimize: true
+    }
 }));
 
 module.exports = function(grunt) {
