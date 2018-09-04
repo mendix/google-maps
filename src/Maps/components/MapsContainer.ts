@@ -178,19 +178,11 @@ export default class MapsContainer extends Component<MapsContainerProps, MapsCon
 
     private onClickMarker = (event: LeafletEvent & google.maps.MouseEvent, locationAttr: DataSourceLocationProps) => {
         const { locations } = this.state;
-        if (locations && locations.length) {
-            if (this.props.mapProvider === "googleMaps") {
-                this.executeAction(locations[locations.findIndex(targetLoc =>
-                    targetLoc.latitude === event.latLng.lat())],
-                    locationAttr
-                );
-            } else {
-                this.executeAction(locations[locations.findIndex(
-                    targetLoc => targetLoc.latitude === event.target.getLatLng().lat)],
-                    locationAttr
-                );
-            }
-        }
+        const latitude = this.props.mapProvider === "googleMaps" ? event.latLng.lat() : event.target.getLatLng().lat;
+        this.executeAction(locations[locations.findIndex(
+            targetLoc => targetLoc.latitude === latitude)],
+            locationAttr
+        );
     }
 
     private executeAction = (markerLocation: Location, locationAttr: Container.DataSourceLocationProps) => {
