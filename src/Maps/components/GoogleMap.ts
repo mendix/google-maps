@@ -40,7 +40,7 @@ class GoogleMap extends Component<GoogleMapsProps, GoogleMapState> {
             createElement("div",
                 {
                     className: classNames("widget-google-maps-wrapper", this.props.className),
-                    style: { ...this.props.style , ...Shared.getDimensions(this.props) }
+                    style: { ...this.props.divStyles , ...Shared.getDimensions(this.props) }
                 },
                 createElement("div", {
                     className: "widget-google-maps",
@@ -69,7 +69,7 @@ class GoogleMap extends Component<GoogleMapsProps, GoogleMapState> {
     }
 
     componentWillUnmount() {
-        // TODO remove event listeners if any
+        // TODO: remove event listeners if any
     }
 
     private initMap = (props: GoogleMapsProps) => {
@@ -93,17 +93,15 @@ class GoogleMap extends Component<GoogleMapsProps, GoogleMapState> {
 
     private setDefaultCenter = (props: GoogleMapsProps) => {
         const { defaultCenterLatitude, defaultCenterLongitude, fetchingData } = props;
-        if (this.map) {
-            if (defaultCenterLatitude && defaultCenterLongitude) {
-                this.setState({
-                    center: {
-                        lat: Number(defaultCenterLatitude),
-                        lng: Number(defaultCenterLongitude)
-                    }
-                });
-            } else if (!fetchingData) {
-                this.addMarkers(props.allLocations);
-            }
+        if (defaultCenterLatitude && defaultCenterLongitude) {
+            this.setState({
+                center: {
+                    lat: Number(defaultCenterLatitude),
+                    lng: Number(defaultCenterLongitude)
+                }
+            });
+        } else if (!fetchingData) {
+            this.addMarkers(props.allLocations);
         }
     }
 

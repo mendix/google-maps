@@ -20,7 +20,7 @@ export class preview extends Component<MapsContainerProps, {}> {
             allLocations: preview.createSampleLocations(),
             alertMessage: validationMessage,
             fetchingData: false,
-            style: parseStyle(this.props.style),
+            divStyles: parseStyle(this.props.style),
             ...this.props as MapProps
         };
 

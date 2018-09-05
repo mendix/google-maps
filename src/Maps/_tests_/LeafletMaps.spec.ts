@@ -16,7 +16,8 @@ describe("Leaflet maps", () => {
         zoomLevel: 10,
         width: 50,
         widthUnit: "percentage",
-        mapProvider: "openStreet"
+        mapProvider: "openStreet",
+        divStyles: {}
     };
 
     const renderLeafletMap = (props: LeafletMapProps) => shallow(createElement(LeafletMap, props));

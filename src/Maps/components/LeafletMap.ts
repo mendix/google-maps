@@ -49,13 +49,14 @@ export class LeafletMap extends Component<LeafletMapProps, LeafletMapState> {
             createElement("div",
                 {
                     className: classNames("widget-leaflet-maps-wrapper", this.props.className),
-                    style: { ...this.props.style , ...Shared.getDimensions(this.props) }
+                    style: { ...this.props.divStyles , ...Shared.getDimensions(this.props) }
                 },
                 createElement("div", {
                     className: "widget-leaflet-maps",
                     ref: (leafletNode?: HTMLDivElement) => this.leafletNode = leafletNode
-                }
-                )));
+                })
+            )
+        );
     }
 
     componentWillReceiveProps(newProps: LeafletMapProps) {
@@ -121,7 +122,7 @@ export class LeafletMap extends Component<LeafletMapProps, LeafletMapState> {
         }
     }
 
-    private renderMarkers = <T extends Location>(locations?: T[]) => {
+    private renderMarkers = (locations?: Location[]) => {
         this.markerGroup.clearLayers();
         if (locations && locations.length) {
             locations.forEach(location =>
@@ -161,7 +162,7 @@ export class LeafletMap extends Component<LeafletMapProps, LeafletMapState> {
         }, 0);
     }
 
-    private createMarker = <T extends Location>(location: T): Promise<Marker> =>
+    private createMarker = (location: Location): Promise<Marker> =>
         new Promise((resolve, reject) => {
             const { latitude, longitude, url } = location;
             if (location) {

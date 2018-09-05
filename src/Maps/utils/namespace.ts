@@ -114,7 +114,7 @@ export namespace MapUtils {
         className?: string;
         alertMessage?: string;
         fetchingData?: boolean;
-        style?: object;
+        divStyles: object;
     }
 
     export type heightUnitType = "percentageOfWidth" | "percentageOfParent" | "pixels";

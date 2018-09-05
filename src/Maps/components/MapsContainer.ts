@@ -41,7 +41,7 @@ export default class MapsContainer extends Component<MapsContainerProps, MapsCon
             fetchingData: this.state.isFetchingData,
             className: this.props.class,
             alertMessage: this.state.alertMessage,
-            style: parseStyle(this.props.style),
+            divStyles: parseStyle(this.props.style),
             onClickMarker: this.onClickMarker,
             ...this.props as MapProps
         };
@@ -185,7 +185,7 @@ export default class MapsContainer extends Component<MapsContainerProps, MapsCon
         );
     }
 
-    private executeAction = (markerLocation: Location, locationAttr: Container.DataSourceLocationProps) => {
+    private executeAction = (markerLocation: Location, locationAttr: DataSourceLocationProps) => {
         const object = markerLocation.mxObject;
 
         if (object) {
