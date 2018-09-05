@@ -121,7 +121,7 @@
             </properties>
         </property>
         <property key="mapProvider" type="enumeration" defaultValue="openStreet">
-            <caption>Map Provider</caption>
+            <caption>Map provider</caption>
             <category>Map properties</category>
             <description/>
             <enumerationValues>
@@ -132,14 +132,9 @@
             </enumerationValues>
         </property>
         <property key="apiToken" type="string" required="false">
-            <caption>Map token</caption>
+            <caption>Access token</caption>
             <category>Map properties</category>
-            <description>Add token for either map box, here maps(app code) and google maps</description>
-        </property>
-        <property key="hereMapsAppId" type="string" required="false">
-            <caption>Here maps App id</caption>
-            <category>Map properties</category>
-            <description/>
+            <description>Add token for either map box, here maps(app ID, app code respectively) and google maps</description>
         </property>
         <property key="defaultCenterLatitude" type="string" required="false">
             <caption>Default center latitude</caption>

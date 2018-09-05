@@ -36,6 +36,7 @@ export default class MapsContainer extends Component<MapsContainerProps, MapsCon
     };
 
     render() {
+        const mapsApiToken = this.props.apiToken ? this.props.apiToken.replace(/ /g, "") : undefined;
         const commonProps = {
             allLocations: this.state.locations,
             fetchingData: this.state.isFetchingData,
@@ -43,6 +44,7 @@ export default class MapsContainer extends Component<MapsContainerProps, MapsCon
             alertMessage: this.state.alertMessage,
             divStyles: parseStyle(this.props.style),
             onClickMarker: this.onClickMarker,
+            mapsToken: mapsApiToken,
             ...this.props as MapProps
         };
 

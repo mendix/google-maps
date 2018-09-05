@@ -93,18 +93,19 @@ export class LeafletMap extends Component<LeafletMapProps, LeafletMapState> {
     }
 
     private setTileLayer = () => {
-        const urlTemplate = this.props.mapProvider === "mapBox"
-            ? customUrls.mapbox + this.props.apiToken
-            : this.props.mapProvider === "hereMaps"
-            ? customUrls.hereMaps + `app_id=${this.props.hereMapsAppId}&app_code=${this.props.apiToken}`
-            : customUrls.openStreetMap;
-        const mapAttribution = this.props.mapProvider === "mapBox" ? mapAttr.mapboxAttr
-            : this.props.mapProvider === "hereMaps" ? mapAttr.hereMapsAttr
-            : mapAttr.openStreetMapAttr;
+        const { mapProvider, mapsToken } = this.props;
+        const urlTemplate = mapProvider === "mapBox"
+            ? customUrls.mapbox + mapsToken
+            : mapProvider === "hereMaps" && mapsToken && mapsToken.indexOf(",") > 0
+                ? customUrls.hereMaps + `app_id=${mapsToken.split(",")[0]}&app_code=${mapsToken.split(",")[1]}`
+                : customUrls.openStreetMap;
+        const mapAttribution = mapProvider === "mapBox"
+            ? mapAttr.mapboxAttr : mapProvider === "hereMaps"
+                ? mapAttr.hereMapsAttr : mapAttr.openStreetMapAttr;
 
         return tileLayer(urlTemplate, {
             attribution: mapAttribution,
-            id: this.props.mapProvider === "mapBox" ? "mapbox.streets" : undefined
+            id: mapProvider === "mapBox" ? "mapbox.streets" : undefined
         });
     }
 

@@ -76,7 +76,6 @@ export namespace Container {
     export interface MapProps extends MapControlOptions, DefaultLocations, MapUtils.Dimensions {
         mapProvider?: mapProviders;
         apiToken?: string;
-        hereMapsAppId?: string;
     }
 }
 
@@ -115,6 +114,7 @@ export namespace MapUtils {
         alertMessage?: string;
         fetchingData?: boolean;
         divStyles: object;
+        mapsToken?: string;
     }
 
     export type heightUnitType = "percentageOfWidth" | "percentageOfParent" | "pixels";

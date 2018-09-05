@@ -76,7 +76,6 @@ export function getVisibleProperties(valueMap: MapsContainerProps, visibilityMap
             if (!(valueMap.mapProvider === "openStreet")) {
                 visibilityMap.apiToken = true;
             }
-            visibilityMap.hereMapsAppId = valueMap.mapProvider === "hereMaps";
             visibilityMap.locations[index].staticMarkerIcon = location.markerImage === "staticImage";
             visibilityMap.locations[index].onClickMicroflow = location.onClickEvent === "callMicroflow";
             visibilityMap.locations[index].onClickNanoflow = location.onClickEvent === "callNanoflow";

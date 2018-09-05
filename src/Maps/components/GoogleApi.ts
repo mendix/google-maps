@@ -36,7 +36,7 @@ const googleApiWrapper = (script: string) => <P extends GoogleMapsProps>(wrapped
                     scriptElement.defer = true;
                     scriptElement.type = "text/javascript";
                     scriptElement.id = "googleScript";
-                    scriptElement.src = googleScript + this.props.apiToken;
+                    scriptElement.src = googleScript + this.props.mapsToken;
                     scriptElement.onerror = (err) => reject(`Failed due to ${err.message}`);
                     scriptElement.onload = () => {
                         if (typeof google === "object" && typeof google.maps === "object") {
