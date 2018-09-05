@@ -1,4 +1,6 @@
 const debug = process.env.DEBUG;
+const maps = process.env.MAPS;
+const url = maps ? "https://leafletmaps.mxapps.io/" : "https://googlemaps101.mxapps.io/";
 
 exports.config = {
     host: "127.0.0.1",
@@ -14,7 +16,7 @@ exports.config = {
     coloredLogs: true,
     bail: 0,
     screenshotPath: "dist/wdio/",
-    baseUrl: debug ? "http://localhost:8080/" : "https://googlemaps101.mxapps.io/",
+    baseUrl: debug ? "http://localhost:8080/" : url,
     waitforTimeout: 30000,
     connectionRetryTimeout: 90000,
     connectionRetryCount: 0,
