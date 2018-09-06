@@ -28,15 +28,15 @@ const googleApiWrapper = (script: string) => <P extends GoogleMapsProps>(wrapped
         }
 
         private addScript = (googleScript: string) => {
-            if (!(window as any)["_com.mendix.widget.custom.maps.Maps"]) {
-                (window as any)["_com.mendix.widget.custom.maps.Maps"] = new Promise((resolve, reject) => {
+            if (!(window as any)["_com.mendix.widget.custom.Maps.Maps"]) {
+                (window as any)["_com.mendix.widget.custom.Maps.Maps"] = new Promise((resolve, reject) => {
                     const refNode = window.document.getElementsByTagName("script")[0];
                     const scriptElement = document.createElement("script");
                     scriptElement.async = true;
                     scriptElement.defer = true;
                     scriptElement.type = "text/javascript";
                     scriptElement.id = "googleScript";
-                    scriptElement.src = googleScript + this.props.mapsToken;
+                    scriptElement.src = googleScript + this.props.mapsToken + `&libraries=places`;
                     scriptElement.onerror = (err) => reject(`Failed due to ${err.message}`);
                     scriptElement.onload = () => {
                         if (typeof google === "object" && typeof google.maps === "object") {
@@ -49,7 +49,7 @@ const googleApiWrapper = (script: string) => <P extends GoogleMapsProps>(wrapped
                 });
             }
 
-            return (window as any)["_com.mendix.widget.custom.maps.Maps"];
+            return (window as any)["_com.mendix.widget.custom.Maps.Maps"];
         }
 
         private loadScript = (googleScript: string) => {
