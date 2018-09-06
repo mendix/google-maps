@@ -15,12 +15,14 @@ type VisibilityMap<T> = {
 export class preview extends Component<MapsContainerProps, {}> {
 
     render() {
+        const mapsApiToken = this.props.apiToken ? this.props.apiToken.replace(/ /g, "") : undefined;
         const validationMessage = validateLocationProps(this.props);
         const commonProps = {
             allLocations: preview.createSampleLocations(),
             alertMessage: validationMessage,
             fetchingData: false,
             divStyles: parseStyle(this.props.style),
+            mapsToken: mapsApiToken,
             ...this.props as MapProps
         };
 
@@ -75,6 +77,13 @@ export function getVisibleProperties(valueMap: MapsContainerProps, visibilityMap
             }
             if (!(valueMap.mapProvider === "openStreet")) {
                 visibilityMap.apiToken = true;
+            }
+            if (!(valueMap.mapProvider === "googleMaps")) {
+                visibilityMap.mapStyles = false;
+                visibilityMap.mapTypeControl = false;
+                visibilityMap.optionStreetView = false;
+                visibilityMap.rotateControl = false;
+                visibilityMap.fullScreenControl = false;
             }
             visibilityMap.locations[index].staticMarkerIcon = location.markerImage === "staticImage";
             visibilityMap.locations[index].onClickMicroflow = location.onClickEvent === "callMicroflow";
