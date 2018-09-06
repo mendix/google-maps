@@ -53,7 +53,7 @@ const fetchByMicroflow = (actionname: string, guid: string): Promise<MxObject[]>
 
 export const fetchMarkerObjectUrl = (options: Data.FetchMarkerIcons, mxObject?: mendix.lib.MxObject): Promise<string> =>
     new Promise((resolve, reject) => {
-        const { type, markerIcon } = options;
+        const { type, markerIcon, imageAttribute, markerEnumImages } = options;
         if (type === "staticImage") {
             resolve(getStaticMarkerUrl(markerIcon));
         } else if (type === "systemImage" && mxObject) {
@@ -62,6 +62,9 @@ export const fetchMarkerObjectUrl = (options: Data.FetchMarkerIcons, mxObject?: 
                 objectUrl => resolve(objectUrl),
                 error => reject(`Error while retrieving the image url: ${error.message}`)
             );
+        } else if (type === "enumImage" && mxObject) {
+            const imageAttr = mxObject.get(imageAttribute) as string;
+            resolve(getMxObjectMarkerUrl(imageAttr, markerEnumImages));
         } else {
             resolve("");
         }
@@ -71,12 +74,22 @@ export const parseStaticLocations = (staticlocations: Container.DataSourceLocati
     return staticlocations.map(staticLocs => ({
         latitude: staticLocs.staticLatitude.trim() !== "" ? Number(staticLocs.staticLatitude) : undefined,
         longitude: staticLocs.staticLongitude.trim() !== "" ? Number(staticLocs.staticLongitude) : undefined,
-        url: getStaticMarkerUrl(staticLocs.staticMarkerIcon),
+        url: getMxObjectMarkerUrl(staticLocs.staticMarkerIcon),
         locationAttr: staticLocs
     }));
 };
 
-export const getStaticMarkerUrl = (staticMarkerIcon: string): string =>
-    staticMarkerIcon
+export const getMxObjectMarkerUrl = (imageKey?: string, markerImages?: Container.EnumerationImages[]): string => {
+    const image = markerImages ? markerImages.find(value => value.enumKey === imageKey) : undefined;
+
+    return image
+        ? getStaticMarkerUrl(image.enumImage as string)
+        : "";
+};
+
+export const getStaticMarkerUrl = (enumImage: string, staticMarkerIcon?: string): string =>
+    enumImage
+        ? UrlHelper.getStaticResourceUrl(enumImage)
+        : staticMarkerIcon
         ? UrlHelper.getStaticResourceUrl(staticMarkerIcon)
         : "";

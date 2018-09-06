@@ -73,6 +73,7 @@
                     <enumerationValues>
                         <enumerationValue key="staticImage">Static image</enumerationValue>
                         <enumerationValue key="systemImage">Dynamic image</enumerationValue>
+                        <enumerationValue key="enumImage">Enumeration</enumerationValue>
                     </enumerationValues>
                 </property>
                 <property key="staticMarkerIcon" type="image" required="false">

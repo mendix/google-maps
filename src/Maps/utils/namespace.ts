@@ -1,6 +1,6 @@
 export namespace Container {
 
-    export type MarKerImages = "systemImage" | "staticImage";
+    export type MarKerImages = "systemImage" | "staticImage" | "enumImage";
     export type DataSource = "static" | "XPath" | "microflow" | "context";
     export type OnClickOptions = "doNothing" | "showPage" | "callMicroflow" | "callNanoflow";
     export type PageLocation = "content" | "popup" | "modal";
@@ -16,6 +16,7 @@ export namespace Container {
 
     export interface MapsContainerProps extends WrapperProps, MapProps {
         locations: DataSourceLocationProps[];
+        markerImages: EnumerationImages[];
     }
 
     export interface DataSourceLocationProps extends DatabaseLocationProps, StaticLocationProps, MarkerIconProps, MarkerEvents {
@@ -51,6 +52,7 @@ export namespace Container {
     export interface MarkerIconProps {
         markerImage: MarKerImages;
         staticMarkerIcon: string;
+        markerImageAttribute: string;
     }
 
     export interface MarkerEvents {
@@ -71,6 +73,11 @@ export namespace Container {
         fullScreenControl?: boolean;
         rotateControl?: boolean;
         mapStyles?: string;
+    }
+
+    export interface EnumerationImages {
+        enumKey: string;
+        enumImage: string;
     }
 
     export interface MapProps extends MapControlOptions, DefaultLocations, MapUtils.Dimensions {
@@ -103,6 +110,8 @@ export namespace Data {
     export interface FetchMarkerIcons {
         type: Container.MarKerImages;
         markerIcon: string;
+        imageAttribute: string;
+        markerEnumImages: Container.EnumerationImages[];
     }
 }
 

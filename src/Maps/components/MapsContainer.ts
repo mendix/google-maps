@@ -93,7 +93,8 @@ export default class MapsContainer extends Component<MapsContainerProps, MapsCon
                     [
                         location.latitudeAttribute,
                         location.longitudeAttribute,
-                        location.staticMarkerIcon
+                        location.staticMarkerIcon,
+                        location.markerImageAttribute
                     ]
                     .forEach(
                         (attr): number => this.subscriptionHandles.push(window.mx.data.subscribe({
@@ -166,7 +167,12 @@ export default class MapsContainer extends Component<MapsContainerProps, MapsCon
 
     private setLocationsFromMxObjects = (mxObjects: mendix.lib.MxObject[], locationAttr: DataSourceLocationProps): Promise<Location[]> =>
         Promise.all(mxObjects.map(mxObject =>
-            fetchMarkerObjectUrl({ type: locationAttr.markerImage, markerIcon: locationAttr.staticMarkerIcon }, mxObject)
+            fetchMarkerObjectUrl({
+                    type: locationAttr.markerImage,
+                    markerIcon: locationAttr.staticMarkerIcon,
+                    imageAttribute: locationAttr.markerImageAttribute,
+                    markerEnumImages: this.props.markerImages
+                }, mxObject)
                 .then(markerUrl => {
                     return {
                         latitude: Number(mxObject.get(locationAttr.latitudeAttribute as string)),
