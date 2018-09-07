@@ -21,7 +21,7 @@
     "updateProject": "node ./node_modules/mendix-widget-build-script/dist/UpdateMxProject.js",
     "deployApp": "node ./node_modules/mendix-widget-build-script/dist/DeployMxApp.js",
     "deployAndTest": "npm run deploy && npm run test:e2e",
-    "posttest": "/tsc -p ./tests/e2e/tsconfig.json && wdio ./tests/e2e/wdio.conf.js && set MAPS=true"
+    "posttest": "tsc -p ./tests/e2e/tsconfig.json && set MAPS=true && wdio ./tests/e2e/wdio.conf.js"
   },
   "pre-commit": [
     "emit",
