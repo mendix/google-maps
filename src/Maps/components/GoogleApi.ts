@@ -11,16 +11,13 @@ const googleApiWrapper = (script: string) => <P extends GoogleMapsProps>(wrapped
         readonly state: GoogleApiWrapperState = { scriptsLoaded: false, alertMessage: "" };
 
         render() {
-            const props = {
-                ...this.state,
-                ...this.props as GoogleMapsProps
-            };
+            const props = { ...this.state, ...this.props as GoogleMapsProps };
 
             return createElement(wrappedComponent, { ...props as any });
         }
 
         componentDidMount() {
-            if (typeof google === "undefined") {
+            if (typeof window.google === "undefined") {
                 this.loadScript(script);
             } else {
                 this.setState({ scriptsLoaded: true });
@@ -28,8 +25,9 @@ const googleApiWrapper = (script: string) => <P extends GoogleMapsProps>(wrapped
         }
 
         private addScript = (googleScript: string) => {
-            if (!(window as any)["_com.mendix.widget.custom.Maps.Maps"]) {
-                (window as any)["_com.mendix.widget.custom.Maps.Maps"] = new Promise((resolve, reject) => {
+            const googleApiID = "_com.mendix.widget.custom.Maps.Maps";
+            if (!(window as any)[googleApiID]) {
+                (window as any)[googleApiID] = new Promise((resolve, reject) => {
                     const refNode = window.document.getElementsByTagName("script")[0];
                     const scriptElement = document.createElement("script");
                     scriptElement.async = true;
@@ -37,7 +35,7 @@ const googleApiWrapper = (script: string) => <P extends GoogleMapsProps>(wrapped
                     scriptElement.type = "text/javascript";
                     scriptElement.id = "googleScript";
                     scriptElement.src = googleScript + this.props.mapsToken + `&libraries=places`;
-                    scriptElement.onerror = (err) => reject(`Failed due to ${err.message}`);
+                    scriptElement.onerror = (err) => reject(`There is no internet connection ${err}`);
                     scriptElement.onload = () => {
                         if (typeof google === "object" && typeof google.maps === "object") {
                             resolve();
@@ -49,7 +47,7 @@ const googleApiWrapper = (script: string) => <P extends GoogleMapsProps>(wrapped
                 });
             }
 
-            return (window as any)["_com.mendix.widget.custom.Maps.Maps"];
+            return (window as any)[googleApiID];
         }
 
         private loadScript = (googleScript: string) => {

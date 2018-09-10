@@ -48,15 +48,9 @@ export default class MapsContainer extends Component<MapsContainerProps, MapsCon
             ...this.props as MapProps
         };
 
-        if (this.props.mapProvider === "googleMaps") {
-            return createElement(googleApiWrapper, {
-                ...commonProps
-            });
-        } else {
-            return createElement(LeafletMap, {
-                ...commonProps
-            });
-        }
+        return this.props.mapProvider === "googleMaps"
+            ? createElement(googleApiWrapper, { ...commonProps })
+            : createElement(LeafletMap, { ...commonProps });
     }
 
     componentWillReceiveProps(nextProps: MapsContainerProps) {

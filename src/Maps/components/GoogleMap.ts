@@ -10,10 +10,10 @@ import DataSourceLocationProps = Container.DataSourceLocationProps;
 import Location = Container.Location;
 import SharedProps = MapUtils.SharedProps;
 
-export type GoogleMapsProps = {
-    scriptsLoaded?: boolean,
-    onClickMarker?: (event: google.maps.MouseEvent, locationAttr: DataSourceLocationProps) => void
-} & SharedProps & MapProps;
+export interface GoogleMapsProps extends SharedProps, MapProps {
+    scriptsLoaded?: boolean;
+    onClickMarker?: (event: google.maps.MouseEvent, locationAttr: DataSourceLocationProps) => void;
+}
 
 export interface GoogleMapState {
     center: google.maps.LatLngLiteral;
@@ -21,22 +21,22 @@ export interface GoogleMapState {
 }
 
 class GoogleMap extends Component<GoogleMapsProps, GoogleMapState> {
-
     private map!: google.maps.Map;
-
     private defaultCenterLocation: google.maps.LatLngLiteral = { lat: 51.9107963, lng: 4.4789878 };
     private markers: google.maps.Marker[] = [];
     private bounds!: google.maps.LatLngBounds;
-
     private googleMapsNode?: HTMLDivElement;
-    readonly state: GoogleMapState = { center: this.defaultCenterLocation };
+    readonly state: GoogleMapState = {
+        center: this.defaultCenterLocation,
+        alertMessage: this.props.alertMessage
+    };
 
     render() {
         return createElement("div", {},
             createElement(Alert, {
                 bootstrapStyle: "danger",
                 className: "widget-google-maps-alert"
-            }, this.props.alertMessage || this.state.alertMessage),
+            }, this.state.alertMessage),
             createElement("div",
                 {
                     className: classNames("widget-google-maps-wrapper", this.props.className),
@@ -44,21 +44,24 @@ class GoogleMap extends Component<GoogleMapsProps, GoogleMapState> {
                 },
                 createElement("div", {
                     className: "widget-google-maps",
-                    ref: (leafletNode?: HTMLDivElement) => this.googleMapsNode = leafletNode
+                    ref: this.getRef
                 })
             )
         );
     }
 
-    componentWillReceiveProps(nextProps: GoogleMapsProps) {
-        if (nextProps.scriptsLoaded) {
-            this.initMap(nextProps);
-        }
-    }
-
     componentDidMount() {
         if (this.props.scriptsLoaded) {
             this.initMap(this.props);
+        }
+    }
+
+    componentWillReceiveProps(nextProps: GoogleMapsProps) {
+        if (nextProps.alertMessage !== this.props.alertMessage) {
+            this.setState({ alertMessage: nextProps.alertMessage });
+        }
+        if (nextProps.scriptsLoaded) {
+            this.initMap(nextProps);
         }
     }
 
@@ -68,22 +71,22 @@ class GoogleMap extends Component<GoogleMapsProps, GoogleMapState> {
         }
     }
 
-    componentWillUnmount() {
-        // TODO: remove event listeners if any
+    private getRef = (node: HTMLDivElement) => {
+        this.googleMapsNode = node;
     }
 
     private initMap = (props: GoogleMapsProps) => {
         if (this.googleMapsNode) {
             this.map = new google.maps.Map(this.googleMapsNode, {
-                zoom: this.props.zoomLevel,
-                zoomControl: this.props.optionZoomControl,
-                scrollwheel: this.props.optionScroll,
-                draggable: this.props.optionDrag,
-                streetViewControl: this.props.optionStreetView,
-                mapTypeControl: this.props.mapTypeControl,
-                fullscreenControl: this.props.fullScreenControl,
-                rotateControl: this.props.rotateControl,
-                styles: this.getMapsStyles(),
+                zoom: props.zoomLevel,
+                zoomControl: props.optionZoomControl,
+                scrollwheel: props.optionScroll,
+                draggable: props.optionDrag,
+                streetViewControl: props.optionStreetView,
+                mapTypeControl: props.mapTypeControl,
+                fullscreenControl: props.fullScreenControl,
+                rotateControl: props.rotateControl,
+                styles: this.getMapStyles(),
                 minZoom: 2,
                 maxZoom: 20
             });
@@ -92,15 +95,14 @@ class GoogleMap extends Component<GoogleMapsProps, GoogleMapState> {
     }
 
     private setDefaultCenter = (props: GoogleMapsProps) => {
-        const { defaultCenterLatitude, defaultCenterLongitude, fetchingData } = props;
-        if (defaultCenterLatitude && defaultCenterLongitude) {
+        if (props.defaultCenterLatitude && props.defaultCenterLongitude) {
             this.setState({
                 center: {
-                    lat: Number(defaultCenterLatitude),
-                    lng: Number(defaultCenterLongitude)
+                    lat: Number(props.defaultCenterLatitude),
+                    lng: Number(props.defaultCenterLongitude)
                 }
             });
-        } else if (!fetchingData) {
+        } else if (!props.fetchingData) {
             this.addMarkers(props.allLocations);
         }
     }
@@ -109,25 +111,27 @@ class GoogleMap extends Component<GoogleMapsProps, GoogleMapState> {
         this.markers = [];
         if (mapLocations && mapLocations.length) {
             this.bounds = new google.maps.LatLngBounds();
-            mapLocations.forEach(location => {
+            this.markers = mapLocations.reduce<google.maps.Marker[]>((markerArray, currentLocation) => {
                 this.bounds.extend({
-                    lat: Number(location.latitude),
-                    lng: Number(location.longitude)
+                    lat: Number(currentLocation.latitude),
+                    lng: Number(currentLocation.longitude)
                 });
                 const marker = new google.maps.Marker({
                     position: {
-                        lat: Number(location.latitude),
-                        lng: Number(location.longitude)
+                        lat: Number(currentLocation.latitude),
+                        lng: Number(currentLocation.longitude)
                     },
-                    icon: location.url ? location.url : undefined
+                    icon: currentLocation.url
                 });
                 marker.addListener("click", (event: google.maps.MouseEvent) => {
-                    if (this.props.onClickMarker && location.locationAttr) {
-                        this.props.onClickMarker(event, location.locationAttr);
+                    if (this.props.onClickMarker && currentLocation.locationAttr) {
+                        this.props.onClickMarker(event, currentLocation.locationAttr);
                     }
                 });
-                this.markers.push(marker);
-            });
+                markerArray.push(marker);
+
+                return markerArray;
+            }, []);
             this.setMapOnMarkers(this.map);
             this.setBounds(this.bounds);
         }
@@ -142,7 +146,7 @@ class GoogleMap extends Component<GoogleMapsProps, GoogleMapState> {
                         this.map.setZoom(this.props.zoomLevel);
                     }
                 } catch (error) {
-                    this.setState({ alertMessage: `Failed due to ${error.message}` });
+                    this.setState({ alertMessage: `Invalid map bounds ${error.message}` });
                 }
             }
         }, 0);
@@ -154,12 +158,12 @@ class GoogleMap extends Component<GoogleMapsProps, GoogleMapState> {
         }
     }
 
-    private getMapsStyles(): google.maps.MapTypeStyle[] {
+    private getMapStyles(): google.maps.MapTypeStyle[] {
         if (this.props.mapStyles && this.props.mapStyles.trim()) {
             try {
                 return JSON.parse(this.props.mapStyles);
             } catch (error) {
-                this.setState({ alertMessage: `invalid Maps styles, ${error}` });
+                this.setState({ alertMessage: `invalid Map styles, ${error}` });
             }
         }
 

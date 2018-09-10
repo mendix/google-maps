@@ -20,9 +20,9 @@ import customUrls = MapUtils.customUrls;
 import mapAttr = MapUtils.mapAttr;
 import SharedProps = MapUtils.SharedProps;
 
-export type LeafletMapProps = {
-    onClickMarker?: (event: LeafletEvent, locationAttr: DataSourceLocationProps) => void
-} & SharedProps & MapProps;
+export interface LeafletMapProps extends SharedProps, MapProps {
+    onClickMarker?: (event: LeafletEvent, locationAttr: DataSourceLocationProps) => void;
+}
 
 export interface LeafletMapState {
     center: LatLngLiteral;
@@ -33,9 +33,7 @@ export class LeafletMap extends Component<LeafletMapProps, LeafletMapState> {
     private leafletNode?: HTMLDivElement;
     private defaultCenterLocation: LatLngLiteral = { lat: 51.9107963, lng: 4.4789878 };
     private map?: Map;
-
     private markerGroup = new FeatureGroup();
-
     readonly state: LeafletMapState = {
         center: this.defaultCenterLocation
     };
@@ -53,14 +51,10 @@ export class LeafletMap extends Component<LeafletMapProps, LeafletMapState> {
                 },
                 createElement("div", {
                     className: "widget-leaflet-maps",
-                    ref: (leafletNode?: HTMLDivElement) => this.leafletNode = leafletNode
+                    ref: this.getRef
                 })
             )
         );
-    }
-
-    componentWillReceiveProps(newProps: LeafletMapProps) {
-        this.setDefaultCenter(newProps);
     }
 
     componentDidMount() {
@@ -80,6 +74,10 @@ export class LeafletMap extends Component<LeafletMapProps, LeafletMapState> {
         }
     }
 
+    componentWillReceiveProps(newProps: LeafletMapProps) {
+        this.setDefaultCenter(newProps);
+    }
+
     componentDidUpdate() {
         if (this.map && !this.props.fetchingData) {
             this.map.panTo(this.state.center);
@@ -92,16 +90,26 @@ export class LeafletMap extends Component<LeafletMapProps, LeafletMapState> {
         }
     }
 
+    private getRef = (node: HTMLDivElement) => {
+        this.leafletNode = node;
+    }
+
     private setTileLayer = () => {
         const { mapProvider, mapsToken } = this.props;
-        const urlTemplate = mapProvider === "mapBox"
-            ? customUrls.mapbox + mapsToken
-            : mapProvider === "hereMaps" && mapsToken && mapsToken.indexOf(",") > 0
-                ? customUrls.hereMaps + `app_id=${mapsToken.split(",")[0]}&app_code=${mapsToken.split(",")[1]}`
-                : customUrls.openStreetMap;
-        const mapAttribution = mapProvider === "mapBox"
-            ? mapAttr.mapboxAttr : mapProvider === "hereMaps"
-                ? mapAttr.hereMapsAttr : mapAttr.openStreetMapAttr;
+
+        let urlTemplate = "";
+        let mapAttribution = "";
+        if (mapProvider === "mapBox") {
+            urlTemplate = customUrls.mapbox + mapsToken;
+            mapAttribution = mapAttr.mapboxAttr;
+        } else if (mapProvider === "hereMaps" && mapsToken && mapsToken.indexOf(",") > 0) {
+            const splitToken = mapsToken.split(",");
+            urlTemplate = customUrls.hereMaps + `app_id=${splitToken[0]}&app_code=${splitToken[1]}`;
+            mapAttribution = mapAttr.hereMapsAttr;
+        } else {
+            urlTemplate = customUrls.openStreetMap;
+            mapAttribution = mapAttr.openStreetMapAttr;
+        }
 
         return tileLayer(urlTemplate, {
             attribution: mapAttribution,
@@ -136,12 +144,8 @@ export class LeafletMap extends Component<LeafletMapProps, LeafletMapState> {
                                 }
                             }
                         )))
-                    .then(layer =>
-                        this.map
-                            ? this.map.addLayer(layer)
-                            : undefined)
-                    .catch(reason =>
-                        this.setState({ alertMessage: `${reason}` })));
+                    .then(layer => this.map ? this.map.addLayer(layer) : undefined)
+                    .catch(reason => this.setState({ alertMessage: `${reason}` })));
             this.setBounds();
         } else if (this.map) {
             this.map.removeLayer(this.markerGroup);
@@ -157,7 +161,7 @@ export class LeafletMap extends Component<LeafletMapProps, LeafletMapState> {
                         this.map.setZoom(this.props.zoomLevel, { animate: false });
                     }
                 } catch (error) {
-                    this.setState({ alertMessage: `Failed due to ${error.message}` });
+                    this.setState({ alertMessage: `Invalid map bounds ${error.message}` });
                 }
             }
         }, 0);
@@ -169,10 +173,7 @@ export class LeafletMap extends Component<LeafletMapProps, LeafletMapState> {
             if (location) {
                 if (url) {
                     resolve(
-                        new Marker([
-                            Number(latitude),
-                            Number(longitude)
-                        ]).setIcon(icon({
+                        new Marker([ Number(latitude), Number(longitude) ]).setIcon(icon({
                             iconUrl: url,
                             iconSize: [ 38, 95 ],
                             iconAnchor: [ 22, 94 ],
@@ -180,13 +181,10 @@ export class LeafletMap extends Component<LeafletMapProps, LeafletMapState> {
                         }))
                     );
                 } else {
-                    resolve(new Marker([
-                        Number(latitude),
-                        Number(longitude)
-                    ]));
+                    resolve(new Marker([ Number(latitude), Number(longitude) ]));
                 }
             } else {
-                reject("Failed no locations available");
+                reject("No locations provided");
             }
         })
 }

@@ -1,4 +1,4 @@
-import { Component, ReactElement, createElement } from "react";
+import { Component, createElement } from "react";
 import { Map, MapProps } from "./components/Map";
 import { Alert } from "../components/Alert";
 import { GoogleMapContainerProps } from "./components/GoogleMapContainer";
@@ -14,26 +14,17 @@ type VisibilityMap = {
 export class preview extends Component<GoogleMapContainerProps, {}> {
     render() {
         const warnings = ValidateConfigs.validate(this.props);
-        let reactElement: ReactElement<any>;
         if (!warnings) {
-            reactElement = createElement(Map, preview.transformProps(this.props));
+            return createElement(Map, preview.transformProps(this.props));
         } else {
-            reactElement = createElement("div", {},
-                createElement(Alert, {
-                    bootstrapStyle: "danger",
-                    className: "widget-google-maps-alert"
-                }, warnings),
-                createElement(Map, preview.transformProps(this.props))
-            );
+            return createElement("div", {},
+                createElement(Alert, { bootstrapStyle: "danger", className: "widget-google-maps-alert" }, warnings),
+                createElement(Map, preview.transformProps(this.props)));
         }
-
-        return createElement("div", {}, reactElement);
     }
 
     private static transformProps(props: GoogleMapContainerProps): MapProps {
-        const locations = props.dataSource === "static"
-            ? parseStaticLocations(props)
-            : [];
+        const locations = props.dataSource === "static" ? parseStaticLocations(props) : [];
 
         return {
             apiKey: props.apiKey,

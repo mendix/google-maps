@@ -26,15 +26,9 @@ export class preview extends Component<MapsContainerProps, {}> {
             ...this.props as MapProps
         };
 
-        if (this.props.mapProvider === "googleMaps") {
-            return createElement(googleApiWrapper, {
-                ...commonProps
-            });
-        }
-
-        return createElement(LeafletMap, {
-            ...commonProps
-        });
+        return this.props.mapProvider === "googleMaps"
+            ? createElement(googleApiWrapper, { ...commonProps })
+            : createElement(LeafletMap, { ...commonProps });
     }
 
     static createSampleLocations(): {latitude: number, longitude: number, url: string }[] {
@@ -85,12 +79,13 @@ export function getVisibleProperties(valueMap: MapsContainerProps, visibilityMap
                 visibilityMap.rotateControl = false;
                 visibilityMap.fullScreenControl = false;
             }
+            if (location.onClickEvent === "showPage") {
+                visibilityMap.locations[index].page = true;
+                visibilityMap.locations[index].PageLocation = true;
+            }
             visibilityMap.locations[index].staticMarkerIcon = location.markerImage === "staticImage";
             visibilityMap.locations[index].onClickMicroflow = location.onClickEvent === "callMicroflow";
             visibilityMap.locations[index].onClickNanoflow = location.onClickEvent === "callNanoflow";
-            visibilityMap.locations[index].page = location.onClickEvent === "showPage";
-
-            visibilityMap.locations[index].PageLocation = location.onClickEvent === "showPage";
         });
     }
 
