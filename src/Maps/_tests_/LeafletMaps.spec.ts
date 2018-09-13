@@ -1,5 +1,6 @@
 import { mount, shallow } from "enzyme";
 import { createElement } from "react";
+
 import { LeafletMap, LeafletMapProps } from "../components/LeafletMap";
 import { Alert } from "../../components/Alert";
 
@@ -114,15 +115,6 @@ describe("Leaflet maps", () => {
         expect(leafletMap.state("center")).toEqual({ lat: 51.9107963, lng: 4.4789878 });
     });
 
-    it("creates markers when locations are provided", () => {
-        const leafletMap = fullRenderLeafletMap(defaultProps);
-        leafletMap.setProps({
-            fetchingData: false
-        });
-
-        expect(leafletMap.state("center")).toEqual({ lat: 51.9107963, lng: 4.4789878 });
-    });
-
     it("un mounts from the dom when unmounted", () => {
         const leafletMap = renderLeafletMap(defaultProps);
         const leafletInstance = leafletMap.instance() as any;
@@ -163,5 +155,4 @@ describe("Leaflet maps", () => {
 
         expect(createMarkerSpy).toHaveBeenCalledWith(customProps.allLocations);
     });
-
 });
