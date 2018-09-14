@@ -48,10 +48,7 @@ describe("utils/Data", () => {
         it("returns alert if data source type is context and there is no latitude or longitude", () => {
             const validationMessage = validateLocationProps({
                 mapProvider: "openStreet",
-                locations: [ {
-                    ...defaultProps as locationDataProps,
-                    longitudeAttribute: ""
-                } ]
+                locations: [ { ...defaultProps as locationDataProps, longitudeAttribute: "" } ]
             });
 
             expect(validationMessage).toBe(`The Latitude attribute and longitude attribute are required for data source
@@ -61,11 +58,7 @@ describe("utils/Data", () => {
         it("returns alert if data source type is static and there is no latitude or longitude", () => {
             const validationMessage = validateLocationProps({
                 mapProvider: "openStreet",
-                locations: [ {
-                    ...defaultProps as locationDataProps,
-                    dataSourceType: "static",
-                    staticLatitude: "lat"
-                } ]
+                locations: [ { ...defaultProps as locationDataProps, dataSourceType: "static", staticLatitude: "lat" } ]
             });
 
             expect(validationMessage).toBe("Invalid static locations. Latitude and longitude are required at location 1");
@@ -74,10 +67,7 @@ describe("utils/Data", () => {
         it("returns alert if data source type is microflow and there is no microflow", () => {
             const validationMessage = validateLocationProps({
                 mapProvider: "openStreet",
-                locations: [ {
-                    ...defaultProps as locationDataProps,
-                    dataSourceType: "microflow"
-                } ]
+                locations: [ { ...defaultProps as locationDataProps, dataSourceType: "microflow" } ]
             });
 
             expect(validationMessage).toBe("A Microflow is required for Data source Microflow at location 1");
@@ -86,10 +76,7 @@ describe("utils/Data", () => {
         it("return an alert if marker image is selected and there are no marker images", () => {
             const validationMessage = validateLocationProps({
                 mapProvider: "openStreet",
-                locations: [ {
-                    ...defaultProps as locationDataProps,
-                    markerImage: "enumImage"
-                } ]
+                locations: [ { ...defaultProps as locationDataProps, markerImage: "enumImage" } ]
             });
 
             expect(validationMessage).toBe("Marker images are required for image attribute at location 1");
