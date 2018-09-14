@@ -7,20 +7,11 @@ import locationDataProps = Container.DataSourceLocationProps;
 describe("utils/Data", () => {
 
     describe("#validateLocationProps", () => {
-        const contextLocation: Partial<locationDataProps> = {
-            dataSourceType: "context",
-            latitudeAttribute: "latitude"
-        };
-
-        const staticLocation: Partial<locationDataProps> = {
-            dataSourceType: "static",
-            staticLatitude: "lat"
-        };
-
-        const microflowLocation: Partial<locationDataProps> = {
-            dataSourceType: "microflow",
+        const defaultProps: Partial<locationDataProps> = {
+            locationsEntity: "location",
             latitudeAttribute: "latitude",
-            longitudeAttribute: "longitude"
+            longitudeAttribute: "longitude",
+            dataSourceType: "context"
         };
 
         it("returns no alert message if autoZoom is enabled", () => {
@@ -57,7 +48,10 @@ describe("utils/Data", () => {
         it("returns alert if data source type is context and there is no latitude or longitude", () => {
             const validationMessage = validateLocationProps({
                 mapProvider: "openStreet",
-                locations: [ contextLocation as locationDataProps ]
+                locations: [ {
+                    ...defaultProps as locationDataProps,
+                    longitudeAttribute: ""
+                } ]
             });
 
             expect(validationMessage).toBe(`The Latitude attribute and longitude attribute are required for data source
@@ -67,7 +61,11 @@ describe("utils/Data", () => {
         it("returns alert if data source type is static and there is no latitude or longitude", () => {
             const validationMessage = validateLocationProps({
                 mapProvider: "openStreet",
-                locations: [ staticLocation as locationDataProps ]
+                locations: [ {
+                    ...defaultProps as locationDataProps,
+                    dataSourceType: "static",
+                    staticLatitude: "lat"
+                } ]
             });
 
             expect(validationMessage).toBe("Invalid static locations. Latitude and longitude are required at location 1");
@@ -76,10 +74,25 @@ describe("utils/Data", () => {
         it("returns alert if data source type is microflow and there is no microflow", () => {
             const validationMessage = validateLocationProps({
                 mapProvider: "openStreet",
-                locations: [ microflowLocation as locationDataProps ]
+                locations: [ {
+                    ...defaultProps as locationDataProps,
+                    dataSourceType: "microflow"
+                } ]
             });
 
             expect(validationMessage).toBe("A Microflow is required for Data source Microflow at location 1");
+        });
+
+        it("return an alert if marker image is selected and there are no marker images", () => {
+            const validationMessage = validateLocationProps({
+                mapProvider: "openStreet",
+                locations: [ {
+                    ...defaultProps as locationDataProps,
+                    markerImage: "enumImage"
+                } ]
+            });
+
+            expect(validationMessage).toBe("Marker images are required for image attribute at location 1");
         });
     });
 

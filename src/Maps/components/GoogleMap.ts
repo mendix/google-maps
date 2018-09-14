@@ -20,7 +20,7 @@ export interface GoogleMapState {
     alertMessage?: string;
 }
 
-class GoogleMap extends Component<GoogleMapsProps, GoogleMapState> {
+export class GoogleMap extends Component<GoogleMapsProps, GoogleMapState> {
     private map!: google.maps.Map;
     private defaultCenterLocation: google.maps.LatLngLiteral = { lat: 51.9107963, lng: 4.4789878 };
     private markers: google.maps.Marker[] = [];
