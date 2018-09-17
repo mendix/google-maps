@@ -5,19 +5,17 @@ import { LeafletMap } from "./LeafletMap";
 import googleApiWrapper from "./GoogleMap";
 import { Container } from "../utils/namespace";
 import { fetchData, fetchMarkerObjectUrl, parseStaticLocations } from "../utils/Data";
-import { validLocations, validateLocationProps } from "../utils/Validations";
+import { validateLocationProps, validateLocations } from "../utils/Validations";
 import MapsContainerProps = Container.MapsContainerProps;
 import MapProps = Container.MapProps;
 import Location = Container.Location;
 import DataSourceLocationProps = Container.DataSourceLocationProps;
 
-// tslint:disable-next-line:no-submodule-imports
 import "leaflet/dist/leaflet.css";
 // Re-uses images from ~leaflet package
 // Use workaround for marker icon, that is not standard compatible with webpack
 // https://github.com/ghybs/leaflet-defaulticon-compatibility#readme
 import "leaflet-defaulticon-compatibility";
-// tslint:disable-next-line:no-submodule-imports
 import "leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility.webpack.css";
 import "../../ui/Maps.css";
 
@@ -73,8 +71,7 @@ export default class MapsContainer extends Component<MapsContainerProps, MapsCon
 
     private resetSubscriptions(contextObject?: mendix.lib.MxObject) {
         this.unsubscribeAll();
-        if (this.props.locations && this.props.locations.length) {
-            if (contextObject) {
+        if (this.props.locations && this.props.locations.length && contextObject) {
                 this.subscriptionHandles.push(window.mx.data.subscribe({
                     guid: contextObject.getGuid(),
                     callback: () => this.fetchData(contextObject)
@@ -89,9 +86,7 @@ export default class MapsContainer extends Component<MapsContainerProps, MapsCon
                         location.longitudeAttribute,
                         location.staticMarkerIcon,
                         location.markerImageAttribute
-                    ]
-                    .forEach(
-                        (attr): number => this.subscriptionHandles.push(window.mx.data.subscribe({
+                    ].forEach(attr => this.subscriptionHandles.push(window.mx.data.subscribe({
                             attr,
                             callback: () => this.fetchData(contextObject),
                             guid: contextObject.getGuid()
@@ -100,42 +95,36 @@ export default class MapsContainer extends Component<MapsContainerProps, MapsCon
                 });
             }
         }
-    }
 
     private unsubscribeAll() {
         this.subscriptionHandles.forEach(window.mx.data.unsubscribe);
         this.subscriptionHandles = [];
     }
 
-    private fetchData = (contextObject?: mendix.lib.MxObject) => {
+    private fetchData = (contextObject: mendix.lib.MxObject) => {
         this.setState({ isFetchingData: true });
         Promise.all(this.props.locations.map(locationAttr =>
             this.retrieveData(locationAttr, contextObject)
-        ))
-        .then(locations => {
-            const locs = ([] as Location[]).concat(...locations);
-            if (validLocations(locs)) {
+        )).then(locations => {
+            const flattenLocations = locations.reduce((loc1, loc2) => loc1.concat(loc2), []);
+            Promise.all(flattenLocations.map(loca => validateLocations(loca))).then(validLocations =>
                 this.setState({
-                    locations: locs,
+                    locations: validLocations,
                     isFetchingData: false,
                     alertMessage: ""
+                }))
+                .catch(reason => {
+                    this.setState({
+                        locations: [],
+                        alertMessage: `${this.props.friendlyId}: failed due to ${reason}`,
+                        isFetchingData: false
+                    });
                 });
-            } else {
-                throw new Error("Invalid Coordinates passed");
-            }
-        })
-        .catch(reason => {
-            this.setState({
-                locations: [],
-                alertMessage: `Failed due to ${reason.message}`,
-                isFetchingData: false
             });
-        });
     }
 
-    private retrieveData = (locationOptions: DataSourceLocationProps, contextObject?: mendix.lib.MxObject): Promise<Location[]> =>
+    private retrieveData = (locationOptions: DataSourceLocationProps, contextObject: mendix.lib.MxObject): Promise<Location[]> =>
         new Promise((resolve, reject) => {
-            if (contextObject) {
                 const guid = contextObject.getGuid();
                 if (locationOptions.dataSourceType === "static") {
                     const staticLocation = parseStaticLocations([ locationOptions ]);
@@ -152,12 +141,10 @@ export default class MapsContainer extends Component<MapsContainerProps, MapsCon
                         microflow: locationOptions.dataSourceMicroflow
                     })
                     .then(mxObjects => this.setLocationsFromMxObjects(mxObjects, locationOptions))
-                    .then(locations => resolve(locations));
+                    .then(locations => resolve(locations))
+                    .catch(reason => reject(`${this.props.friendlyId}: Failed to retrieve locations ${reason}`));
                 }
-            } else {
-                reject("Context Object required");
-            }
-        })
+            })
 
     private setLocationsFromMxObjects = (mxObjects: mendix.lib.MxObject[], locationAttr: DataSourceLocationProps): Promise<Location[]> =>
         Promise.all(mxObjects.map(mxObject =>
@@ -199,7 +186,7 @@ export default class MapsContainer extends Component<MapsContainerProps, MapsCon
                     origin: mxform,
                     error: error =>
                         this.setState({
-                            alertMessage: `Error while executing on click microflow ${onClickMicroflow} : ${error.message}`
+                            alertMessage: `${this.props.friendlyId}: Error while executing on click microflow ${onClickMicroflow} : ${error.message}`
                         })
                 });
             } else if (onClickEvent === "callNanoflow" && onClickNanoflow.nanoflow) {
@@ -207,16 +194,14 @@ export default class MapsContainer extends Component<MapsContainerProps, MapsCon
                     nanoflow: onClickNanoflow,
                     origin: mxform,
                     context,
-                    error: error => this.setState({ alertMessage: `Error while executing on click nanoflow: ${error.message}` })
+                    error: error => this.setState({ alertMessage: `${this.props.friendlyId}: Error while executing on click nanoflow: ${error.message}` })
                 });
             } else if (onClickEvent === "showPage" && page) {
                 window.mx.ui.openForm(page, {
                     location: openPageAs,
                     context,
-                    error: error => this.setState({ alertMessage: `Error while opening page ${page}: ${error.message}` })
+                    error: error => this.setState({ alertMessage: `${this.props.friendlyId}: Error while opening page ${page}: ${error.message}` })
                 });
-            } else if (onClickEvent !== "doNothing") {
-                this.setState({ alertMessage: `No Action was passed ${onClickEvent}` });
             }
         }
     }

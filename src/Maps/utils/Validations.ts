@@ -33,13 +33,19 @@ export const validateLocationProps = <T extends Partial<Container.MapsContainerP
     return errorMessage.join(", ");
 };
 
-export const validLocations = (location: Container.Location[]): boolean => {
-    return location.every(loca => {
-        const { latitude: lat, longitude: lng } = loca;
+export const validateLocations = (location: Container.Location): Promise<Container.Location> => new Promise((resolve, reject) => {
+    if (validLocation(location)) {
+        resolve(location);
+    } else {
+        reject(`invalid location: latitude ${location.longitude}, longitude ${location.longitude}`);
+    }
+});
 
-        return typeof lat === "number" && typeof lng === "number"
-        && lat <= 90 && lat >= -90
-        && lng <= 180 && lng >= -180
-        && !(lat === 0 && lng === 0);
-    });
+export const validLocation = (location: Container.Location) => {
+    const { latitude: lat, longitude: lng } = location;
+
+    return typeof lat === "number" && typeof lng === "number"
+    && lat <= 90 && lat >= -90
+    && lng <= 180 && lng >= -180
+    && !(lat === 0 && lng === 0);
 };
