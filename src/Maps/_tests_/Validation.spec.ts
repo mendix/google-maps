@@ -84,7 +84,14 @@ describe("utils/Data", () => {
     });
 
     describe("#ValidLocation", () => {
-        it("returns false if location is not valid", () => {
+        it("returns location if valid", () => {
+            const location = { latitude:  51.9107963, longitude: 4.4789878 };
+            const checkValidLocation = validateLocations(location);
+
+            checkValidLocation.then(e => expect(e).toEqual({ latitude: 51.9107963, longitude: 4.4789878 }));
+        });
+
+        it("returns error if location is not valid", () => {
             const location = { latitude: 0, longitude: 0 };
             const checkValidLocation = validateLocations(location);
 
