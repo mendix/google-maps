@@ -49,7 +49,7 @@ describe("Google maps", () => {
         );
     });
 
-    it("renders structure correctly with pixels", () => {
+    it("with pixels renders structure correctly", () => {
         const googleMaps = renderGoogleMap(defaultProps);
         const mapStyle = { width: "100px", height: "580px" };
         googleMaps.setProps({
@@ -67,7 +67,7 @@ describe("Google maps", () => {
         );
     });
 
-    it("renders the structure correctly with percentage units", () => {
+    it("with percentage of width and height units renders the structure correctly", () => {
         const googleMaps = renderGoogleMap(defaultProps);
         const mapStyle = { width: "100%", paddingBottom: "68%" };
         googleMaps.setProps({
@@ -85,7 +85,7 @@ describe("Google maps", () => {
         );
     });
 
-    it("renders the structure correctly with percentage of parent units", () => {
+    it("with percentage of parent units renders the structure correctly", () => {
         const googleMaps = renderGoogleMap(defaultProps);
         const mapStyle = { width: "100%", height: "89%" };
         googleMaps.setProps({
@@ -132,6 +132,7 @@ describe("Google maps", () => {
         const googleMaps = fullRenderGoogleMap(customProps);
         const googleMapsInstance = googleMaps.instance() as any;
         const createMarkerSpy = spyOn(googleMapsInstance, "addMarkers").and.callThrough();
+
         googleMapsInstance.componentWillReceiveProps(customProps);
 
         expect(createMarkerSpy).toHaveBeenCalledWith(customProps.allLocations);
