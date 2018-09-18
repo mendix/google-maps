@@ -51,8 +51,7 @@ describe("utils/Data", () => {
                 locations: [ { ...defaultProps as locationDataProps, longitudeAttribute: "" } ]
             });
 
-            expect(validationMessage).toBe(`The Latitude attribute and longitude attribute are required for data source
-                    context at location 1`);
+            expect(validationMessage).toBe(`Latitude and longitude attributes are required for data source context at location 1`);
         });
 
         it("returns alert if data source type is static and there is no latitude or longitude", () => {
@@ -80,6 +79,41 @@ describe("utils/Data", () => {
             });
 
             expect(validationMessage).toBe("Marker images are required for image attribute at location 1");
+        });
+
+        it("return an alert if on click event is call microflow and there is no microflow", () => {
+            const validationMessage = validateLocationProps({
+                mapProvider: "openStreet",
+                locations: [ { ...defaultProps as locationDataProps, onClickEvent: "callMicroflow" } ]
+            });
+
+            expect(validationMessage).toBe("A Microflow is required for on click Microflow at location 1");
+        });
+        it("return an alert if on click event is call nanoflow and there is no nanoflow", () => {
+            const validationMessage = validateLocationProps({
+                mapProvider: "openStreet",
+                locations: [ { ...defaultProps as locationDataProps, onClickEvent: "callNanoflow" } ]
+            });
+
+            expect(validationMessage).toBe("A Nanoflow is required for on click Nanoflow at location 1");
+        });
+
+        it("return an alert if on click event is show page and there is no page", () => {
+            const validationMessage = validateLocationProps({
+                mapProvider: "openStreet",
+                locations: [ { ...defaultProps as locationDataProps, onClickEvent: "showPage" } ]
+            });
+
+            expect(validationMessage).toBe("A page is required for on click show page at location 1");
+        });
+
+        it("return no alert if on click event is do nothing", () => {
+            const validationMessage = validateLocationProps({
+                mapProvider: "openStreet",
+                locations: [ { ...defaultProps as locationDataProps, onClickEvent: "doNothing" } ]
+            });
+
+            expect(validationMessage).toBe("");
         });
     });
 

@@ -9,7 +9,6 @@
 }
 
 .widget-leaflet-maps-alert.leaflet-control {
-    text-align: center;
     float: none;
     z-index: 1;
 }

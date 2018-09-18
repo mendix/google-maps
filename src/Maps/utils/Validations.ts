@@ -13,8 +13,7 @@ export const validateLocationProps = <T extends Partial<Container.MapsContainerP
         locations.forEach((location, index) => {
             if (location.dataSourceType && location.dataSourceType !== "static") {
                 if (!(location.latitudeAttribute && location.longitudeAttribute)) {
-                    errorMessage.push(`The Latitude attribute and longitude attribute are required for data source
-                    ${locations[index].dataSourceType} at location ${index + 1}`);
+                    errorMessage.push(`Latitude and longitude attributes are required for data source ${locations[index].dataSourceType} at location ${index + 1}`);
                 }
             } else if (!(location.staticLatitude && location.staticLongitude)) {
                 errorMessage.push(`Invalid static locations. Latitude and longitude are required at location ${index + 1}`);
@@ -27,6 +26,17 @@ export const validateLocationProps = <T extends Partial<Container.MapsContainerP
                     errorMessage.push(`A Microflow is required for Data source Microflow at location ${index + 1}`);
                 }
             }
+            if (!(location.onClickEvent === "doNothing")) {
+                if (location.onClickEvent === "callMicroflow" && !location.onClickMicroflow) {
+                    errorMessage.push(`A Microflow is required for on click Microflow at location ${index + 1}`);
+                }
+                if (location.onClickEvent === "callNanoflow" && !(location.onClickNanoflow && location.onClickNanoflow.nanoflow)) {
+                    errorMessage.push(`A Nanoflow is required for on click Nanoflow at location ${index + 1}`);
+                }
+                if (location.onClickEvent === "showPage" && !location.page) {
+                    errorMessage.push(`A page is required for on click show page at location ${index + 1}`);
+                }
+            }
         });
     }
 
@@ -37,7 +47,7 @@ export const validateLocations = (location: Container.Location): Promise<Contain
     if (validLocation(location)) {
         resolve(location);
     } else {
-        reject(`invalid location: latitude ${location.longitude}, longitude ${location.longitude}`);
+        reject(`invalid location: latitude ${location.latitude}, longitude ${location.longitude}`);
     }
 });
 

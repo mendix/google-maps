@@ -134,18 +134,14 @@ export class LeafletMap extends Component<LeafletMapProps, LeafletMapState> {
     private renderMarkers = (locations?: Location[]) => {
         this.markerGroup.clearLayers();
         if (locations && locations.length) {
-            locations.forEach(location =>
-                this.createMarker(location)
-                    .then(marker =>
-                        this.markerGroup.addLayer(marker
-                            .on("click", event => {
-                                if (this.props.onClickMarker && location.locationAttr) {
-                                    this.props.onClickMarker(event, location.locationAttr);
-                                }
-                            }
-                        )))
-                    .then(layer => this.map ? this.map.addLayer(layer) : undefined)
-                    .catch(reason => this.setState({ alertMessage: `${reason}` })));
+            locations.forEach(location => this.createMarker(location).then(marker =>
+                this.markerGroup.addLayer(marker.on("click", event => {
+                    if (this.props.onClickMarker && location.locationAttr) {
+                        this.props.onClickMarker(event, location.locationAttr);
+                    }
+                }))).then(layer => this.map ? this.map.addLayer(layer) : undefined)
+                .catch(reason => this.setState({ alertMessage: `${reason}` }))
+            );
             this.setBounds();
         } else if (this.map) {
             this.map.removeLayer(this.markerGroup);

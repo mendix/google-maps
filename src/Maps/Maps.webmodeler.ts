@@ -79,9 +79,9 @@ export function getVisibleProperties(valueMap: MapsContainerProps, visibilityMap
                 visibilityMap.rotateControl = false;
                 visibilityMap.fullScreenControl = false;
             }
-            if (location.onClickEvent === "showPage") {
-                visibilityMap.locations[index].page = true;
-                visibilityMap.locations[index].PageLocation = true;
+            if (!(location.onClickEvent === "showPage")) {
+                visibilityMap.locations[index].page = false;
+                visibilityMap.locations[index].PageLocation = false;
             }
             visibilityMap.locations[index].staticMarkerIcon = location.markerImage === "staticImage";
             visibilityMap.locations[index].onClickMicroflow = location.onClickEvent === "callMicroflow";
