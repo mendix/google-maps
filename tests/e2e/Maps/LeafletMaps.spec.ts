@@ -2,7 +2,7 @@ import singleLocationPage from "./pages/singleLocation.page";
 import xpathPage from "./pages/xpath.page";
 
 describe("Leaflet maps", () => {
-    const alertValue = "Failed due to Invalid Coordinates passed";
+    const alertValue = "failed due to invalid location";
 
     it("should show a single location", () => {
         singleLocationPage.open();
@@ -25,7 +25,7 @@ describe("Leaflet maps", () => {
         singleLocationPage.alert.waitForExist();
         const alert = singleLocationPage.alert.getText();
 
-        expect (alert).toBe(alertValue);
+        expect (alert).toContain(alertValue);
     });
 
     describe("when xpath data source is selected", () => {
