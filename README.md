@@ -81,12 +81,15 @@ For **Google maps (deprecated)**, see [Google maps](Googlemaps.md)
 -  It is used to configure how the marker icon should be look.
 - Select the **Markers** tab under **locations** option on the **Map properties** tab
 - For the **static image** option, upload a static image
-- For Dynamic marker images, upload an image into the database to view the map during runtime  
-- Markers can also be created based on enumeration. An enumeration containing the name and caption of the markers should be created within your project and that enumeration assigned to the `Locations entity`. From the `Marker Images` tab, the enumeration key and image is then specified under `Images`
+- For Dynamic marker images, upload an image into the database to view the map during runtime
+- Markers can also be created based on enumeration. An enumeration containing the name and caption of the markers should be created within your project and that enumeration assigned to the `Locations entity`.  
+![Markers](/assets/maps-markers.png)  
+From the `Marker Images` tab, the enumeration key and image is then specified under `Images`  
+![Enumeration markers](/assets/markers.png)
 
 ## Issues, suggestions and feature requests
 We are actively maintaining this widget, please report any issues or suggestion for improvement at  
 [https://github.com/mendixlabs/google-maps/issues](https://github.com/mendixlabs/google-maps/issues).
 
 ## Development
-See [here](/Development.md)
+See [here](/development.md)
