@@ -66,14 +66,15 @@
                     <description/>
                 </property>
                 <!-- Custom Markers -->
-                <property key="markerImage" type="enumeration" defaultValue="staticImage">
+                <property key="markerImage" type="enumeration" defaultValue="defaultImage">
                     <caption>Marker image</caption>
                     <category>Markers</category>
-                    <description/>
+                    <description>Marker list: when the 'Image attribute' has a value it should be provided in the marker image list</description>
                     <enumerationValues>
-                        <enumerationValue key="staticImage">Static image</enumerationValue>
-                        <enumerationValue key="systemImage">Dynamic image</enumerationValue>
-                        <enumerationValue key="enumImage">Enumeration</enumerationValue>
+                        <enumerationValue key="defaultImage">Default</enumerationValue>
+                        <enumerationValue key="staticImage">Static</enumerationValue>
+                        <enumerationValue key="systemImage">System image</enumerationValue>
+                        <enumerationValue key="enumImage">Marker list</enumerationValue>
                     </enumerationValues>
                 </property>
                 <property key="staticMarkerIcon" type="image" required="false">
@@ -84,14 +85,19 @@
                 <property key="markerImageAttribute" type="attribute" required="false" entityProperty="locationsEntity">
                     <caption>Image attribute</caption>
                     <category>Markers</category>
-                    <description>For 'Datasource' 'Database' or 'Microflow'; Display custom markers based on the enumeration attribute value, as configured in the 'Images' list</description>
+                    <description>For 'Datasource' 'Database' or 'Microflow' and 'Context'; Display custom markers based on the enumeration attribute value, as configured in the 'Marker images list'</description>
                     <attributeTypes>
                         <attributeType name="Enum"/>
                     </attributeTypes>
                 </property>
+                <property key="systemImagePath" type="entity" isPath="yes" pathType="reference" required="false" entityProperty="locationsEntity">
+                    <caption>System image path</caption>
+                    <category>Markers</category>
+                    <description>The entity selected should inherit from system image</description>
+                </property>
                 <property key="onClickEvent" type="enumeration" defaultValue="doNothing">
                     <caption>On click</caption>
-                    <category>Marker Events</category>
+                    <category>Marker events</category>
                     <description/>
                     <enumerationValues>
                         <enumerationValue key="doNothing">Do nothing</enumerationValue>
@@ -102,19 +108,19 @@
                 </property>
                 <property key="onClickMicroflow" type="microflow" required="false" entityProperty="locationsEntity">
                     <caption>On click microflow</caption>
-                    <category>Marker Events</category>
+                    <category>Marker events</category>
                     <description>The microflow that will be executed when a marker is clicked</description>
                     <returnType type="Void" />
                 </property>
                 <property key="onClickNanoflow" type="nanoflow" required="false" entityProperty="locationsEntity">
                     <caption>On click nanoflow</caption>
-                    <category>Marker Events</category>
+                    <category>Marker events</category>
                     <description>The nanoflow that will be executed when a marker is clicked</description>
                     <returnType type="Void" />
                 </property>
                 <property key="openPageAs" type="enumeration" defaultValue="content">
                     <caption>Open page as</caption>
-                    <category>Marker Events</category>
+                    <category>Marker events</category>
                     <description/>
                     <enumerationValues>
                         <enumerationValue key="content">Full page</enumerationValue>
@@ -124,7 +130,7 @@
                 </property>
                 <property key="page" type="form" required="false">
                     <caption>Page</caption>
-                    <category>Marker Events</category>
+                    <category>Marker events</category>
                     <description>The page that will be opened when a marker is clicked</description>
                 </property>
             </properties>
@@ -245,13 +251,13 @@
         <!-- Images -->
         <property key="markerImages" type="object" isList="true" required="false">
             <caption>Images</caption>
-            <category>Marker Images</category>
-            <description>Marker images for the configured 'Image attribute'. When the attribute value does not match a name, the marker will show the 'Default image' when available, or the standard marker</description>
+            <category>Marker image list</category>
+            <description>Marker images are displayed when there is a location item for all data source types except 'static', 'marker image attribute' and the 'marker image' is of type 'marker list'. When the attribute value does not match a name, the marker will show the 'Static image' when available, or the default marker</description>
             <properties>
                 <property key="enumKey" type="string">
-                    <caption>Enumeration name</caption>
+                    <caption>Value</caption>
                     <category>Appearance</category>
-                    <description>The enumeration name as a string. (Empty enumeration names can not be used)</description>
+                    <description>The value should match with the marker image attribute. (Empty enumeration names can not be used)</description>
                 </property>
                 <property key="enumImage" type="image">
                     <caption>Image</caption>
