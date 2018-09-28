@@ -52,6 +52,7 @@ export namespace Container {
     export interface MarkerIconProps {
         markerImage: MarKerImages;
         staticMarkerIcon: string;
+        systemImagePath?: string;
         markerImageAttribute: string;
     }
 
@@ -112,6 +113,7 @@ export namespace Data {
         markerIcon: string;
         imageAttribute: string;
         markerEnumImages: Container.EnumerationImages[];
+        systemImagePath?: string;
     }
 }
 

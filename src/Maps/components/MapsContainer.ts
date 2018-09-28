@@ -152,7 +152,8 @@ export default class MapsContainer extends Component<MapsContainerProps, MapsCon
                     type: locationAttr.markerImage,
                     markerIcon: locationAttr.staticMarkerIcon,
                     imageAttribute: locationAttr.markerImageAttribute,
-                    markerEnumImages: this.props.markerImages
+                    markerEnumImages: this.props.markerImages,
+                    systemImagePath: locationAttr.systemImagePath
                 }, mxObject)
                 .then(markerUrl => {
                     return {

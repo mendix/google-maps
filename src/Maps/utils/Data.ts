@@ -51,17 +51,24 @@ const fetchByMicroflow = (actionname: string, guid: string): Promise<MxObject[]>
         });
     });
 
-export const fetchMarkerObjectUrl = (options: Data.FetchMarkerIcons, mxObject?: mendix.lib.MxObject): Promise<string> =>
+export const fetchMarkerObjectUrl = (options: Data.FetchMarkerIcons, mxObject: mendix.lib.MxObject): Promise<string> =>
     new Promise((resolve, reject) => {
         const { type, markerIcon, imageAttribute, markerEnumImages } = options;
         if (type === "staticImage") {
             resolve(getStaticMarkerUrl(markerIcon));
-        } else if (type === "systemImage" && mxObject) {
-            const url = window.mx.data.getDocumentUrl(mxObject.getGuid(), mxObject.get("changedDate") as number);
-            window.mx.data.getImageUrl(url,
-                objectUrl => resolve(objectUrl),
-                error => reject(`Error while retrieving the image url: ${error.message}`)
-            );
+        } else if (type === "systemImage" && mxObject && options.systemImagePath) {
+            mxObject.fetch(options.systemImagePath, (value: MxObject) => {
+                if (value.inheritsFrom("System.Image")) {
+                    const url = window.mx.data.getDocumentUrl(value.getGuid(), value.get("changedDate") as number);
+                    window.mx.data.getImageUrl(url,
+                        objectUrl => resolve(objectUrl),
+                        error => reject(`Error while retrieving the image url: ${error.message}`)
+                    );
+                } else {
+                    const imageEntity = options.systemImagePath && options.systemImagePath.split("/")[1];
+                    reject(`${imageEntity} should inherit from 'System.Image'`);
+                }
+            });
         } else if (type === "enumImage" && mxObject) {
             const imageAttr = mxObject.get(imageAttribute) as string;
             resolve(getMxObjectMarkerUrl(imageAttr, markerEnumImages));
