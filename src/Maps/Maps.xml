@@ -37,7 +37,7 @@
                     </attributeTypes>
                 </property>
                 <property key="longitudeAttribute" type="attribute" entityProperty="locationsEntity" required="false">
-                    <caption>Longitude attribute  </caption>
+                    <caption>Longitude attribute</caption>
                     <category>Data source</category>
                     <description/>
                     <attributeTypes>
@@ -55,6 +55,14 @@
                     <description>The 'Datasource' 'Microflow' that returns the list of locations</description>
                     <returnType type="Object" entityProperty="locationsEntity" isList="true"/>
                 </property>
+                <property key="labelAttribute" type="attribute" entityProperty="locationsEntity" required="false">
+                    <caption>Label</caption>
+                    <category>Data source</category>
+                    <description/>
+                    <attributeTypes>
+                        <attributeType name="String"/>
+                    </attributeTypes>
+                </property>
                 <property key="staticLatitude" type="string" required="false">
                     <caption>Latitude</caption>
                     <category>Static</category>
@@ -62,6 +70,11 @@
                 </property>
                 <property key="staticLongitude" type="string" required="false">
                     <caption>Longitude</caption>
+                    <category>Static</category>
+                    <description/>
+                </property>
+                <property key="staticLabel" type="string" required="false">
+                    <caption>Static label</caption>
                     <category>Static</category>
                     <description/>
                 </property>
