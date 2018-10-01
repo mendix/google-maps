@@ -103,22 +103,20 @@ export default class MapsContainer extends Component<MapsContainerProps, MapsCon
 
     private fetchData = (contextObject: mendix.lib.MxObject) => {
         this.setState({ isFetchingData: true });
-        Promise.all(this.props.locations.map(locationAttr =>
-            this.retrieveData(locationAttr, contextObject)
-        )).then(locations => {
+        Promise.all(this.props.locations.map(locationAttr => this.retrieveData(locationAttr, contextObject))).then(locations => {
             const flattenLocations = locations.reduce((loc1, loc2) => loc1.concat(loc2), []);
-            Promise.all(flattenLocations.map(loca => validateLocations(loca))).then(validLocations =>
+
+            return Promise.all(flattenLocations.map(loca => validateLocations(loca)));
+        }).then(validLocations =>
+            this.setState({
+                locations: validLocations,
+                isFetchingData: false,
+                alertMessage: ""
+            })).catch(reason => {
                 this.setState({
-                    locations: validLocations,
-                    isFetchingData: false,
-                    alertMessage: ""
-                }))
-                .catch(reason => {
-                    this.setState({
-                        locations: [],
-                        alertMessage: `${this.props.friendlyId}: failed due to ${reason}`,
-                        isFetchingData: false
-                    });
+                    locations: [],
+                    alertMessage: `${this.props.friendlyId}: ${reason}`,
+                    isFetchingData: false
                 });
             });
     }
@@ -142,7 +140,7 @@ export default class MapsContainer extends Component<MapsContainerProps, MapsCon
                     })
                     .then(mxObjects => this.setLocationsFromMxObjects(mxObjects, locationOptions))
                     .then(locations => resolve(locations))
-                    .catch(reason => reject(`${this.props.friendlyId}: Failed to retrieve locations ${reason}`));
+                    .catch(reason => reject(`${reason}`));
                 }
             })
 
@@ -154,8 +152,7 @@ export default class MapsContainer extends Component<MapsContainerProps, MapsCon
                     imageAttribute: locationAttr.markerImageAttribute,
                     markerEnumImages: this.props.markerImages,
                     systemImagePath: locationAttr.systemImagePath
-                }, mxObject)
-                .then(markerUrl => {
+                }, mxObject).then(markerUrl => {
                     return {
                         latitude: Number(mxObject.get(locationAttr.latitudeAttribute as string)),
                         longitude: Number(mxObject.get(locationAttr.longitudeAttribute as string)),
