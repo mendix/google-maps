@@ -1,8 +1,8 @@
 import { Component, createElement } from "react";
 import { LeafletEvent } from "leaflet";
 
+import GoogleMap from "./GoogleMap";
 import { LeafletMap } from "./LeafletMap";
-import googleApiWrapper from "./GoogleMap";
 import { Container } from "../utils/namespace";
 import { fetchData, fetchMarkerObjectUrl, parseStaticLocations } from "../utils/Data";
 import { validateLocationProps, validateLocations } from "../utils/Validations";
@@ -47,7 +47,7 @@ export default class MapsContainer extends Component<MapsContainerProps, MapsCon
         };
 
         return this.props.mapProvider === "googleMaps"
-            ? createElement(googleApiWrapper, { ...commonProps })
+            ? createElement(GoogleMap, { ...commonProps })
             : createElement(LeafletMap, { ...commonProps });
     }
 
