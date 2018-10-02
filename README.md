@@ -2,7 +2,7 @@
 [![Dependency Status](https://david-dm.org/mendixlabs/google-maps.svg)](https://david-dm.org/mendixlabs/google-maps)
 [![Dev Dependency Status](https://david-dm.org/mendixlabs/google-maps.svg#info=devDependencies)](https://david-dm.org/mendixlabs/google-maps#info=devDependencies)
 [![codecov](https://codecov.io/gh/mendixlabs/google-maps/branch/master/graph/badge.svg)](https://codecov.io/gh/mendixlabs/google-maps)
-![badge](https://img.shields.io/badge/mendix-7.9.0-green.svg)
+![badge](https://img.shields.io/badge/mendix-7.18.0-green.svg)
 
 # Maps
 * Show locations on maps
@@ -34,7 +34,7 @@ the specified custom markers else it will use the widget bundled marker.
 [Here maps](https://www.here.com/)  
 [Google maps](https://cloud.google.com/maps-platform/)
 * The Google maps widget uses [Google Maps API v3](https://developers.google.com/maps/). So the [Limitations](https://developers.google.com/maps/premium/usage-limits)
-from Google apply, especially for geocoding. We even advise geocoding your locations within your Mendix application and store them for later use as coordinates on the widget.
+from Google apply.
 
 ## Dependencies
 Mendix 7.18.0
@@ -53,20 +53,21 @@ For **Google maps (deprecated)**, see [Google maps](Googlemaps.md)
 
 [https://leafletmaps.mxapps.io/](https://leafletmaps.mxapps.io/)
 
-![Running leaflet maps widget](/assets/maps-google.png)
+![Running google maps widget](/assets/maps-google.png)
 
 ## Usage
 - To add basic a map to your application select **new** under the **Map properties** tab
-- Select data source **context** under the **Data source** tab
+- Under the **Data source** tab Select data source **context**
 - Select the **Locations entity**, **latitude** and **longitude** attributes
 - Under the **Map properties** tab, select a **Map provider**
 - Add Access token if **Map provider** is not **Open street**
 - Run the application and add some locations
+- For **Here maps** add **app ID, app code** respectively.
 
 ![Locations](/assets/maps-locations.png)
 ### Data source: Static
 - On the **Map properties** tab, select **new** on the **locations** option
-- Select **Static** under **Data source**
+- Under **Data source** tab, Select **Static**
 - On the **Static** tab add new static locations
 
 ![static](/assets/maps-static.png)
@@ -79,12 +80,14 @@ For **Google maps (deprecated)**, see [Google maps](Googlemaps.md)
 
 ### Custom Markers
 -  It is used to configure how the marker icon should be look.
-- Select the **Markers** tab under **locations** option on the **Map properties** tab
-- For the **static image** option, upload a static image
-- For Dynamic marker images, upload an image into the database to view the map during runtime
-- Markers can also be created based on enumeration. An enumeration containing the name and caption of the markers should be created within your project and that enumeration assigned to the `Locations entity`.  
+- Under **locations** option on the **Map properties** tab, select the **Markers** tab 
+- For the **Default** option, the widget bundled marker will be displayed
+- For the **Static** option, upload a static image
+- For the **System image** option, add a **system image path**, which is a reference to the locations enity. The entity selected should inherit from **System.Image** otherwise it will display an error.
+- Upload an image into the database to view the **system image** marker at runtime
+- Markers can also be created based on enumeration. Select the **Marker list** option, then add an enumeration containing the name and caption of the markers to your project and assign that enumeration to the `Locations entity`.  
 ![Markers](/assets/maps-markers.png)  
-From the `Marker Images` tab, the enumeration key and image is then specified under `Images`  
+From the `Marker image list` tab, the enumeration key and image is then specified under `Images`  
 ![Enumeration markers](/assets/markers.png)
 
 ## Issues, suggestions and feature requests
