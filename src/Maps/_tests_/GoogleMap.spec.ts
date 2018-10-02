@@ -21,7 +21,8 @@ describe("Google maps", () => {
         width: 50,
         widthUnit: "percentage",
         mapStyles: "",
-        divStyles: {}
+        divStyles: {},
+        mapProvider: "googleMaps"
     };
 
     beforeAll(() => {

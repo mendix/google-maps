@@ -29,19 +29,22 @@ export namespace Container {
     export interface DatabaseLocationProps {
         latitudeAttribute: string;
         longitudeAttribute: string;
+        labelAttribute: string;
     }
 
     export interface StaticLocationProps {
         staticLatitude: string;
         staticLongitude: string;
+        staticLabel: string;
     }
 
     export interface Location {
-        latitude?: number;
-        longitude?: number;
+        latitude: number;
+        longitude: number;
         mxObject?: mendix.lib.MxObject;
         url?: string;
         locationAttr?: Container.DataSourceLocationProps;
+        label?: string;
     }
 
     export interface DefaultLocations {
@@ -52,7 +55,7 @@ export namespace Container {
     export interface MarkerIconProps {
         markerImage: MarKerImages;
         staticMarkerIcon: string;
-        systemImagePath?: string;
+        systemImagePath: string;
         markerImageAttribute: string;
     }
 
@@ -82,7 +85,7 @@ export namespace Container {
     }
 
     export interface MapProps extends MapControlOptions, DefaultLocations, MapUtils.Dimensions {
-        mapProvider?: mapProviders;
+        mapProvider: mapProviders;
         apiToken?: string;
     }
 }
@@ -113,7 +116,7 @@ export namespace Data {
         markerIcon: string;
         imageAttribute: string;
         markerEnumImages: Container.EnumerationImages[];
-        systemImagePath?: string;
+        systemImagePath: string;
     }
 }
 

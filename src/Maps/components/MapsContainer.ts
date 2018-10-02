@@ -85,7 +85,8 @@ export default class MapsContainer extends Component<MapsContainerProps, MapsCon
                         location.latitudeAttribute,
                         location.longitudeAttribute,
                         location.staticMarkerIcon,
-                        location.markerImageAttribute
+                        location.markerImageAttribute,
+                        location.labelAttribute
                     ].forEach(attr => this.subscriptionHandles.push(window.mx.data.subscribe({
                             attr,
                             callback: () => this.fetchData(contextObject),
@@ -150,12 +151,13 @@ export default class MapsContainer extends Component<MapsContainerProps, MapsCon
                     type: locationAttr.markerImage,
                     markerIcon: locationAttr.staticMarkerIcon,
                     imageAttribute: locationAttr.markerImageAttribute,
-                    markerEnumImages: this.props.markerImages,
-                    systemImagePath: locationAttr.systemImagePath
+                    systemImagePath: locationAttr.systemImagePath,
+                    markerEnumImages: this.props.markerImages
                 }, mxObject).then(markerUrl => {
                     return {
-                        latitude: Number(mxObject.get(locationAttr.latitudeAttribute as string)),
-                        longitude: Number(mxObject.get(locationAttr.longitudeAttribute as string)),
+                        latitude: Number(mxObject.get(locationAttr.latitudeAttribute)),
+                        longitude: Number(mxObject.get(locationAttr.longitudeAttribute)),
+                        label: mxObject.get(locationAttr.labelAttribute) as string,
                         mxObject,
                         url: markerUrl,
                         locationAttr

@@ -58,16 +58,11 @@ export const fetchMarkerObjectUrl = (options: Data.FetchMarkerIcons, mxObject: m
             resolve(getStaticMarkerUrl(markerIcon));
         } else if (type === "systemImage" && mxObject && options.systemImagePath) {
             mxObject.fetch(options.systemImagePath, (value: MxObject) => {
-                if (value.inheritsFrom("System.Image")) {
-                    const url = window.mx.data.getDocumentUrl(value.getGuid(), value.get("changedDate") as number);
-                    window.mx.data.getImageUrl(url,
-                        objectUrl => resolve(objectUrl),
-                        error => reject(`Error while retrieving the image url: ${error.message}`)
-                    );
-                } else {
-                    const imageEntity = options.systemImagePath && options.systemImagePath.split("/")[1];
-                    reject(`${imageEntity} should inherit from 'System.Image'`);
-                }
+                const url = window.mx.data.getDocumentUrl(value.getGuid(), value.get("changedDate") as number);
+                window.mx.data.getImageUrl(url,
+                    objectUrl => resolve(objectUrl),
+                    error => reject(`Error while retrieving the image url: ${error.message}`)
+                );
             });
         } else if (type === "enumImage" && mxObject) {
             const imageAttr = mxObject.get(imageAttribute) as string;
@@ -79,10 +74,10 @@ export const fetchMarkerObjectUrl = (options: Data.FetchMarkerIcons, mxObject: m
 
 export const parseStaticLocations = (staticlocations: Container.DataSourceLocationProps[]): Container.Location[] => {
     return staticlocations.map(staticLocs => ({
-        latitude: staticLocs.staticLatitude.trim() !== "" ? Number(staticLocs.staticLatitude) : undefined,
-        longitude: staticLocs.staticLongitude.trim() !== "" ? Number(staticLocs.staticLongitude) : undefined,
+        latitude: Number(staticLocs.staticLatitude.trim()),
+        longitude: Number(staticLocs.staticLongitude.trim()),
         url: getStaticMarkerUrl(staticLocs.staticMarkerIcon),
-        locationAttr: staticLocs
+        label: staticLocs.staticLabel
     }));
 };
 
