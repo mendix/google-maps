@@ -21,8 +21,16 @@ export const validateLocationProps = <T extends Partial<Container.MapsContainerP
             if (location.markerImage === "enumImage" && !(markerImages && markerImages.length)) {
                 errorMessage.push(`${friendlyId}: Marker images are required for image attribute at location ${index + 1}`);
             }
-            if (location.markerImage === "systemImage" && !location.systemImagePath) {
-                errorMessage.push(`${friendlyId}: System image path is required at location ${index + 1}`);
+            if (location.markerImage === "systemImage") {
+                if (!location.systemImagePath) {
+                    errorMessage.push(`${friendlyId}: System image path is required at location ${index + 1}`);
+                } else {
+                    const imagePath = location.systemImagePath.split("/")[1];
+                    const imagePathEntity = (imagePath && window.mx) && window.mx.meta.getEntity(imagePath);
+                    if (!(imagePathEntity && imagePathEntity.inheritsFrom("System.Image"))) {
+                        errorMessage.push(`${imagePath} should inherit from 'System.Image'`);
+                    }
+                }
             }
             if (location.dataSourceType === "microflow") {
                 if (!location.dataSourceMicroflow) {
