@@ -19,6 +19,10 @@ export const fetchData = (options: Data.FetchDataOptions): Promise<MxObject[]> =
                 fetchByMicroflow(options.microflow, guid)
                     .then(mxObjects => resolve(mxObjects))
                     .catch(message => reject({ message }));
+            } else if (options.type === "nanoflow" && options.nanoflow.nanoflow && options.mxform) {
+                fetchByNanoflow(options.nanoflow, options.mxform)
+                    .then(resolve)
+                    .catch(message => reject({ message }));
             }
         } else {
             reject("entity & guid are required");
@@ -48,6 +52,18 @@ const fetchByMicroflow = (actionname: string, guid: string): Promise<MxObject[]>
             },
             callback: (mxObjects: MxObject[] | any) => resolve(mxObjects),
             error: error => reject(`An error occurred while retrieving data via microflow: ${actionname}: ${error.message}`)
+        });
+    });
+
+const fetchByNanoflow = (actionname: Data.Nanoflow, mxform: mxui.lib.form._FormBase): Promise<MxObject[]> =>
+    new Promise((resolve: (objects: MxObject[]) => void, reject) => {
+        const context = new mendix.lib.MxContext();
+        window.mx.data.callNanoflow({
+            nanoflow: actionname,
+            origin: mxform,
+            context,
+            callback: resolve,
+            error: error => reject(`An error occurred while retrieving data via nanoflow: ${actionname}: ${error.message}`)
         });
     });
 

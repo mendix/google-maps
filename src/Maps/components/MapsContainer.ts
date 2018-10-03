@@ -136,7 +136,9 @@ export default class MapsContainer extends Component<MapsContainerProps, MapsCon
                         type: locationOptions.dataSourceType,
                         entity: locationOptions.locationsEntity,
                         constraint: locationOptions.entityConstraint,
-                        microflow: locationOptions.dataSourceMicroflow
+                        microflow: locationOptions.dataSourceMicroflow,
+                        mxform: this.props.mxform,
+                        nanoflow: locationOptions.dataSourceNanoflow
                     })
                     .then(mxObjects => this.setLocationsFromMxObjects(mxObjects, locationOptions))
                     .then(locations => resolve(locations))

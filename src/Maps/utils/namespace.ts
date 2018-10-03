@@ -1,7 +1,7 @@
 export namespace Container {
 
     export type MarKerImages = "systemImage" | "staticImage" | "enumImage";
-    export type DataSource = "static" | "XPath" | "microflow" | "context";
+    export type DataSource = "static" | "XPath" | "microflow" | "context" | "nanoflow";
     export type OnClickOptions = "doNothing" | "showPage" | "callMicroflow" | "callNanoflow";
     export type PageLocation = "content" | "popup" | "modal";
     export type mapProviders = "openStreet" | "mapBox" | "hereMaps" | "googleMaps";
@@ -24,6 +24,7 @@ export namespace Container {
         locationsEntity?: string;
         entityConstraint?: string;
         dataSourceMicroflow?: string;
+        dataSourceNanoflow: Data.Nanoflow;
     }
 
     export interface DatabaseLocationProps {
@@ -97,6 +98,7 @@ export namespace Data {
         mxform?: mxui.lib.form._FormBase;
         constraint?: string;
         microflow?: string;
+        nanoflow: Nanoflow;
     }
 
     export interface FetchByXPathOptions {
