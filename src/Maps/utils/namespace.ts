@@ -29,13 +29,11 @@ export namespace Container {
     export interface DatabaseLocationProps {
         latitudeAttribute: string;
         longitudeAttribute: string;
-        labelAttribute: string;
     }
 
     export interface StaticLocationProps {
         staticLatitude: string;
         staticLongitude: string;
-        staticLabel: string;
     }
 
     export interface Location {

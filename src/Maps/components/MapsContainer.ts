@@ -85,8 +85,7 @@ export default class MapsContainer extends Component<MapsContainerProps, MapsCon
                         location.latitudeAttribute,
                         location.longitudeAttribute,
                         location.staticMarkerIcon,
-                        location.markerImageAttribute,
-                        location.labelAttribute
+                        location.markerImageAttribute
                     ].forEach(attr => this.subscriptionHandles.push(window.mx.data.subscribe({
                             attr,
                             callback: () => this.fetchData(contextObject),
@@ -157,7 +156,6 @@ export default class MapsContainer extends Component<MapsContainerProps, MapsCon
                     return {
                         latitude: Number(mxObject.get(locationAttr.latitudeAttribute)),
                         longitude: Number(mxObject.get(locationAttr.longitudeAttribute)),
-                        label: mxObject.get(locationAttr.labelAttribute) as string,
                         mxObject,
                         url: markerUrl,
                         locationAttr

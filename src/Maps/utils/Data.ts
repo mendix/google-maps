@@ -76,8 +76,7 @@ export const parseStaticLocations = (staticlocations: Container.DataSourceLocati
     return staticlocations.map(staticLocs => ({
         latitude: Number(staticLocs.staticLatitude.trim()),
         longitude: Number(staticLocs.staticLongitude.trim()),
-        url: getStaticMarkerUrl(staticLocs.staticMarkerIcon),
-        label: staticLocs.staticLabel
+        url: getStaticMarkerUrl(staticLocs.staticMarkerIcon)
     }));
 };
 
