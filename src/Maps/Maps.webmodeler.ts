@@ -56,6 +56,9 @@ export function getVisibleProperties(valueMap: MapsContainerProps, visibilityMap
                 if (!(location.dataSourceType === "microflow")) {
                     visibilityMap.locations[index].dataSourceMicroflow = false;
                 }
+                if (!(location.dataSourceType === "nanoflow")) {
+                    visibilityMap.locations[index].dataSourceNanoflow = false;
+                }
                 if (!(location.dataSourceType === "static")) {
                     visibilityMap.locations[index].staticLatitude = false;
                     visibilityMap.locations[index].staticLongitude = false;
@@ -86,6 +89,11 @@ export function getVisibleProperties(valueMap: MapsContainerProps, visibilityMap
             visibilityMap.locations[index].staticMarkerIcon = location.markerImage === "staticImage";
             visibilityMap.locations[index].onClickMicroflow = location.onClickEvent === "callMicroflow";
             visibilityMap.locations[index].onClickNanoflow = location.onClickEvent === "callNanoflow";
+            visibilityMap.locations[index].systemImagePath = false;
+            visibilityMap.locations[index].markerImage = false;
+            visibilityMap.locations[index].staticMarkerIcon = false;
+            visibilityMap.locations[index].markerImageAttribute = false;
+            visibilityMap.markerImages = false;
         });
     }
 
