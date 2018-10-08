@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<widget id="com.mendix.widget.custom.Maps.Maps" needsEntityContext="true" offlineCapable="true"
+<widget id="com.mendix.widget.custom.Maps.Maps" needsEntityContext="false" offlineCapable="true"
     xmlns="http://www.mendix.com/widget/1.0/"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mendix.com/widget/1.0/ ../xsd/widget.xsd">
     <name>Maps</name>
@@ -12,7 +12,7 @@
             <category>Map properties</category>
             <description/>
             <properties>
-                <property key="dataSourceType" type="enumeration" defaultValue="context">
+                <property key="dataSourceType" type="enumeration" defaultValue="static">
                     <caption>Data source</caption>
                     <category>Data source</category>
                     <description/>
@@ -50,13 +50,18 @@
                     <category>Data source</category>
                     <description>Constraint the 'Data source' 'Database' locations. It could be used with relation to '[%CurrentObject%]'</description>
                 </property>
-                <property key="dataSourceMicroflow" type="microflow" required="false">
+                <property key="inputParameterEntity" type="entity" required="false">
+                    <caption>Input parameter entity</caption>
+                    <category>Data source</category>
+                    <description/>
+                </property>
+                <property key="dataSourceMicroflow" type="microflow" entityProperty="inputParameterEntity" required="false">
                     <caption>Microflow</caption>
                     <category>Data source</category>
                     <description>The 'Datasource' 'Microflow' that returns the list of locations</description>
                     <returnType type="Object" entityProperty="locationsEntity" isList="true"/>
                 </property>
-                <property key="dataSourceNanoflow" type="nanoflow" required="false">
+                <property key="dataSourceNanoflow" type="nanoflow" entityProperty="inputParameterEntity" required="false">
                     <caption>Nanoflow</caption>
                     <category>Data source</category>
                     <description></description>
