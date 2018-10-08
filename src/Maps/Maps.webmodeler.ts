@@ -62,18 +62,20 @@ export function getVisibleProperties(valueMap: MapsContainerProps, visibilityMap
                 if (!(location.dataSourceType === "static")) {
                     visibilityMap.locations[index].staticLatitude = false;
                     visibilityMap.locations[index].staticLongitude = false;
-                }
-                if (!(location.dataSourceType === "XPath")) {
-                    visibilityMap.locations[index].entityConstraint = false;
-                }
-                if (location.dataSourceType === "static") {
+                } else {
                     visibilityMap.locations[index].locationsEntity = false;
                     visibilityMap.locations[index].latitudeAttribute = false;
                     visibilityMap.locations[index].longitudeAttribute = false;
                 }
+                if (!(location.dataSourceType === "XPath")) {
+                    visibilityMap.locations[index].entityConstraint = false;
+                }
+                if (!(location.dataSourceType === "microflow" || location.dataSourceType === "nanoflow")) {
+                    visibilityMap.locations[index].inputParameterEntity = false;
+                }
             }
-            if (!(valueMap.mapProvider === "openStreet")) {
-                visibilityMap.apiToken = true;
+            if (valueMap.mapProvider === "openStreet") {
+                visibilityMap.apiToken = false;
             }
             if (!(valueMap.mapProvider === "googleMaps")) {
                 visibilityMap.mapStyles = false;
