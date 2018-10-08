@@ -21,10 +21,11 @@ export namespace Container {
 
     export interface DataSourceLocationProps extends DatabaseLocationProps, StaticLocationProps, MarkerIconProps, MarkerEvents {
         dataSourceType: DataSource;
-        locationsEntity?: string;
-        entityConstraint?: string;
-        dataSourceMicroflow?: string;
+        locationsEntity: string;
+        entityConstraint: string;
+        dataSourceMicroflow: string;
         dataSourceNanoflow: Data.Nanoflow;
+        inputParameterEntity: string;
     }
 
     export interface DatabaseLocationProps {

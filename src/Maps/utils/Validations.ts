@@ -35,6 +35,8 @@ export const validateLocationProps = <T extends Partial<Container.MapsContainerP
             if (location.dataSourceType === "microflow") {
                 if (!location.dataSourceMicroflow) {
                     errorMessage.push(`${friendlyId}: A Microflow is required for Data source Microflow at location ${index + 1}`);
+                } else if (location.inputParameterEntity !== location.locationsEntity) {
+                    errorMessage.push(`${friendlyId}: ${location.inputParameterEntity} should be the same as ${location.locationsEntity} at location ${index + 1}`);
                 }
             }
             if (!(location.onClickEvent === "doNothing")) {
