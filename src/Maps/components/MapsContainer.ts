@@ -54,14 +54,10 @@ export default class MapsContainer extends Component<MapsContainerProps, MapsCon
     componentWillReceiveProps(nextProps: MapsContainerProps) {
         this.resetSubscriptions(nextProps.mxObject);
         const validationMessage = validateLocationProps(nextProps);
-        if (nextProps && nextProps.mxObject) {
-            if (validationMessage) {
-                this.setState({ alertMessage: validationMessage });
-            } else {
-                this.fetchData(nextProps.mxObject);
-            }
+        if (validationMessage) {
+            this.setState({ alertMessage: validationMessage });
         } else {
-            this.setState({ locations: [], alertMessage: "", isFetchingData: false });
+            this.fetchData(nextProps.mxObject);
         }
     }
 
@@ -101,7 +97,7 @@ export default class MapsContainer extends Component<MapsContainerProps, MapsCon
         this.subscriptionHandles = [];
     }
 
-    private fetchData = (contextObject: mendix.lib.MxObject) => {
+    private fetchData = (contextObject?: mendix.lib.MxObject) => {
         this.setState({ isFetchingData: true });
         Promise.all(this.props.locations.map(locationAttr => this.retrieveData(locationAttr, contextObject))).then(locations => {
             const flattenLocations = locations.reduce((loc1, loc2) => loc1.concat(loc2), []);
@@ -121,16 +117,16 @@ export default class MapsContainer extends Component<MapsContainerProps, MapsCon
             });
     }
 
-    private retrieveData = (locationOptions: DataSourceLocationProps, contextObject: mendix.lib.MxObject): Promise<Location[]> =>
+    private retrieveData = (locationOptions: DataSourceLocationProps, contextObject?: mendix.lib.MxObject): Promise<Location[]> =>
         new Promise((resolve, reject) => {
-                const guid = contextObject.getGuid();
+                const guid = contextObject && contextObject.getGuid();
                 if (locationOptions.dataSourceType === "static") {
                     const staticLocation = parseStaticLocations([ locationOptions ]);
                     resolve(staticLocation);
-                } else if (locationOptions.dataSourceType === "context") {
+                } else if (locationOptions.dataSourceType === "context" && contextObject) {
                     this.setLocationsFromMxObjects([ contextObject ], locationOptions)
                         .then(locations => resolve(locations));
-                } else {
+                } else if (contextObject) {
                     fetchData({
                         guid,
                         type: locationOptions.dataSourceType,
@@ -143,6 +139,8 @@ export default class MapsContainer extends Component<MapsContainerProps, MapsCon
                     .then(mxObjects => this.setLocationsFromMxObjects(mxObjects, locationOptions))
                     .then(locations => resolve(locations))
                     .catch(reason => reject(`${reason}`));
+                } else {
+                    resolve([]);
                 }
             })
 
