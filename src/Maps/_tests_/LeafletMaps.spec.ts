@@ -99,6 +99,7 @@ describe("Leaflet maps", () => {
     it("with default center Latitude and Longitude sets default center location based on them", () => {
         const leafletMap = fullRenderLeafletMap(defaultProps);
         leafletMap.setProps({
+            allLocations: [],
             defaultCenterLatitude: "39.90419989999999",
             defaultCenterLongitude: "116.40739630000007"
         });
@@ -133,7 +134,7 @@ describe("Leaflet maps", () => {
             fetchingData: false,
             autoZoom: false
         };
-        const leafletMap = fullRenderLeafletMap(customProps);
+        const leafletMap = fullRenderLeafletMap(defaultProps);
         const leafletMapInstance = leafletMap.instance() as any;
         const createMarkerSpy = spyOn(leafletMapInstance, "renderMarkers").and.callThrough();
         leafletMapInstance.componentWillReceiveProps(customProps);
@@ -148,7 +149,7 @@ describe("Leaflet maps", () => {
             fetchingData: false,
             autoZoom: false
         };
-        const leafletMap = fullRenderLeafletMap(customProps);
+        const leafletMap = fullRenderLeafletMap(defaultProps);
         const leafletMapInstance = leafletMap.instance() as any;
         const createMarkerSpy = spyOn(leafletMapInstance, "renderMarkers").and.callThrough();
         leafletMapInstance.componentWillReceiveProps(customProps);

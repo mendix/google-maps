@@ -89,7 +89,7 @@ export class GoogleMap extends Component<GoogleMapsProps, GoogleMapState> {
         };
         if (this.googleMapsNode && !this.map) {
             this.map = new google.maps.Map(this.googleMapsNode, { ...mapOptions, minZoom: 2, maxZoom: 20 });
-        } else {
+        } else if (this.map) {
             this.map.setOptions({ ...mapOptions });
         }
         this.setDefaultCenter(props);
