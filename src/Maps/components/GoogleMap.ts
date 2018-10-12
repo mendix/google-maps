@@ -76,20 +76,21 @@ export class GoogleMap extends Component<GoogleMapsProps, GoogleMapState> {
     }
 
     private initMap = (props: GoogleMapsProps) => {
-        if (this.googleMapsNode) {
-            this.map = new google.maps.Map(this.googleMapsNode, {
-                zoom: props.zoomLevel,
-                zoomControl: props.optionZoomControl,
-                scrollwheel: props.optionScroll,
-                draggable: props.optionDrag,
-                streetViewControl: props.optionStreetView,
-                mapTypeControl: props.mapTypeControl,
-                fullscreenControl: props.fullScreenControl,
-                rotateControl: props.rotateControl,
-                styles: this.getMapStyles(),
-                minZoom: 2,
-                maxZoom: 20
-            });
+        const mapOptions = {
+            zoom: props.zoomLevel,
+            zoomControl: props.optionZoomControl,
+            scrollwheel: props.optionScroll,
+            draggable: props.optionDrag,
+            streetViewControl: props.optionStreetView,
+            mapTypeControl: props.mapTypeControl,
+            fullscreenControl: props.fullScreenControl,
+            rotateControl: props.rotateControl,
+            styles: this.getMapStyles()
+        };
+        if (this.googleMapsNode && !this.map) {
+            this.map = new google.maps.Map(this.googleMapsNode, { ...mapOptions, minZoom: 2, maxZoom: 20 });
+        } else {
+            this.map.setOptions({ ...mapOptions });
         }
         this.setDefaultCenter(props);
     }

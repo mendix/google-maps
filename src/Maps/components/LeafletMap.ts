@@ -75,7 +75,9 @@ export class LeafletMap extends Component<LeafletMapProps, LeafletMapState> {
     }
 
     componentWillReceiveProps(newProps: LeafletMapProps) {
-        this.setDefaultCenter(newProps);
+        if (this.props.allLocations !== newProps.allLocations) {
+            this.setDefaultCenter(newProps);
+        }
     }
 
     componentDidUpdate() {
@@ -123,7 +125,7 @@ export class LeafletMap extends Component<LeafletMapProps, LeafletMapState> {
             this.setState({
                 center: {
                     lat: Number(defaultCenterLatitude),
-                    lng: Number(props.defaultCenterLongitude)
+                    lng: Number(defaultCenterLongitude)
                 }
             });
         } else if (!fetchingData) {
