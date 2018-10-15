@@ -85,10 +85,12 @@ export class GoogleMap extends Component<GoogleMapsProps, GoogleMapState> {
             mapTypeControl: props.mapTypeControl,
             fullscreenControl: props.fullScreenControl,
             rotateControl: props.rotateControl,
+            minZoom: 2,
+            maxZoom: 20,
             styles: this.getMapStyles()
         };
         if (this.googleMapsNode && !this.map) {
-            this.map = new google.maps.Map(this.googleMapsNode, { ...mapOptions, minZoom: 2, maxZoom: 20 });
+            this.map = new google.maps.Map(this.googleMapsNode, { ...mapOptions });
         } else if (this.map) {
             this.map.setOptions({ ...mapOptions });
         }
