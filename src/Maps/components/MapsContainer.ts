@@ -36,22 +36,22 @@ export default class MapsContainer extends Component<MapsContainerProps, MapsCon
     render() {
         const mapsApiToken = this.props.apiToken ? this.props.apiToken.replace(/ /g, "") : undefined;
         const commonProps = {
+            ...this.props as MapProps,
             allLocations: this.state.locations,
             fetchingData: this.state.isFetchingData,
             className: this.props.class,
             alertMessage: this.state.alertMessage,
             divStyles: parseStyle(this.props.style),
             onClickMarker: this.onClickMarker,
-            mapsToken: mapsApiToken,
-            ...this.props as MapProps
+            mapsToken: mapsApiToken
         };
 
         return this.props.mapProvider === "googleMaps"
             ? createElement(GoogleMap, { ...commonProps })
-            : createElement(LeafletMap, { ...commonProps });
+            : createElement(LeafletMap, { ...commonProps, inPreviewMode: false });
     }
 
-    componentWillReceiveProps(nextProps: MapsContainerProps) {
+    UNSAFE_componentWillReceiveProps(nextProps: MapsContainerProps) {
         this.resetSubscriptions(nextProps.mxObject);
         const validationMessage = validateLocationProps(nextProps);
         if (validationMessage) {

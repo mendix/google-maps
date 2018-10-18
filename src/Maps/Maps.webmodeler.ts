@@ -1,6 +1,6 @@
-import { Component, createElement } from "react";
+import { PureComponent, createElement } from "react";
 import { LeafletMap } from "./components/LeafletMap";
-import googleApiWrapper from "./components/GoogleMap";
+import GoogleMap from "./components/GoogleMap";
 import { validateLocationProps } from "./utils/Validations";
 import { Container } from "./utils/namespace";
 import { parseStyle } from "./components/MapsContainer";
@@ -12,26 +12,28 @@ type VisibilityMap<T> = {
 };
 
 // tslint:disable-next-line:class-name
-export class preview extends Component<MapsContainerProps, {}> {
+export class preview extends PureComponent<MapsContainerProps, {}> {
+    private getData = preview.createSampleLocations();
 
     render() {
         const mapsApiToken = this.props.apiToken ? this.props.apiToken.replace(/ /g, "") : undefined;
         const validationMessage = validateLocationProps(this.props);
         const commonProps = {
-            allLocations: preview.createSampleLocations(),
+            ...this.props as MapProps,
+            allLocations: this.getData,
             alertMessage: validationMessage,
+            className: this.props.class,
             fetchingData: false,
             divStyles: parseStyle(this.props.style),
-            mapsToken: mapsApiToken,
-            ...this.props as MapProps
+            mapsToken: mapsApiToken
         };
 
         return this.props.mapProvider === "googleMaps"
-            ? createElement(googleApiWrapper, { ...commonProps })
-            : createElement(LeafletMap, { ...commonProps });
+            ? createElement(GoogleMap, { ...commonProps })
+            : createElement(LeafletMap, { ...commonProps, inPreviewMode: true });
     }
 
-    static createSampleLocations(): {latitude: number, longitude: number, url: string }[] {
+    static createSampleLocations(): Container.Location[] {
         return [ {
             latitude: 40.7590110000,
             longitude: -73.9844722000,
@@ -43,8 +45,8 @@ export class preview extends Component<MapsContainerProps, {}> {
 export function getPreviewCss() {
     return (
         require("leaflet/dist/leaflet.css") +
-        require("leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility.webpack.css") +
         require("leaflet-defaulticon-compatibility") +
+        require("leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility.webpack.css") +
         require("../ui/Maps.css")
     );
 }

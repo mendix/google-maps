@@ -18,7 +18,8 @@ describe("Leaflet maps", () => {
         width: 50,
         widthUnit: "percentage",
         mapProvider: "openStreet",
-        divStyles: {}
+        divStyles: {},
+        inPreviewMode: false
     };
 
     const renderLeafletMap = (props: LeafletMapProps) => shallow(createElement(LeafletMap, props));

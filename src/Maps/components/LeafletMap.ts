@@ -22,6 +22,7 @@ import SharedProps = MapUtils.SharedProps;
 
 export interface LeafletMapProps extends SharedProps, MapProps {
     onClickMarker?: (event: LeafletEvent, locationAttr: DataSourceLocationProps) => void;
+    inPreviewMode: boolean;
 }
 
 export interface LeafletMapState {
@@ -43,7 +44,7 @@ export class LeafletMap extends Component<LeafletMapProps, LeafletMapState> {
             createElement(Alert, {
                 bootstrapStyle: "danger",
                 className: "widget-leaflet-maps-alert leaflet-control"
-            }, this.props.alertMessage || this.state.alertMessage),
+            }, this.state.alertMessage),
             createElement("div",
                 {
                     className: classNames("widget-leaflet-maps-wrapper", this.props.className),
@@ -58,7 +59,7 @@ export class LeafletMap extends Component<LeafletMapProps, LeafletMapState> {
     }
 
     componentDidMount() {
-        if (this.leafletNode) {
+        if (this.leafletNode && !this.map) {
             this.map = new Map(this.leafletNode, {
                 scrollWheelZoom: this.props.optionScroll,
                 zoomControl: this.props.optionZoomControl,
@@ -70,13 +71,18 @@ export class LeafletMap extends Component<LeafletMapProps, LeafletMapState> {
                 keyboard: false,
                 dragging: this.props.optionDrag
             }).addLayer(this.setTileLayer());
-
+            if (this.props.inPreviewMode) {
+                this.setDefaultCenter(this.props);
+            }
         }
     }
 
-    componentWillReceiveProps(newProps: LeafletMapProps) {
-        if (this.props.allLocations !== newProps.allLocations) {
-            this.setDefaultCenter(newProps);
+    componentWillReceiveProps(nextProps: LeafletMapProps) {
+        if (nextProps.alertMessage !== this.props.alertMessage) {
+            this.setState({ alertMessage: nextProps.alertMessage });
+        }
+        if (this.props.allLocations !== nextProps.allLocations) {
+            this.setDefaultCenter(nextProps);
         }
     }
 

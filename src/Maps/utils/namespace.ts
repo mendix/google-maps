@@ -44,7 +44,6 @@ export namespace Container {
         mxObject?: mendix.lib.MxObject;
         url?: string;
         locationAttr?: Container.DataSourceLocationProps;
-        label?: string;
     }
 
     export interface DefaultLocations {

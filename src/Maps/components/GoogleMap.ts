@@ -124,7 +124,6 @@ export class GoogleMap extends Component<GoogleMapsProps, GoogleMapState> {
                         lat: Number(currentLocation.latitude),
                         lng: Number(currentLocation.longitude)
                     },
-                    label: currentLocation.label,
                     icon: currentLocation.url
                 });
                 marker.addListener("click", (event: google.maps.MouseEvent) => {
