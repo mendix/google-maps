@@ -141,18 +141,16 @@ export class GoogleMap extends Component<GoogleMapsProps, GoogleMapState> {
     }
 
     private setBounds = (mapBounds?: google.maps.LatLngBounds) => {
-        setTimeout(() => {
-            if (mapBounds && this.map) {
-                try {
-                    this.map.fitBounds(mapBounds);
-                    if (!this.props.autoZoom) {
-                        this.map.setZoom(this.props.zoomLevel);
-                    }
-                } catch (error) {
-                    this.setState({ alertMessage: `Invalid map bounds ${error.message}` });
+        if (mapBounds && this.map) {
+            try {
+                this.map.fitBounds(mapBounds);
+                if (!this.props.autoZoom) {
+                    this.map.setZoom(this.props.zoomLevel);
                 }
+            } catch (error) {
+                this.setState({ alertMessage: `Invalid map bounds ${error.message}` });
             }
-        }, 0);
+        }
     }
 
     private setMapOnMarkers = (map?: google.maps.Map) => {
