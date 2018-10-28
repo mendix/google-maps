@@ -102,7 +102,7 @@
                         <attributeType name="Enum"/>
                     </attributeTypes>
                 </property>
-                <property key="systemImagePath" type="entity" isPath="yes" pathType="reference" required="false" entityProperty="locationsEntity">
+                <property key="systemImagePath" type="entity" isPath="optional" pathType="reference" required="false" entityProperty="locationsEntity">
                     <caption>System image path</caption>
                     <category>Markers</category>
                     <description>The entity selected should inherit from system image</description>

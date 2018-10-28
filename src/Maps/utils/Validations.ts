@@ -25,7 +25,7 @@ export const validateLocationProps = <T extends Partial<Container.MapsContainerP
                 if (!location.systemImagePath) {
                     errorMessage.push(`${friendlyId}: System image path is required at location ${index + 1}`);
                 } else {
-                    const imagePath = location.systemImagePath.split("/")[1];
+                    const imagePath = location.systemImagePath.indexOf("/") > 0 ? location.systemImagePath.split("/")[1] : location.systemImagePath;
                     const imagePathEntity = (imagePath && window.mx) && window.mx.meta.getEntity(imagePath);
                     if (!(imagePathEntity && imagePathEntity.inheritsFrom("System.Image"))) {
                         errorMessage.push(`${imagePath} should inherit from 'System.Image'`);
