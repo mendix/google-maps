@@ -72,7 +72,7 @@ export const fetchMarkerObjectUrl = (options: Data.FetchMarkerIcons, mxObject: m
         const { type, markerIcon, imageAttribute, markerEnumImages } = options;
         if (type === "staticImage") {
             resolve(getStaticMarkerUrl(markerIcon));
-        } else if (type === "systemImage" && mxObject && options.systemImagePath) {
+        } else if (type === "systemImage" && mxObject && options.systemImagePath && mxObject.get("HasContents")) {
             mxObject.fetch(options.systemImagePath, (imagePathObj: MxObject) => {
                 const url = window.mx.data.getDocumentUrl(imagePathObj.getGuid(), imagePathObj.get("changedDate") as number);
                 window.mx.data.getImageUrl(url,

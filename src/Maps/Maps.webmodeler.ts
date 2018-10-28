@@ -13,14 +13,14 @@ type VisibilityMap<T> = {
 
 // tslint:disable-next-line:class-name
 export class preview extends PureComponent<MapsContainerProps, {}> {
-    private getData = preview.createSampleLocations();
 
     render() {
         const mapsApiToken = this.props.apiToken ? this.props.apiToken.replace(/ /g, "") : undefined;
         const validationMessage = validateLocationProps(this.props);
+        const allLocations = this.getLocations(this.props);
         const commonProps = {
             ...this.props as MapProps,
-            allLocations: this.getData,
+            allLocations,
             alertMessage: validationMessage,
             className: this.props.class,
             fetchingData: false,
@@ -31,6 +31,28 @@ export class preview extends PureComponent<MapsContainerProps, {}> {
         return this.props.mapProvider === "googleMaps"
             ? createElement(GoogleMap, { ...commonProps })
             : createElement(LeafletMap, { ...commonProps, inPreviewMode: true });
+    }
+
+    getLocations({ locations }: MapsContainerProps): Container.Location[] {
+        if (locations.length === 0) {
+            return [];
+        }
+        const staticLocation = locations.filter(location => location.dataSourceType === "static");
+        if (staticLocation.length > 0) {
+            return staticLocation.map(location => {
+                return {
+                    latitude: parseFloat(location.staticLatitude),
+                    longitude: parseFloat(location.staticLongitude)
+                };
+            });
+        }
+        // Mx office Netherlands
+
+        return [ {
+            latitude: 51.9066313,
+            longitude: 4.4861703,
+            url: ""
+        } ];
     }
 
     static createSampleLocations(): Container.Location[] {
