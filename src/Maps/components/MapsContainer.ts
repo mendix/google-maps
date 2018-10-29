@@ -6,6 +6,7 @@ import { LeafletMap } from "./LeafletMap";
 import { Container } from "../utils/namespace";
 import { fetchData, fetchMarkerObjectUrl, parseStaticLocations } from "../utils/Data";
 import { validateLocationProps, validateLocations } from "../utils/Validations";
+import { hot } from "react-hot-loader";
 
 import "leaflet/dist/leaflet.css";
 // Re-uses images from ~leaflet package
@@ -26,7 +27,7 @@ export interface MapsContainerState {
     isFetchingData?: boolean;
 }
 
-export default class MapsContainer extends Component<MapsContainerProps, MapsContainerState> {
+class MapsContainer extends Component<MapsContainerProps, MapsContainerState> {
     private subscriptionHandles: number[] = [];
     readonly state: MapsContainerState = {
         alertMessage: "",
@@ -224,3 +225,5 @@ export const parseStyle = (style = ""): {[key: string]: string} => { // Doesn't 
 
     return {};
 };
+
+export default hot(module)(MapsContainer);

@@ -2,15 +2,25 @@
 const webpack = require("webpack");
 const webpackConfig = require("./webpack.config");
 const merge = require("webpack-merge");
+const ExtractTextPlugin = require("extract-text-webpack-plugin");
+
 const widgetNames = Object.keys(webpackConfig[0].entry);
 
 const webpackConfigRelease = webpackConfig.map(config => merge(config, {
     devtool: false,
-    mode: "development",
-    optimization: {
-        minimize: true
-    }
+    mode: "production"
 }));
+
+webpackConfigRelease[0].plugins.push(new ExtractTextPlugin({
+    filename: `./widgets/com/mendix/widget/custom/[name]/ui/[name].css`
+}));
+
+webpackConfigRelease[0].module.rules[1] = {
+    test: /\.css$/, loader: ExtractTextPlugin.extract({
+        fallback: "style-loader",
+        use: [ "css-loader", "sass-loader" ]
+    })
+};
 
 module.exports = function(grunt) {
     const pkg = grunt.file.readJSON("package.json");
@@ -36,7 +46,7 @@ module.exports = function(grunt) {
                     expand: true,
                     date: new Date(),
                     store: false,
-                    cwd: "./dist/tmp/src",
+                    cwd: "./dist/tmp/widgets",
                     src: [ "**/*" ]
                 } ]
             }
@@ -46,7 +56,7 @@ module.exports = function(grunt) {
             distDeployment: {
                 files: [ {
                     dest: "./dist/MxTestProject/deployment/web/widgets",
-                    cwd: "./dist/tmp/src/",
+                    cwd: "./dist/tmp/widgets/",
                     src: [ "**/*" ],
                     expand: true
                 } ]
@@ -66,7 +76,7 @@ module.exports = function(grunt) {
                 files: widgetNames.map(widgetName => {
                     return {
                         append: `\n\n//# sourceURL=${widgetName}.webmodeler.js\n`,
-                        input: `dist/tmp/src/${widgetName}/${widgetName}.webmodeler.js`
+                        input: `dist/tmp/widgets/${widgetName}/${widgetName}.webmodeler.js`
                     };
                 })
             }
