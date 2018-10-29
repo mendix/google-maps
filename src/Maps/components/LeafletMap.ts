@@ -11,14 +11,15 @@ import {
 import * as classNames from "classnames";
 
 import { Container, MapUtils } from "../utils/namespace";
-import { Shared } from "../utils/sharedConfigs";
+import Utils from "../utils/Utils";
 import { Alert } from "../../components/Alert";
-import MapProps = Container.MapProps;
-import DataSourceLocationProps = Container.DataSourceLocationProps;
-import Location = Container.Location;
-import customUrls = MapUtils.customUrls;
-import mapAttr = MapUtils.mapAttr;
-import SharedProps = MapUtils.SharedProps;
+type MapProps = Container.MapProps;
+type DataSourceLocationProps = Container.DataSourceLocationProps;
+type Location = Container.Location;
+type SharedProps = MapUtils.SharedProps;
+
+const customUrls = Utils.customUrls;
+const mapAttr = Utils.mapAttr;
 
 export interface LeafletMapProps extends SharedProps, MapProps {
     onClickMarker?: (event: LeafletEvent, locationAttr: DataSourceLocationProps) => void;
@@ -48,7 +49,7 @@ export class LeafletMap extends Component<LeafletMapProps, LeafletMapState> {
             createElement("div",
                 {
                     className: classNames("widget-leaflet-maps-wrapper", this.props.className),
-                    style: { ...this.props.divStyles , ...Shared.getDimensions(this.props) }
+                    style: { ...this.props.divStyles , ...Utils.getDimensions(this.props) }
                 },
                 createElement("div", {
                     className: "widget-leaflet-maps",

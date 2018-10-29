@@ -4,11 +4,11 @@ import * as classNames from "classnames";
 import { Alert } from "../../components/Alert";
 import googleApiWrapper from "./GoogleApi";
 import { Container, MapUtils } from "../utils/namespace";
-import { Shared } from "../utils/sharedConfigs";
-import MapProps = Container.MapProps;
-import DataSourceLocationProps = Container.DataSourceLocationProps;
-import Location = Container.Location;
-import SharedProps = MapUtils.SharedProps;
+import Utils from "../utils/Utils";
+type MapProps = Container.MapProps;
+type DataSourceLocationProps = Container.DataSourceLocationProps;
+type Location = Container.Location;
+type SharedProps = MapUtils.SharedProps;
 
 export interface GoogleMapsProps extends SharedProps, MapProps {
     scriptsLoaded?: boolean;
@@ -40,7 +40,7 @@ export class GoogleMap extends Component<GoogleMapsProps, GoogleMapState> {
             createElement("div",
                 {
                     className: classNames("widget-google-maps-wrapper", this.props.className),
-                    style: { ...this.props.divStyles , ...Shared.getDimensions(this.props) }
+                    style: { ...this.props.divStyles , ...Utils.getDimensions(this.props) }
                 },
                 createElement("div", {
                     className: "widget-google-maps",

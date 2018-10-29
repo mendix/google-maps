@@ -6,10 +6,6 @@ import { LeafletMap } from "./LeafletMap";
 import { Container } from "../utils/namespace";
 import { fetchData, fetchMarkerObjectUrl, parseStaticLocations } from "../utils/Data";
 import { validateLocationProps, validateLocations } from "../utils/Validations";
-import MapsContainerProps = Container.MapsContainerProps;
-import MapProps = Container.MapProps;
-import Location = Container.Location;
-import DataSourceLocationProps = Container.DataSourceLocationProps;
 
 import "leaflet/dist/leaflet.css";
 // Re-uses images from ~leaflet package
@@ -18,6 +14,11 @@ import "leaflet/dist/leaflet.css";
 import "leaflet-defaulticon-compatibility";
 import "leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility.webpack.css";
 import "../../ui/Maps.css";
+
+type MapsContainerProps = Container.MapsContainerProps;
+type MapProps = Container.MapProps;
+type Location = Container.Location;
+type DataSourceLocationProps = Container.DataSourceLocationProps;
 
 export interface MapsContainerState {
     alertMessage?: string;

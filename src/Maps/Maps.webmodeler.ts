@@ -4,9 +4,9 @@ import GoogleMap from "./components/GoogleMap";
 import { validateLocationProps } from "./utils/Validations";
 import { Container } from "./utils/namespace";
 import { parseStyle } from "./components/MapsContainer";
-import MapsContainerProps = Container.MapsContainerProps;
-import MapProps = Container.MapProps;
 
+type MapsContainerProps = Container.MapsContainerProps;
+type MapProps = Container.MapProps;
 type VisibilityMap<T> = {
     [P in keyof T]: any;
 };

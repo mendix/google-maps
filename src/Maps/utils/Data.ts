@@ -88,11 +88,11 @@ export const fetchMarkerObjectUrl = (options: Data.FetchMarkerIcons, mxObject: m
         }
     });
 
-export const parseStaticLocations = (staticlocations: Container.DataSourceLocationProps[]): Container.Location[] => {
-    return staticlocations.map(staticLocs => ({
-        latitude: Number(staticLocs.staticLatitude.trim()),
-        longitude: Number(staticLocs.staticLongitude.trim()),
-        url: getStaticMarkerUrl(staticLocs.staticMarkerIcon)
+export const parseStaticLocations = (staticLocations: Container.DataSourceLocationProps[]): Container.Location[] => {
+    return staticLocations.map(staticLocation => ({
+        latitude: parseFloat(staticLocation.staticLatitude),
+        longitude: parseFloat(staticLocation.staticLongitude),
+        url: getStaticMarkerUrl(staticLocation.staticMarkerIcon)
     }));
 };
 
