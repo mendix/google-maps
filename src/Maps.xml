@@ -175,7 +175,7 @@
         </property>
         <!-- Appearance -->
         <property key="autoZoom" type="boolean" defaultValue="true">
-            <caption>Auto zoom</caption>
+            <caption>Auto zoom centered</caption>
             <category>Appearance</category>
             <description>Initial best fit zoom based the available makers. It will overwrite the specified 'Zoom level'</description>
         </property>
