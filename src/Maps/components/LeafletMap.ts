@@ -127,15 +127,7 @@ export class LeafletMap extends Component<LeafletMapProps, LeafletMapState> {
     }
 
     private setDefaultCenter = (props: LeafletMapProps) => {
-        const { defaultCenterLatitude, defaultCenterLongitude, fetchingData } = props;
-        if (defaultCenterLatitude && defaultCenterLongitude) {
-            this.setState({
-                center: {
-                    lat: Number(defaultCenterLatitude),
-                    lng: Number(defaultCenterLongitude)
-                }
-            });
-        } else if (!fetchingData) {
+        if (!props.fetchingData) {
             this.renderMarkers(props.allLocations);
         }
     }
@@ -158,16 +150,23 @@ export class LeafletMap extends Component<LeafletMapProps, LeafletMapState> {
     }
 
     private setBounds = () => {
+        const { defaultCenterLatitude, defaultCenterLongitude, autoZoom, zoomLevel } = this.props;
         setTimeout(() => {
-            if (this.map) {
-                try {
+            try {
+                if (this.map && this.markerGroup) {
                     this.map.fitBounds(this.markerGroup.getBounds(), { animate: false }).invalidateSize();
-                    if (!this.props.autoZoom) {
-                        this.map.setZoom(this.props.zoomLevel, { animate: false });
+                    if (!autoZoom) {
+                        if (defaultCenterLatitude && defaultCenterLongitude) {
+                            this.map.panTo({
+                                lat: parseFloat(defaultCenterLatitude),
+                                lng: parseFloat(defaultCenterLongitude)
+                            }, { animate: false });
+                        }
+                        this.map.setZoom(zoomLevel);
                     }
-                } catch (error) {
-                    this.setState({ alertMessage: `Invalid map bounds ${error.message}` });
                 }
+            } catch (error) {
+                this.setState({ alertMessage: `Invalid map bounds ${error.message}` });
             }
         }, 0);
     }

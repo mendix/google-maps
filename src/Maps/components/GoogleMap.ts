@@ -60,7 +60,7 @@ export class GoogleMap extends Component<GoogleMapsProps, GoogleMapState> {
         if (nextProps.alertMessage !== this.props.alertMessage) {
             this.setState({ alertMessage: nextProps.alertMessage });
         }
-        if (nextProps.scriptsLoaded) {
+        if (nextProps.scriptsLoaded && this.props.allLocations !== nextProps.allLocations) {
             this.initMap(nextProps);
         }
     }
@@ -98,14 +98,7 @@ export class GoogleMap extends Component<GoogleMapsProps, GoogleMapState> {
     }
 
     private setDefaultCenter = (props: GoogleMapsProps) => {
-        if (props.defaultCenterLatitude && props.defaultCenterLongitude) {
-            this.setState({
-                center: {
-                    lat: Number(props.defaultCenterLatitude),
-                    lng: Number(props.defaultCenterLongitude)
-                }
-            });
-        } else if (!props.fetchingData) {
+        if (!props.fetchingData && props.allLocations && props.allLocations.length) {
             this.addMarkers(props.allLocations);
         }
     }
@@ -142,16 +135,25 @@ export class GoogleMap extends Component<GoogleMapsProps, GoogleMapState> {
     }
 
     private setBounds = (mapBounds?: google.maps.LatLngBounds) => {
-        if (mapBounds && this.map) {
-            try {
-                this.map.fitBounds(mapBounds);
-                if (!this.props.autoZoom) {
-                    this.map.setZoom(this.props.zoomLevel);
+        const { defaultCenterLatitude, defaultCenterLongitude, zoomLevel, autoZoom } = this.props;
+        setTimeout(() => {
+            if (mapBounds && this.map) {
+                try {
+                    this.map.fitBounds(mapBounds);
+                    if (!autoZoom) {
+                        if (defaultCenterLatitude && defaultCenterLongitude) {
+                            this.map.setCenter({
+                                lat: parseFloat(defaultCenterLatitude),
+                                lng: parseFloat(defaultCenterLongitude)
+                            });
+                        }
+                        this.map.setZoom(zoomLevel);
+                    }
+                } catch (error) {
+                    this.setState({ alertMessage: `Invalid map bounds ${error.message}` });
                 }
-            } catch (error) {
-                this.setState({ alertMessage: `Invalid map bounds ${error.message}` });
             }
-        }
+        }, 0);
     }
 
     private setMapOnMarkers = (map?: google.maps.Map) => {
