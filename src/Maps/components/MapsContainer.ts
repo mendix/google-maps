@@ -72,7 +72,11 @@ class MapsContainer extends Component<MapsContainerProps, MapsContainerState> {
         if (this.props.locations && this.props.locations.length && contextObject) {
                 this.subscriptionHandles.push(window.mx.data.subscribe({
                     guid: contextObject.getGuid(),
-                    callback: () => this.fetchData(contextObject)
+                    callback: () => {
+                        if (!this.state.isFetchingData === true) {
+                            this.fetchData(contextObject);
+                        }
+                    }
                 }));
                 this.props.locations.forEach(location => {
                     this.subscriptionHandles.push(window.mx.data.subscribe({
