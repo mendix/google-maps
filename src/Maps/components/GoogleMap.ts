@@ -111,6 +111,7 @@ export class GoogleMap extends Component<GoogleMapsProps, GoogleMapState> {
     }
 
     private addMarkers = (mapLocations?: Location[]) => {
+        this.markers.forEach(marker => marker.setMap(null));
         this.markers = [];
         if (mapLocations && mapLocations.length) {
             this.bounds = new google.maps.LatLngBounds();
