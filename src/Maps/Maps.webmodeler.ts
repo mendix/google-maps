@@ -54,14 +54,6 @@ export class preview extends PureComponent<MapsContainerProps, {}> {
             url: ""
         } ];
     }
-
-    static createSampleLocations(): Container.Location[] {
-        return [ {
-            latitude: 40.7590110000,
-            longitude: -73.9844722000,
-            url: ""
-        } ];
-    }
 }
 
 export function getPreviewCss() {
