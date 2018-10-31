@@ -1,6 +1,5 @@
 import { createElement } from "react";
-import { ShallowWrapper, configure, shallow } from "enzyme";
-import Adapter = require("enzyme-adapter-react-16");
+import { ShallowWrapper, shallow } from "enzyme";
 import GoogleMap from "google-map-react";
 
 import { Map, MapProps, heightUnitType, widthUnitType } from "../components/Map";
@@ -11,8 +10,6 @@ import { Location } from "../utils/ContainerUtils";
 // tslint:disable:no-submodule-imports
 import { mockGoogleMaps } from "../../../tests/mocks/GoogleMaps";
 import { mockMendix } from "../../../tests/mocks/Mendix";
-
-configure({ adapter: new Adapter() });
 
 describe("Map", () => {
     const address = "Lumumba Ave, Kampala, Uganda";
