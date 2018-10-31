@@ -76,7 +76,7 @@ module.exports = function(grunt) {
                 files: widgetNames.map(widgetName => {
                     return {
                         append: `\n\n//# sourceURL=${widgetName}.webmodeler.js\n`,
-                        input: `dist/tmp/widgets/${widgetName}/${widgetName}.webmodeler.js`
+                        input: `dist/tmp/widgets/${widgetName}.webmodeler.js`
                     };
                 })
             }

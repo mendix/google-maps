@@ -110,7 +110,7 @@ const previewConfig = {
     },
     output: {
         path: path.resolve(__dirname, "dist/tmp"),
-        filename: "widgets/[name]/[name].webmodeler.js",
+        filename: "widgets/[name].webmodeler.js",
         libraryTarget: "commonjs"
     },
     resolve: {
