@@ -39,11 +39,6 @@
     "url": "https://github.com/mendixlabs/google-maps/issues"
   },
   "devDependencies": {
-    "@babel/core": "^7.1.2",
-    "@babel/plugin-proposal-class-properties": "^7.1.0",
-    "@babel/preset-env": "^7.1.0",
-    "@babel/preset-react": "^7.0.0",
-    "@babel/preset-typescript": "^7.1.0",
     "@types/classnames": "^2.2.4",
     "@types/core-js": "^0.9.46",
     "@types/enzyme": "^3.1.10",
@@ -57,7 +52,6 @@
     "@types/react": "^16.3.17",
     "@types/react-dom": "^16.0.6",
     "@types/webdriverio": "^4.10.2",
-    "babel-loader": "^8.0.4",
     "check-dependencies": "^1.1.0",
     "clean-webpack-plugin": "^0.1.19",
     "copy-webpack-plugin": "^4.5.1",
