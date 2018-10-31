@@ -2,8 +2,8 @@ import { random } from "faker";
 
 import { Container } from "../utils/namespace";
 import { validateLocationProps, validateLocations } from "../utils/Validations";
-import locationDataProps = Container.DataSourceLocationProps;
-import mapContainerProps = Container.MapsContainerProps;
+type locationDataProps = Container.DataSourceLocationProps;
+type mapContainerProps = Container.MapsContainerProps;
 
 describe("utils/Data", () => {
 

@@ -97,21 +97,11 @@ describe("Leaflet maps", () => {
         );
     });
 
-    it("with default center Latitude and Longitude sets default center location based on them", () => {
-        const leafletMap = fullRenderLeafletMap(defaultProps);
-        leafletMap.setProps({
-            allLocations: [],
-            defaultCenterLatitude: "39.90419989999999",
-            defaultCenterLongitude: "116.40739630000007"
-        });
-
-        expect(leafletMap.state("center")).toEqual({ lat: 39.90419989999999, lng: 116.40739630000007 });
-    });
-
     it("without default center Latitude and Longitude sets default center location based on the default configured location", () => {
         const leafletMap = fullRenderLeafletMap(defaultProps);
         leafletMap.setProps({
-            fetchingData: false
+            fetchingData: false,
+            allLocations: []
         });
 
         expect(leafletMap.state("center")).toEqual({ lat: 51.9107963, lng: 4.4789878 });

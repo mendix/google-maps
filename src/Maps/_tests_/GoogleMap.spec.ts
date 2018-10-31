@@ -104,16 +104,6 @@ describe("Google maps", () => {
         );
     });
 
-    it("with default center Latitude and Longitude sets default center location based on them", () => {
-        const googleMaps = fullRenderGoogleMap(defaultProps);
-        googleMaps.setProps({
-            defaultCenterLatitude: "39.90419989999999",
-            defaultCenterLongitude: "116.40739630000007"
-        });
-
-        expect(googleMaps.state("center")).toEqual({ lat: 39.90419989999999, lng: 116.40739630000007 });
-    });
-
     it("without default center Latitude and Longitude sets default center location based on the default configured location", () => {
         const googleMaps = fullRenderGoogleMap(defaultProps);
         googleMaps.setProps({
@@ -130,7 +120,7 @@ describe("Google maps", () => {
             fetchingData: false,
             autoZoom: false
         };
-        const googleMaps = fullRenderGoogleMap(customProps);
+        const googleMaps = fullRenderGoogleMap(defaultProps);
         const googleMapsInstance = googleMaps.instance() as any;
         const createMarkerSpy = spyOn(googleMapsInstance, "addMarkers").and.callThrough();
 
