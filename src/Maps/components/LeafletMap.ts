@@ -137,7 +137,7 @@ export class LeafletMap extends Component<LeafletMapProps, LeafletMapState> {
         if (locations && locations.length) {
             locations.forEach(location => this.createMarker(location).then(marker =>
                 this.markerGroup.addLayer(marker.on("click", event => {
-                    if (this.props.onClickMarker && location.locationAttr) {
+                    if (this.props.onClickMarker && location.locationAttr && location.locationAttr.onClickEvent !== "doNothing") {
                         this.props.onClickMarker(event, location.locationAttr);
                     }
                 }))).then(layer => this.map ? this.map.addLayer(layer) : undefined)
@@ -172,23 +172,19 @@ export class LeafletMap extends Component<LeafletMapProps, LeafletMapState> {
     }
 
     private createMarker = (location: Location): Promise<Marker> =>
-        new Promise((resolve, reject) => {
+        new Promise((resolve) => {
             const { latitude, longitude, url } = location;
-            if (location) {
-                if (url) {
-                    resolve(
-                        new Marker([ Number(latitude), Number(longitude) ]).setIcon(icon({
-                            iconUrl: url,
-                            iconSize: [ 38, 95 ],
-                            iconAnchor: [ 22, 94 ],
-                            className: "marker"
-                        }))
-                    );
-                } else {
-                    resolve(new Marker([ Number(latitude), Number(longitude) ]));
-                }
+            if (url) {
+                resolve(
+                    new Marker([ Number(latitude), Number(longitude) ]).setIcon(icon({
+                        iconUrl: url,
+                        iconSize: [ 38, 95 ],
+                        iconAnchor: [ 22, 94 ],
+                        className: "marker"
+                    }))
+                );
             } else {
-                reject("No locations provided");
+                resolve(new Marker([ Number(latitude), Number(longitude) ]));
             }
         })
 }

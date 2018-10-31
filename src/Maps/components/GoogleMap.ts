@@ -110,21 +110,25 @@ export class GoogleMap extends Component<GoogleMapsProps, GoogleMapState> {
             this.bounds = new google.maps.LatLngBounds();
             this.markers = mapLocations.reduce<google.maps.Marker[]>((markerArray, currentLocation) => {
                 this.bounds.extend({
-                    lat: Number(currentLocation.latitude),
-                    lng: Number(currentLocation.longitude)
+                    lat: currentLocation.latitude,
+                    lng: currentLocation.longitude
                 });
                 const marker = new google.maps.Marker({
                     position: {
-                        lat: Number(currentLocation.latitude),
-                        lng: Number(currentLocation.longitude)
+                        lat: currentLocation.latitude,
+                        lng: currentLocation.longitude
                     },
                     icon: currentLocation.url
                 });
-                marker.addListener("click", (event: google.maps.MouseEvent) => {
-                    if (this.props.onClickMarker && currentLocation.locationAttr) {
-                        this.props.onClickMarker(event, currentLocation.locationAttr);
-                    }
-                });
+                if (currentLocation.locationAttr && currentLocation.locationAttr.onClickEvent !== "doNothing") {
+                    marker.addListener("click", (event: google.maps.MouseEvent) => {
+                        if (this.props.onClickMarker && currentLocation.locationAttr) {
+                            this.props.onClickMarker(event, currentLocation.locationAttr);
+                        }
+                    });
+                } else {
+                    marker.setClickable(false);
+                }
                 markerArray.push(marker);
 
                 return markerArray;
