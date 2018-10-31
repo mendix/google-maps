@@ -5,7 +5,7 @@ type MxObject = mendix.lib.MxObject;
 
 export const fetchData = (options: Data.FetchDataOptions): Promise<MxObject[]> =>
     new Promise<MxObject[]>((resolve, reject) => {
-        const { guid, entity } = options;
+        const { guid, entity, contextObject, inputParameterEntity } = options;
         if (entity && guid) {
             if (options.type === "XPath") {
                 fetchByXPath({
@@ -16,7 +16,7 @@ export const fetchData = (options: Data.FetchDataOptions): Promise<MxObject[]> =
                 .then(mxObjects => resolve(mxObjects))
                 .catch(message => reject({ message }));
             } else if (options.type === "microflow" && options.microflow) {
-                fetchByMicroflow(options.microflow, guid)
+                fetchByMicroflow(options.microflow, guid, contextObject, inputParameterEntity)
                     .then(mxObjects => resolve(mxObjects))
                     .catch(message => reject({ message }));
             } else if (options.type === "nanoflow" && options.nanoflow.nanoflow && options.mxform) {
@@ -43,8 +43,12 @@ const fetchByXPath = (options: Data.FetchByXPathOptions): Promise<MxObject[]> =>
     });
 });
 
-const fetchByMicroflow = (actionname: string, guid: string): Promise<MxObject[]> =>
-    new Promise((resolve, reject) => {
+const fetchByMicroflow = (actionname: string, guid: string, contextObj: mendix.lib.MxObject, inputParameterEntity: string): Promise<MxObject[]> => {
+    if (contextObj.getEntity() !== inputParameterEntity) {
+        logger.warn("input parameter does not match the context object type");
+    }
+
+    return new Promise((resolve, reject) => {
         window.mx.ui.action(actionname, {
             params: {
                 applyto: "selection",
@@ -54,6 +58,7 @@ const fetchByMicroflow = (actionname: string, guid: string): Promise<MxObject[]>
             error: error => reject(`An error occurred while retrieving data via microflow: ${actionname}: ${error.message}`)
         });
     });
+};
 
 const fetchByNanoflow = (actionname: Data.Nanoflow, mxform: mxui.lib.form._FormBase): Promise<MxObject[]> =>
     new Promise((resolve: (objects: MxObject[]) => void, reject) => {
@@ -72,13 +77,18 @@ export const fetchMarkerObjectUrl = (options: Data.FetchMarkerIcons, mxObject: m
         const { type, markerIcon, imageAttribute, markerEnumImages } = options;
         if (type === "staticImage") {
             resolve(getStaticMarkerUrl(markerIcon));
-        } else if (type === "systemImage" && mxObject && options.systemImagePath && mxObject.get("HasContents")) {
+        } else if (type === "systemImage" && mxObject && options.systemImagePath) {
             mxObject.fetch(options.systemImagePath, (imagePathObj: MxObject) => {
-                const url = window.mx.data.getDocumentUrl(imagePathObj.getGuid(), imagePathObj.get("changedDate") as number);
-                window.mx.data.getImageUrl(url,
-                    objectUrl => resolve(objectUrl),
-                    error => reject(`Error while retrieving the image url: ${error.message}`)
-                );
+                if (imagePathObj.get("HasContents")) {
+                    const url = window.mx.data.getDocumentUrl(imagePathObj.getGuid(), imagePathObj.get("changedDate") as number);
+
+                    return window.mx.data.getImageUrl(url,
+                        objectUrl => resolve(objectUrl),
+                        error => reject(`Error while retrieving the image url: ${error.message}`)
+                    );
+                } else {
+                    reject("Upload Image inorder to view marker");
+                }
             });
         } else if (type === "enumImage" && mxObject) {
             const imageAttr = mxObject.get(imageAttribute) as string;

@@ -147,7 +147,9 @@ class MapsContainer extends Component<MapsContainerProps, MapsContainerState> {
                         constraint: locationOptions.entityConstraint,
                         microflow: locationOptions.dataSourceMicroflow,
                         mxform: this.props.mxform,
-                        nanoflow: locationOptions.dataSourceNanoflow
+                        nanoflow: locationOptions.dataSourceNanoflow,
+                        contextObject,
+                        inputParameterEntity: locationOptions.inputParameterEntity
                     })
                     .then(mxObjects => this.setLocationsFromMxObjects(mxObjects, locationOptions))
                     .then(locations => resolve(locations))

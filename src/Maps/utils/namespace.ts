@@ -99,6 +99,8 @@ export namespace Data {
         constraint?: string;
         microflow?: string;
         nanoflow: Nanoflow;
+        contextObject: mendix.lib.MxObject;
+        inputParameterEntity: string;
     }
 
     export interface FetchByXPathOptions {
