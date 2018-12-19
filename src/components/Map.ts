@@ -98,7 +98,7 @@ export class Map extends Component<MapProps, MapState> {
     private renderGoogleMap(): ReactElement<GoogleMapProps> | null {
         return createElement(GoogleMap,
             {
-                bootstrapURLKeys: { key: this.props.apiKey, v: "3.29" },
+                bootstrapURLKeys: { key: this.props.apiKey, v: "quarterly" },
                 center: this.state.center,
                 defaultZoom: this.props.zoomLevel,
                 onGoogleApiLoaded: this.handleOnGoogleApiLoaded,
