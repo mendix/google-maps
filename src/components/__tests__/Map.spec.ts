@@ -19,7 +19,7 @@ describe("Map", () => {
     const invalidAddress = "invalidAddress";
     const APIKey = "AIzaSyACjBNesZXeRFx86N7RMCWiTQP5GT_jDec";
     const renderMap = (props: MapProps) => shallow(createElement(Map, props));
-    const defaultCenterLocation = { lat: 51.9107963, lng: 4.4789878 };
+    const defaultCenterLocation = { lat: 51.9066313, lng: 4.488359 };
     let mxOriginal: mx.MxInterface;
 
     const setUpMap = (
