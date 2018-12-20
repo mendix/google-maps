@@ -44,9 +44,9 @@ export interface MapState {
 
 export class Map extends Component<MapProps, MapState> {
     // Location of Mendix Netherlands office
-    private defaultCenterLocation: LatLng = { lat: 51.9107963, lng: 4.4789878 };
+    private defaultCenterLocation: LatLng = { lat: 51.9066313, lng: 4.488359 };
     private mapLoader?: GoogleMapLoader;
-    private bounds: google.maps.LatLngBounds;
+    private bounds?: google.maps.LatLngBounds;
 
     constructor(props: MapProps) {
         super(props);
@@ -98,7 +98,7 @@ export class Map extends Component<MapProps, MapState> {
     private renderGoogleMap(): ReactElement<GoogleMapProps> | null {
         return createElement(GoogleMap,
             {
-                bootstrapURLKeys: { key: this.props.apiKey, v: "3.29" },
+                bootstrapURLKeys: { key: this.props.apiKey, v: "quarterly" },
                 center: this.state.center,
                 defaultZoom: this.props.zoomLevel,
                 onGoogleApiLoaded: this.handleOnGoogleApiLoaded,
@@ -145,7 +145,7 @@ export class Map extends Component<MapProps, MapState> {
         // TODO CHECK UPDATE LIB has solved it?
         // https://github.com/istarkov/google-map-react/issues/397
         const iFrame = this.getIframe();
-        if (iFrame) {
+        if (iFrame && iFrame.contentWindow) {
             iFrame.contentWindow.addEventListener("resize", this.onResizeIframe); // TODO throttles
         }
     }
@@ -154,7 +154,7 @@ export class Map extends Component<MapProps, MapState> {
         return document.getElementsByClassName("t-page-editor-iframe")[0] as HTMLIFrameElement;
     }
 
-    private onResizeIframe(_event: CustomEvent) {
+    private onResizeIframe() {
         if (this.mapLoader) {
             const originalCenter = this.mapLoader.map.getCenter();
             this.mapLoader.maps.event.trigger(this.mapLoader.map, "resize");
@@ -190,7 +190,7 @@ export class Map extends Component<MapProps, MapState> {
     }
 
     private updateBounds(props: MapProps, location: Location) {
-        if (this.mapLoader) {
+        if (this.mapLoader && this.bounds) {
             this.bounds.extend(new google.maps.LatLng(location.latitude as number, location.longitude as number));
             this.mapLoader.map.fitBounds(this.bounds);
             this.setZoom(props);
@@ -222,23 +222,30 @@ export class Map extends Component<MapProps, MapState> {
         if (this.mapLoader) {
             this.bounds = new google.maps.LatLngBounds();
             this.setZoom(props);
-            if (props.locations && props.locations.length) {
-                props.locations.forEach((location) => {
-                    if (!this.validLocation(location) && location.address) {
+            const locations = props.locations;
+            const invalidLocations: string[] = [];
+            if (locations && locations.length) {
+                locations.forEach(location => {
+                    if (this.validLocation(location)) {
+                        this.updateBounds(props, location);
+                    } else if (!this.validLocation(location) && location.address) {
                         this.getLocation(location.address, locationLookup => {
                             if (locationLookup) {
                                 location.latitude = Number(locationLookup.lat);
                                 location.longitude = Number(locationLookup.lng);
-                                this.setState({ locations: props.locations });
+                                this.setState({ locations });
                                 this.updateBounds(props, location);
+                            } else {
+                                invalidLocations.push(`${location.address}`);
                             }
                         });
-                    } else if (this.validLocation(location)) {
-                        this.updateBounds(props, location);
                     } else if (!this.validLocation(location) && !location.address) {
                         this.setState({ alertMessage: "Location address, latitude and longitude are not specified" });
                     }
                 });
+                if (invalidLocations.length > 0) {
+                    this.setState({ alertMessage: `Can not find address: ${invalidLocations.join(", ")}` });
+                }
             }
         }
         this.setDefaultCenter(this.props);
@@ -254,12 +261,12 @@ export class Map extends Component<MapProps, MapState> {
 
     private setDefaultCenter(props: MapProps) {
         if (props.defaultCenterLatitude && props.defaultCenterLongitude) {
-              this.setState({
-                  center: {
-                      lat: Number(props.defaultCenterLatitude),
-                      lng: Number(props.defaultCenterLongitude)
-                  }
-              });
+            this.setState({
+                center: {
+                    lat: Number(props.defaultCenterLatitude),
+                    lng: Number(props.defaultCenterLongitude)
+                }
+            });
         } else if (props.defaultCenterAddress) {
             this.getLocation(props.defaultCenterAddress, location =>
                 location ? this.setState({ center: location }) : this.setState({ center: this.defaultCenterLocation }));
