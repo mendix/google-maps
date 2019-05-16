@@ -62,7 +62,7 @@ WARNING: Address lookups are Google APIs calls which are limited in the free tri
                 <attributeType name="Decimal"/>
             </attributeTypes>
         </property>
-        <property key="locationsEntity" type="entity" required="false">
+        <property key="locationsEntity" type="entity" required="false" allowNonPersistableEntities="true">
             <caption>Locations entity</caption>
             <category>Database / Microflow</category>
             <description/>
@@ -233,6 +233,22 @@ WARNING: Address lookups are Google APIs calls which are limited in the free tri
                     <description/>
                 </property>
             </properties>
+        </property>
+        <property key="markerLabelAttributeContext" type="attribute" required="false">
+            <caption>Marker label (Context)</caption>
+            <category>Markers</category>
+            <description>For 'Datasource' 'Context'; Add a single character label inside the default marker to identify markers.</description>
+            <attributeTypes>
+                <attributeType name="String"/>
+            </attributeTypes>
+        </property>
+        <property key="markerLabelAttribute" type="attribute" required="false" entityProperty="locationsEntity">
+            <caption>Marker label (Database / Microflow)</caption>
+            <category>Markers</category>
+            <description>For 'Datasource' 'Database' or 'Microflow'; Add a single character label inside the default marker to identify markers.</description>
+            <attributeTypes>
+                <attributeType name="String"/>
+            </attributeTypes>
         </property>
         <!-- Maps styles -->
         <property key="mapStyles" type="string" multiline="true" required="false">

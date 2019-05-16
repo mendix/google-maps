@@ -301,13 +301,14 @@ export class Map extends Component<MapProps, MapState> {
 
         if (this.state.isLoaded && this.state.locations && this.state.locations.length) {
             this.state.locations.map((locationObject, index) => {
-                const { latitude, longitude, url } = locationObject;
+                const { latitude, longitude, url, label } = locationObject;
                 if (this.validLocation(locationObject)) {
                     markerElements.push(createElement(Marker, {
                         key: index,
                         lat: latitude as number,
                         lng: longitude as number,
-                        url
+                        url,
+                        label
                     }));
                 }
             });

@@ -173,6 +173,14 @@
                 </property>
             </properties>
         </property>
+        <property key="markerLabelAttribute" type="attribute" required="false">
+            <caption>Marker label</caption>
+            <category>Markers</category>
+            <description>When using default markers, Google allows you to add a label to each marker. This can be used e.g. to number markers and make them easily recognizable.</description>
+            <attributeTypes>
+                <attributeType name="String"/>
+            </attributeTypes>
+        </property>
         <!-- Maps styles -->
         <property key="mapStyles" type="string" multiline="true" required="false">
             <caption>Styles</caption>
