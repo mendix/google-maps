@@ -215,7 +215,7 @@ class GoogleMapContainer extends Component<GoogleMapContainerProps, { alertMessa
                 latitude: lat ? Number(lat) : undefined,
                 longitude: lon ? Number(lon) : undefined,
                 url,
-                label,
+                label
             };
         });
 
