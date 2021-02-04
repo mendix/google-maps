@@ -34,10 +34,12 @@ interface GoogleMapContainerProps extends WrapperProps {
     latitudeAttribute: string;
     longitudeAttribute: string;
     markerImageAttribute: string;
+    markerLabelAttribute: string;
     addressAttributeContext: string;
     latitudeAttributeContext: string;
     longitudeAttributeContext: string;
     markerImageAttributeContext: string;
+    markerLabelAttributeContext: string;
     staticLocations: StaticLocation[];
     markerImages: Array<{ enumKey: string, enumImage: string}>;
     width: number;
@@ -124,10 +126,12 @@ class GoogleMapContainer extends Component<GoogleMapContainerProps, { alertMessa
                 this.props.latitudeAttribute,
                 this.props.longitudeAttribute,
                 this.props.markerImageAttribute,
+                this.props.markerLabelAttribute,
                 this.props.addressAttributeContext,
                 this.props.latitudeAttributeContext,
                 this.props.longitudeAttributeContext,
-                this.props.markerImageAttributeContext
+                this.props.markerImageAttributeContext,
+                this.props.markerLabelAttributeContext
             ].forEach(attr => this.subscriptionHandles.push(window.mx.data.subscribe({
                 attr,
                 callback: () => this.fetchData(contextObject), guid: contextObject.getGuid()
@@ -198,17 +202,20 @@ class GoogleMapContainer extends Component<GoogleMapContainerProps, { alertMessa
             const longitudeAttribute = isContext ? this.props.longitudeAttributeContext : this.props.longitudeAttribute;
             const addressAttribute = isContext ? this.props.addressAttributeContext : this.props.addressAttribute;
             const markerImageAttribute = isContext ? this.props.markerImageAttributeContext : this.props.markerImageAttribute;
+            const markerLabelAttribute = isContext ? this.props.markerLabelAttributeContext : this.props.markerLabelAttribute;
 
             const lat = mxObject.get(latitudeAttribute);
             const lon = mxObject.get(longitudeAttribute);
             const address = mxObject.get(addressAttribute) as string;
             const url = this.getMxObjectMarkerUrl(mxObject.get(markerImageAttribute) as string);
+            const label = mxObject.get(markerLabelAttribute) as string;
 
             return {
                 address,
                 latitude: lat ? Number(lat) : undefined,
                 longitude: lon ? Number(lon) : undefined,
-                url
+                url,
+                label
             };
         });
 

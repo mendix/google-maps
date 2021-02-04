@@ -6,6 +6,7 @@ export interface Location {
     latitude?: number;
     longitude?: number;
     url?: string;
+    label?: string;
 }
 
 export interface StaticLocation {
